@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academia Europa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --ink: #0e0e0d;
+      --ink-2: #4a4a46;
+      --ink-3: #9a9993;
+      --paper: #f8f6f2;
+      --surface: #f0ede7;
+      --white: #ffffff;
+      --accent: #1e3d6e;
+      --accent-2: #c8913a;
+      --rule: #dedad3;
+      --radius: 10px;
+      --shadow: 0 2px 16px rgba(14, 14, 13, 0.07);
+      --shadow-lg: 0 8px 40px rgba(14, 14, 13, 0.12);
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248, 246, 242, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      height: 66px;
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .nav-brand-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center
+    }
+
+    .nav-links a {
+      color: var(--ink-2);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 400;
+      transition: color 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink)
+    }
+
+    .nav-pill {
+      font-size: 0.75rem;
+      color: var(--ink-3);
+      text-decoration: none;
+      border: 1px solid var(--rule);
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      transition: all 0.15s;
+    }
+
+    .nav-pill:hover {
+      color: var(--ink-2);
+      border-color: var(--ink-3)
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 5rem 3rem 3.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent-2)
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent)
+    }
+
+    .hero-lead {
+      font-size: 1.05rem;
+      color: var(--ink-2);
+      max-width: 480px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      transition: background 0.15s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover {
+      background: #162e54
+    }
+
+    .btn-outline {
+      background: none;
+      color: var(--ink-2);
+      border: 1px solid var(--rule);
+      padding: 0.75rem 1.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 400;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--ink-3);
+      color: var(--ink)
+    }
+
+    /* Hero aside stats */
+    .hero-aside {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-stat {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--rule)
+    }
+
+    .hero-stat:last-child {
+      border-bottom: none;
+      padding-bottom: 0
+    }
+
+    .hero-stat:first-child {
+      padding-top: 0
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-lbl {
+      font-size: 0.775rem;
+      color: var(--ink-3);
+      font-weight: 500;
+      letter-spacing: 0.04em
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height: 1px;
+      background: var(--rule);
+      margin: 0 3rem
+    }
+
+    /* ─── SEARCH & FILTER BAR ─── */
+    .filter-bar {
+      padding: 2.5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.75rem;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #search-input:focus {
+      border-color: var(--accent)
+    }
+
+    #search-input::placeholder {
+      color: var(--ink-3)
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap
+    }
+
+    .chip {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.775rem;
+      font-weight: 500;
+      border: 1px solid var(--rule);
+      background: var(--white);
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .chip:hover {
+      border-color: var(--ink-3)
+    }
+
+    .chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent)
+    }
+
+    .results-count {
+      font-size: 0.8rem;
+      color: var(--ink-3);
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    /* ─── ARTICLES ─── */
+    .articles-section {
+      padding: 0 3rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Featured */
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 0;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .featured-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    .featured-body {
+      padding: 2.25rem 2.5rem
+    }
+
+    .featured-kicker {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 0.6rem;
+    }
+
+    .featured-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .featured-excerpt {
+      font-size: 0.9rem;
+      color: var(--ink-2);
+      line-height: 1.75;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.775rem;
+      color: var(--ink-3);
+    }
+
+    .meta-tag {
+      background: #e8edf5;
+      color: var(--accent);
+      padding: 0.2rem 0.65rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    .featured-visual {
+      background: linear-gradient(135deg, #e8edf5 0%, #d4dff0 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .featured-visual svg {
+      width: 64px;
+      height: 64px;
+      opacity: 0.3
+    }
+
+    /* Grid */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .article-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    .card-body {
+      padding: 1.35rem 1.35rem 0.75rem;
+      flex: 1
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.67rem;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: #e8edf5;
+      color: var(--accent);
+      padding: 0.18rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      line-height: 1.35;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card-excerpt {
+      font-size: 0.82rem;
+      color: var(--ink-2);
+      line-height: 1.65;
+      font-weight: 300;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      padding: 0.75rem 1.35rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-author {
+      font-size: 0.765rem;
+      color: var(--ink-2);
+      font-weight: 500
+    }
+
+    .card-date {
+      font-size: 0.74rem;
+      color: var(--ink-3)
+    }
+
+    /* Empty / loading */
+    .state-msg {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--ink-3);
+      font-size: 0.9rem;
+    }
+
+    .state-msg .icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+      opacity: 0.5
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--rule);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      background: var(--surface);
+      border-top: 1px solid var(--rule);
+      padding: 5rem 3rem;
+    }
+
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 2.5rem
+    }
+
+    .about-card {
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+
+    .about-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .about-card p {
+      font-size: 0.875rem;
+      color: var(--ink-2);
+      line-height: 1.75;
+      font-weight: 300
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-hdr {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 14, 13, 0.55);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: var(--paper);
+      border-radius: 14px;
+      max-width: 720px;
+      width: 100%;
+      margin: auto;
+      padding: 3rem;
+      transform: translateY(20px);
+      transition: transform 0.2s;
+      position: relative;
+    }
+
+    .modal-overlay.open .modal {
+      transform: translateY(0)
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: var(--surface);
+      border: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--ink-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.15s;
+    }
+
+    .modal-close:hover {
+      background: var(--rule)
+    }
+
+    .modal-tag {
+      margin-bottom: 1rem
+    }
+
+    .modal h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      line-height: 1.2;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-meta {
+      font-size: 0.825rem;
+      color: var(--ink-3);
+      margin-bottom: 2rem
+    }
+
+    .modal-body {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--ink);
+      font-weight: 300
+    }
+
+    .modal-body p {
+      margin-bottom: 1.25rem
+    }
+
+    .modal-body p:last-child {
+      margin-bottom: 0
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      color: #c8c7c3;
+      padding: 3rem;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-tagline {
+      font-size: 0.8rem;
+      color: #888884
+    }
+
+    .footer-links a {
+      display: block;
+      font-size: 0.825rem;
+      color: #888884;
+      text-decoration: none;
+      margin-bottom: 0.4rem;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover {
+      color: #c8c7c3
+    }
+
+    .footer-copy {
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+      font-size: 0.75rem;
+      color: #666662;
+      border-top: 1px solid #222220;
+      padding-top: 1.5rem;
+    }
+
+    @media(max-width:768px) {
+      nav {
+        padding: 0 1.25rem
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 3rem 1.25rem 2rem
+      }
+
+      .hero-aside {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0
+      }
+
+      .hero-stat {
+        border-bottom: none;
+        border-right: 1px solid var(--rule)
+      }
+
+      .hero-stat:nth-child(even) {
+        border-right: none
+      }
+
+      .filter-bar {
+        padding: 1.5rem 1.25rem
+      }
+
+      .articles-section {
+        padding: 0 1.25rem 4rem
+      }
+
+      .featured-card {
+        grid-template-columns: 1fr
+      }
+
+      .featured-visual {
+        display: none
+      }
+
+      .about-section {
+        padding: 3rem 1.25rem
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr
+      }
+
+      .divider {
+        margin: 0 1.25rem
+      }
+
+      .modal {
+        padding: 1.75rem
+      }
+
+      footer {
+        padding: 2rem 1.25rem
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a class="nav-brand" href="#">
+      <span class="nav-brand-dot"></span>
+      Academia Europa
+    </a>
+    <div class="nav-links">
+      <a href="#articles">Articles</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a class="nav-pill" href="admin.html">Admin ↗</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <p class="hero-eyebrow">Professional Association</p>
+      <h1>Advancing knowledge through <em>rigorous</em> scholarly exchange</h1>
+      <p class="hero-lead">A community of scholars, practitioners and policymakers dedicated to interdisciplinary
+        research and open dialogue across European institutions.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#articles">Browse articles</a>
+        <a class="btn-outline" href="#about">About the association</a>
+      </div>
+    </div>
+    <div class="hero-aside">
+      <div class="hero-stat">
+        <div class="stat-num" id="stat-count">—</div>
+        <div class="stat-lbl">Articles published</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">340+</div>
+        <div class="stat-lbl">Members worldwide</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">18</div>
+        <div class="stat-lbl">Years of activity</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SEARCH & FILTER -->
+  <div class="filter-bar" id="articles">
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.5" />
+        <path d="M11 11l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+      </svg>
+      <input type="search" id="search-input" placeholder="Search articles, authors…" oninput="handleSearch()" />
+    </div>
+    <div class="filter-chips" id="filter-chips">
+      <button class="chip active" data-cat="" onclick="setCategory(this, '')">All</button>
+    </div>
+    <span class="results-count" id="results-count"></span>
+  </div>
+
+  <!-- ARTICLES -->
+  <div class="articles-section">
+    <div id="articles-container">
+      <div class="state-msg">
+        <div class="spinner"></div>Loading articles…
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <div class="about-section" id="about">
+    <div class="about-inner">
+      <div class="section-hdr">
+        <h2 class="section-title">About the association</h2>
+      </div>
+      <p style="font-size:1rem;color:var(--ink-2);line-height:1.8;max-width:640px;margin-bottom:2rem;font-weight:300">
+        Founded in 2006, Academia Europa brings together professionals and researchers committed to advancing knowledge
+        through interdisciplinary exchange. Our publications, events, and working groups connect members across
+        institutions and borders.
+      </p>
+      <div class="about-grid">
+        <div class="about-card">
+          <h4>Our mission</h4>
+          <p>To facilitate rigorous academic exchange and support members at every stage of their careers through
+            publications, events, and collaborative networks.</p>
+        </div>
+        <div class="about-card">
+          <h4>Membership</h4>
+          <p>Open to researchers, professionals and graduate students. Members gain access to publications, discounted
+            event registration, and our working groups.</p>
+        </div>
+        <div class="about-card">
+          <h4>Publications</h4>
+          <p>Our articles, working papers and policy briefs are freely accessible to all. Members may submit for review
+            by the editorial board.</p>
+        </div>
+        <div class="about-card" id="contact">
+          <h4>Contact</h4>
+          <p>General enquiries: <a href="mailto:info@academiaeuropa.org"
+              style="color:var(--accent)">info@academiaeuropa.org</a><br />Submissions: <a
+              href="mailto:submissions@academiaeuropa.org"
+              style="color:var(--accent)">submissions@academiaeuropa.org</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Academia Europa</div>
+        <div class="footer-tagline">Professional Academic Association · Est. 2006</div>
+      </div>
+      <div class="footer-links">
+        <a href="#articles">Articles</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="admin.html">Admin panel</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2024 Academia Europa. All rights reserved.</div>
+  </footer>
+
+  <!-- Article modal -->
+  <div class="modal-overlay" id="modal" onclick="handleModalClick(event)">
+    <div class="modal" id="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-tag"><span class="card-tag" id="modal-tag"></span></div>
+      <h2 id="modal-title"></h2>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ─── CONFIG — replace with your values ───────────────────────────────────────
+    const SUPABASE_URL = "https://wgybryptswsehwunkewy.supabase.co";
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndneWJyeXB0c3dzZWh3dW5rZXd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMzA0ODMsImV4cCI6MjA5MjkwNjQ4M30.Gi90SW442kPtaEiGZkoVUSj-gkJO9FQ6UmxT3V28jFo';
+    // ─────────────────────────────────────────────────────────────────────────────
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let allCategories = [];
+    let currentCategory = '';
+    let searchTimer = null;
+    let totalCount = 0;
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────────
+    async function init() {
+      await Promise.all([loadCategories(), loadArticles()]);
+    }
+
+    async function loadCategories() {
+      const { data } = await supabase
+        .from('articles')
+        .select('category')
+        .order('category');
+      if (!data) return;
+      const cats = [...new Set(data.map(r => r.category).filter(Boolean))].sort();
+      allCategories = cats;
+      const chips = document.getElementById('filter-chips');
+      cats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'chip';
+        btn.dataset.cat = cat;
+        btn.textContent = cat;
+        btn.onclick = function () { setCategory(this, cat) };
+        chips.appendChild(btn);
+      });
+    }
+
+    async function loadArticles(search = '', category = '') {
+      const container = document.getElementById('articles-container');
+      container.innerHTML = '<div class="state-msg"><div class="spinner"></div>Loading…</div>';
+
+      let query = supabase
+        .from('articles')
+        .select('*', { count: 'exact' })
+        .order('date', { ascending: false });
+
+      if (category) query = query.eq('category', category);
+
+      if (search.trim()) {
+        // Postgres full-text search
+        query = query.textSearch('fts', search.trim().split(/\s+/).join(' & '), {
+          type: 'websearch',
+          config: 'english'
+        });
+      }
+
+      const { data, error, count } = await query.limit(50);
+
+      if (error) {
+        // Fallback: ilike search if fts not available
+        let q2 = supabase
+          .from('articles')
+          .select('*', { count: 'exact' })
+          .order('date', { ascending: false });
+        if (category) q2 = q2.eq('category', category);
+        if (search.trim()) q2 = q2.or(`title.ilike.%${search}%,author.ilike.%${search}%,excerpt.ilike.%${search}%`);
+        const { data: d2, count: c2 } = await q2.limit(50);
+        renderArticles(d2 || [], c2 || 0);
+        return;
+      }
+
+      renderArticles(data || [], count || 0);
+    }
+
+    function renderArticles(articles, count) {
+      totalCount = count;
+      document.getElementById('stat-count').textContent = count > 50 ? count + '+' : count;
+      document.getElementById('results-count').textContent =
+        count === 0 ? 'No results' :
+          count === 1 ? '1 article' :
+            `${count} articles`;
+
+      const container = document.getElementById('articles-container');
+
+      if (!articles.length) {
+        container.innerHTML = `<div class="state-msg"><span class="icon">◎</span>No articles found.<br>Try a different search or filter.</div>`;
+        return;
+      }
+
+      const [featured, ...rest] = articles;
+      const fd = fmtDate(featured.date, true);
+
+      let html = `
+    <div class="featured-card" onclick='openModal(${JSON.stringify(featured)})'>
+      <div class="featured-body">
+        <div class="featured-kicker">Latest</div>
+        <span class="card-tag">${esc(featured.category || 'Article')}</span>
+        <h2 class="featured-title">${esc(featured.title)}</h2>
+        <p class="featured-excerpt">${esc(featured.excerpt || '')}</p>
+        <div class="featured-meta">
+          <span>${esc(featured.author || '')}</span>
+          <span>·</span>
+          <span>${fd}</span>
+        </div>
+      </div>
+      <div class="featured-visual">
+        <svg viewBox="0 0 64 64" fill="none"><rect x="8" y="12" width="48" height="6" rx="3" fill="#1e3d6e"/><rect x="8" y="24" width="36" height="5" rx="2.5" fill="#1e3d6e"/><rect x="8" y="35" width="42" height="5" rx="2.5" fill="#1e3d6e"/><rect x="8" y="46" width="28" height="5" rx="2.5" fill="#1e3d6e"/></svg>
+      </div>
+    </div>`;
+
+      if (rest.length) {
+        html += '<div class="articles-grid">';
+        rest.forEach(a => {
+          html += `
+        <div class="article-card" onclick='openModal(${JSON.stringify(a)})'>
+          <div class="card-body">
+            <span class="card-tag">${esc(a.category || 'Article')}</span>
+            <h3 class="card-title">${esc(a.title)}</h3>
+            <p class="card-excerpt">${esc(a.excerpt || '')}</p>
+          </div>
+          <div class="card-footer">
+            <span class="card-author">${esc(a.author || '')}</span>
+            <span class="card-date">${fmtDate(a.date)}</span>
+          </div>
+        </div>`;
+        });
+        html += '</div>';
+        if (count > 50) {
+          html += `<p style="text-align:center;margin-top:2rem;font-size:0.825rem;color:var(--ink-3)">Showing 50 of ${count} articles. Refine your search to find more.</p>`;
+        }
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ─── SEARCH & FILTER ──────────────────────────────────────────────────────────
+    function handleSearch() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => {
+        loadArticles(document.getElementById('search-input').value, currentCategory);
+      }, 320);
+    }
+
+    function setCategory(el, cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      loadArticles(document.getElementById('search-input').value, cat);
+    }
+
+    // ─── MODAL ────────────────────────────────────────────────────────────────────
+    function openModal(article) {
+      if (typeof article === 'string') article = JSON.parse(article);
+      document.getElementById('modal-tag').textContent = article.category || 'Article';
+      document.getElementById('modal-title').textContent = article.title || '';
+      document.getElementById('modal-meta').textContent =
+        `${article.author || ''} · ${fmtDate(article.date, true)}`;
+      document.getElementById('modal-body').innerHTML =
+        (article.body || article.excerpt || '')
+          .split(/\n\n+/).filter(Boolean)
+          .map(p => `<p>${esc(p)}</p>`).join('');
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function handleModalClick(e) {
+      if (e.target === document.getElementById('modal')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // ─── HELPERS ──────────────────────────────────────────────────────────────────
+    function fmtDate(d, long = false) {
+      if (!d) return '';
+      return new Date(d).toLocaleDateString('en-GB', long
+        ? { day: 'numeric', month: 'long', year: 'numeric' }
+        : { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
