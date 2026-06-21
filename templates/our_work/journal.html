@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Journal{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Corporate Law Academy Journal</p>
+
+        <h1 class="page-hero-title">
+            Our flagship semestral publication.
+        </h1>
+
+        <p class="page-hero-text">
+            A curated collection of legal research, commentary and student
+            scholarship on corporate law, finance, technology and markets.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Current Edition</p>
+
+            <h2 class="section-title">
+                {{ current_edition.title }}
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                {{ current_edition.description }}
+            </p>
+
+            <div class="journal-meta">
+                <span>Spring 2026</span>
+                <span>12 contributions</span>
+                <span>PDF edition</span>
+            </div>
+
+            <a href="{{ current_edition.pdf_url }}" target="_blank" class="btn btn-primary">
+                Read Edition
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Inside This Issue</p>
+
+            <h2 class="section-title">
+                Featured contributions.
+            </h2>
+        </div>
+
+        <div class="article-grid">
+            {% for item in selected_pieces %}
+
+            {% set article = item.article %}
+
+            <article class="article-card">
+
+                <p class="article-tag">
+                    {{ article.category }}
+                </p>
+
+                <h3>
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}">
+                        {{ article.title }}
+                    </a>
+                </h3>
+
+                <p>
+                    {{ article.excerpt }}
+                </p>
+
+                <div class="article-card-footer">
+                    <span>Journal Selection</span>
+                </div>
+
+            </article>
+
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Archive</p>
+
+            <h2 class="section-title">
+                Previous editions.
+            </h2>
+        </div>
+
+        <div class="grid grid-3">
+
+            {% for edition in editions %}
+
+            <article class="card">
+
+                <h3>{{ edition.title }}</h3>
+
+                <p>
+                    {{ edition.description }}
+                </p>
+
+                <a href="{{ url_for('journal_detail', slug=edition.slug) }}" class="card-link">
+                    View edition →
+                </a>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Submissions</p>
+
+            <h2 class="section-title">
+                Contribute to the next edition.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                The Journal welcomes contributions from students, alumni,
+                academics and practitioners on topics connected to corporate
+                law, finance, regulation and business.
+            </p>
+
+            <a href="{{ url_for('contact') }}" class="btn btn-secondary">
+                Submit a Proposal
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

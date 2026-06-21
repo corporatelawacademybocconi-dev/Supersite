@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ person.name }} | Corporate Law Academy
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">{{ person.role }}</p>
+
+        <h1 class="page-hero-title">
+            {{ person.name }}
+        </h1>
+
+        <p class="page-hero-text">
+            {{ person.bio }}
+        </p>
+
+        {% if person.linkedin_url %}
+        <a href="{{ person.linkedin_url }}" class="btn btn-secondary" target="_blank">
+            LinkedIn
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <p class="section-label">Articles</p>
+
+            <h2 class="section-title">
+                Articles by {{ person.name }}.
+            </h2>
+        </div>
+
+        {% if articles %}
+
+        <div class="article-grid">
+
+            {% for article in articles %}
+            <article class="article-card">
+
+                <p class="article-tag">
+                    {{ article.category }}
+                </p>
+
+                <h3>
+                    {{ article.title }}
+                </h3>
+
+                <p>
+                    {{ article.excerpt }}
+                </p>
+
+                <div class="article-card-footer">
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
+                        Read Article
+                    </a>
+
+                    <span>
+                        {{ article.published_at[:10] }}
+                    </span>
+                </div>
+
+            </article>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <p class="section-text">
+            No published articles yet.
+        </p>
+
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

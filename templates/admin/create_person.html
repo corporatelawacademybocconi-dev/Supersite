@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Add Person{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Add Person</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form method="POST" class="reserved-login-form">
+
+            <input type="text" name="name" placeholder="Full Name" required>
+
+            <input type="text" name="slug" placeholder="name-surname" required>
+
+            <input type="text" name="role" placeholder="Role">
+
+            <textarea name="bio" placeholder="Bio" rows="6"></textarea>
+
+            <input type="url" name="linkedin_url" placeholder="LinkedIn URL">
+
+            <button type="submit" class="btn btn-primary">
+                Add Person
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

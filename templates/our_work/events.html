@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Events{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Events</p>
+
+        <h1 class="page-hero-title">
+            Conversations with the legal profession.
+        </h1>
+
+        <p class="page-hero-text">
+            Panels, workshops and meetings connecting students with practitioners,
+            academics, alumni and institutions.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Upcoming</p>
+
+            <h2 class="section-title">
+                Upcoming events.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                Our events are designed to expose students to legal practice,
+                career paths, market developments and professional expectations.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="event-list">
+
+            {% for event in upcoming_events %}
+
+            <article class="event-card">
+                <div class="event-date">
+                    <span>{{ event.start_datetime[5:7] }}</span>
+                    <strong>{{ event.start_datetime[8:10] }}</strong>
+                </div>
+
+                <div class="event-content">
+                    <p class="event-type">CLA Event</p>
+
+                    <h3>
+                        <a href="{{ url_for('event_detail', slug=event.slug) }}">
+                            {{ event.title }}
+                        </a>
+                    </h3>
+
+                    <p>{{ event.description }}</p>
+
+                    <div class="event-meta">
+                        <span>{{ event.location }}</span>
+                        <span>{{ event.start_datetime[11:16] }}</span>
+                        <span>Event</span>
+                    </div>
+                </div>
+            </article>
+
+            {% else %}
+
+            <p class="section-text">No upcoming events have been published yet.</p>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Past Events</p>
+
+            <h2 class="section-title">
+                Previous initiatives.
+            </h2>
+        </div>
+
+        <div class="grid grid-3">
+
+            {% for event in past_events %}
+
+            <article class="card">
+                <h3>{{ event.title }}</h3>
+
+                <p>{{ event.description }}</p>
+
+                <a href="{{ url_for('event_detail', slug=event.slug) }}" class="card-link">
+                    View event →
+                </a>
+            </article>
+
+            {% else %}
+
+            <p class="section-text">No past events have been published yet.</p>
+
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

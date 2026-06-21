@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">CLA Event</p>
+
+        <h1 class="page-hero-title">
+            {{ event.title }}
+        </h1>
+
+        {% if event.description %}
+        <p class="page-hero-text">
+            {{ event.description }}
+        </p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+
+        <div>
+            {% if event.flyer_image_url %}
+            <img src="{{ event.flyer_image_url }}" alt="{{ event.title }} flyer" class="event-detail-flyer">
+            {% else %}
+            <div class="event-detail-placeholder">
+                <span>Event Flyer</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="event-detail-info">
+            <p class="section-label">Event Details</p>
+
+            <h2 class="section-title">
+                {{ event.start_datetime[:10] }}
+            </h2>
+
+            <div class="event-meta event-detail-meta">
+                {% if event.start_datetime %}
+                <span>{{ event.start_datetime[11:16] }}</span>
+                {% endif %}
+
+                {% if event.location %}
+                <span>{{ event.location }}</span>
+                {% endif %}
+            </div>
+
+            {% if event.registration_url %}
+            <a href="{{ event.registration_url }}" target="_blank" class="btn btn-primary">
+                Register
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+
+{% if event.event_report %}
+<section class="section">
+    <div class="container">
+        <p class="section-label">Event Report</p>
+
+        <div class="rich-text">
+            <p>{{ event.event_report }}</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

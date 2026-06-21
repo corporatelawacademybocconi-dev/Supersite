@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Search</p>
+        <h1 class="page-hero-title">Search CLA Content</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form method="GET" class="search-form">
+            <input type="search" name="q" value="{{ query }}" placeholder="Search articles, people and CLA content..."
+                autofocus>
+        </form>
+
+    </div>
+</section>
+
+{% if query %}
+
+<section class="section">
+    <div class="container">
+
+        <p class="search-count">
+            {{ articles|length + people|length + journal_editions|length + events|length }} results for "{{ query }}"
+        </p>
+
+        {% if not articles and not people and not journal_editions and not events %}
+        <p class="section-text">No results found.</p>
+        {% endif %}
+
+    </div>
+</section>
+
+{% if articles %}
+<section class="section">
+    <div class="container">
+        <h2>Articles</h2>
+
+        {% for article in articles %}
+        <article class="card">
+            <h3>
+                <a href="{{ url_for('article_detail', slug=article.slug) }}">
+                    {{ article.title }}
+                </a>
+            </h3>
+
+            <p>{{ article.excerpt }}</p>
+        </article>
+        {% endfor %}
+
+    </div>
+</section>
+{% endif %}
+
+{% if people %}
+<section class="section">
+    <div class="container">
+        <h2>People</h2>
+
+        {% for person in people %}
+        <article class="card">
+            <h3>
+                <a href="{{ url_for('person_detail', slug=person.slug) }}">
+                    {{ person.name }}
+                </a>
+            </h3>
+
+            <p>{{ person.role }}</p>
+        </article>
+        {% endfor %}
+
+    </div>
+</section>
+{% endif %}
+{% if journal_editions %}
+
+<section class="section">
+    <div class="container">
+
+        <h2>Journal Editions</h2>
+
+        {% for edition in journal_editions %}
+
+        <article class="card">
+
+            <h3>
+                <a href="{{ url_for('journal_detail', slug=edition.slug) }}">
+                    {{ edition.title }}
+                </a>
+            </h3>
+
+            <p>{{ edition.description }}</p>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endif %}
+{% if events %}
+
+<section class="section">
+    <div class="container">
+
+        <h2>Events</h2>
+
+        {% for event in events %}
+
+        <article class="card">
+
+            <h3>
+                <a href="{{ url_for('event_detail', slug=event.slug) }}">
+                    {{ event.title }}
+                </a>
+            </h3>
+
+            <p>{{ event.description }}</p>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endif %}
+
+{% endif %}
+
+{% endblock %}

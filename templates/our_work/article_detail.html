@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ article.title }} | Corporate Law Academy
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">{{ article.category }}</p>
+
+        <h1 class="page-hero-title">
+            {{ article.title }}
+        </h1>
+
+        <p class="page-hero-text">
+            {{ article.excerpt }}
+        </p>
+
+        <div class="article-meta">
+            <span>
+                By <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
+                    {{ article.author.name }}
+                </a>
+            </span>
+            <span>{{ article.category }}</span>
+            <span>{{ article.published_at[:10] }}</span>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <article class="prose">
+            <p>
+                {{ article.content }}
+            </p>
+        </article>
+    </div>
+</section>
+{% endblock %}

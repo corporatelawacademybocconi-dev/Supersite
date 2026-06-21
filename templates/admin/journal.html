@@ -1,0 +1,51 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Manage Journal{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Manage Journal</h1>
+        <p class="page-hero-text">
+            Manage CLA Journal editions, PDFs and selected pieces.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <a href="{{ url_for('admin_create_journal_edition') }}" class="btn btn-primary">
+            Create Edition
+        </a>
+
+        <div class="grid grid-3">
+
+            {% for edition in editions %}
+
+            <article class="card">
+                <h3>{{ edition.title }}</h3>
+
+                <p>
+                    Volume {{ edition.volume }} · Issue {{ edition.issue }}
+                </p>
+
+                {% if edition.is_current %}
+                <p class="section-label">Current Edition</p>
+                {% endif %}
+
+                <a href="{{ url_for('admin_edit_journal_edition', edition_id=edition.id) }}" class="card-link">
+                    Edit →
+                </a>
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

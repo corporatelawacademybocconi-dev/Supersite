@@ -1,0 +1,63 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Create Article{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Create Article</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form method="POST" class="reserved-login-form">
+
+            <input type="text" name="title" value="{{ article.title }}" required>
+
+            <select name="author_id" required>
+
+                {% for author in authors %}
+
+                <option value="{{ author.id }}" {% if author.id==article.author_id %} selected {% endif %}>
+                    {{ author.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <input type="text" name="category" value="{{ article.category or '' }}">
+
+            <textarea name="excerpt" rows="3">{{ article.excerpt or '' }}</textarea>
+
+            <textarea name="content" rows="12">{{ article.content or '' }}</textarea>
+
+            <select name="status">
+                <option value="draft" {% if article.status=="draft" %}selected{% endif %}>
+                    Draft
+                </option>
+
+                <option value="published" {% if article.status=="published" %}selected{% endif %}>
+                    Published
+                </option>
+            </select>
+
+            <label>
+                <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
+                Featured Article
+            </label>
+
+            <button type="submit" class="btn btn-primary">
+                Create Article
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

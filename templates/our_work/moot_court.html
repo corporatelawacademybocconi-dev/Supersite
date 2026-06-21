@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Moot Court{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Moot Court</p>
+
+        <h1 class="page-hero-title">
+            Advocacy, argument and legal strategy.
+        </h1>
+
+        <p class="page-hero-text">
+            Our Moot Court programme develops oral advocacy, legal writing,
+            teamwork and strategic thinking through simulated proceedings.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Programme</p>
+
+            <h2 class="section-title">
+                Training students to argue with precision.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                The programme gives students practical exposure to written
+                submissions, oral pleadings, case theory and courtroom strategy.
+            </p>
+
+            <p class="section-text">
+                Participants learn how to structure arguments, respond to judges,
+                work under pressure and communicate complex legal positions with
+                discipline. A useful skill, since “vibes” remain inadmissible.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Structure</p>
+
+            <h2 class="section-title">
+                How the programme works.
+            </h2>
+        </div>
+
+        <div class="grid grid-3">
+            <article class="card">
+                <h3>Legal Research</h3>
+                <p>
+                    Participants analyse facts, identify issues and prepare
+                    legal arguments based on authorities and procedure.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Written Submissions</h3>
+                <p>
+                    Teams draft memorials and written pleadings with a focus
+                    on clarity, structure and persuasive legal reasoning.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Oral Advocacy</h3>
+                <p>
+                    Students practise oral argument, judicial questioning and
+                    strategic presentation before panels.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Competitions</p>
+
+            <h2 class="section-title">
+                Preparing for national and international moots.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                The Moot Court initiative may support teams preparing for
+                external competitions, internal rounds, workshops and advocacy
+                training sessions.
+            </p>
+
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">
+                Get Involved
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

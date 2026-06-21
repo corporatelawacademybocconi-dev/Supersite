@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Reserved Area{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+
+        <p class="page-hero-label">Reserved Area</p>
+
+        <h1 class="page-hero-title">
+            Authentication Required
+        </h1>
+
+        <form method="POST" class="reserved-login-form">
+            <label for="password">Password</label>
+
+            <input id="password" type="password" name="password" placeholder="Enter reserved area password" required>
+
+            <button type="submit" class="btn btn-primary">
+                Enter Reserved Area
+            </button>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

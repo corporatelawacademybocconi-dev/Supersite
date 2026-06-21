@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Networking{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Networking</p>
+
+        <h1 class="page-hero-title">
+            Connecting students with the legal profession.
+        </h1>
+
+        <p class="page-hero-text">
+            We build opportunities for students to engage with practitioners,
+            alumni, academics and institutions across corporate law.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Community</p>
+
+            <h2 class="section-title">
+                Professional relationships start before practice.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                Our networking initiatives are designed to help students
+                understand the legal market, develop confidence in professional
+                settings, and build relationships with people working across
+                law firms, companies and institutions.
+            </p>
+
+            <p class="section-text">
+                We focus on meaningful engagement rather than superficial
+                introductions. The point is not collecting business cards like
+                trophies in a corporate scavenger hunt.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Opportunities</p>
+
+            <h2 class="section-title">
+                How we connect people.
+            </h2>
+        </div>
+
+        <div class="grid grid-3">
+            <article class="card">
+                <h3>Professional Events</h3>
+                <p>
+                    Panels, presentations and informal conversations with
+                    practitioners and industry experts.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Alumni Network</h3>
+                <p>
+                    Connections with graduates pursuing careers in law firms,
+                    companies, institutions and advisory roles.
+                </p>
+            </article>
+
+            <article class="card">
+                <h3>Firm Engagement</h3>
+                <p>
+                    Structured opportunities to learn about practice areas,
+                    recruitment paths and professional expectations.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Join</p>
+
+            <h2 class="section-title">
+                Become part of the network.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                Whether you are a student, alumnus, practitioner or institution,
+                Corporate Law Academy welcomes meaningful collaboration in legal
+                education and professional development.
+            </p>
+
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">
+                Get in Touch
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

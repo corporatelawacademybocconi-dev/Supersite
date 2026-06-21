@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>{{ edition.title }}</h1>
+
+        {% if edition.description %}
+        <p>{{ edition.description }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="container">
+
+    <p>
+        Volume {{ edition.volume }} · Issue {{ edition.issue }}
+    </p>
+
+    <p>
+        Published: {{ edition.publication_date }}
+    </p>
+
+    <a href="{{ edition.pdf_url }}" target="_blank">
+        View Journal PDF
+    </a>
+
+</section>
+
+{% endblock %}

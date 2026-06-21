@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Create Journal Edition{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Create Journal Edition</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form method="POST" class="reserved-login-form">
+
+            <input type="text" name="title" placeholder="Edition Title" required>
+
+            <input type="text" name="slug" placeholder="volume-1-issue-1" required>
+
+            <textarea name="description" rows="5" placeholder="Description"></textarea>
+
+            <input type="url" name="pdf_url" placeholder="PDF URL" required>
+
+            <input type="url" name="cover_image_url" placeholder="Cover Image URL">
+
+            <input type="number" name="volume" placeholder="Volume">
+
+            <input type="number" name="issue" placeholder="Issue">
+
+            <input type="date" name="publication_date">
+
+            <select name="status">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+            </select>
+
+            <label>
+                <input type="checkbox" name="is_current">
+                Current Edition
+            </label>
+
+            <button type="submit" class="btn btn-primary">
+                Create Edition
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

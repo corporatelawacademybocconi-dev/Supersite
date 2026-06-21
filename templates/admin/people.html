@@ -1,0 +1,51 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Manage People{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+
+        <h1 class="page-hero-title">
+            Manage People
+        </h1>
+
+        <p class="page-hero-text">
+            Manage CLA members, authors and team profiles.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <a href="{{ url_for('admin_create_person') }}" class="btn btn-primary">
+            Add Person
+        </a>
+
+        <div class="grid grid-3">
+
+            {% for person in people %}
+
+            <article class="card">
+                <h3>{{ person.name }}</h3>
+
+                {% if person.role %}
+                <p>{{ person.role }}</p>
+                {% endif %}
+
+                <a href="{{ url_for('admin_edit_person', person_id=person.id) }}" class="card-link">
+                    Edit →
+                </a>
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Articles{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Articles</p>
+
+        <h1 class="page-hero-title">
+            Legal analysis, market insight, and student research.
+        </h1>
+
+        <p class="page-hero-text">
+            Explore commentary and research across corporate law, finance,
+            technology, competition, capital markets and legal careers.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="article-stats">
+            <div>
+                <span class="stat-number">200+</span>
+                <span class="stat-label">Articles Published</span>
+            </div>
+
+            <div>
+                <span class="stat-number">12,480</span>
+                <span class="stat-label">Total Article Views</span>
+            </div>
+
+            <div>
+                <span class="stat-number">35+</span>
+                <span class="stat-label">Authors</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="articles-toolbar">
+            <input type="search" class="search-input" placeholder="Search articles, authors, tags...">
+
+            <div class="tag-filter-row">
+                <button class="tag-pill active">All</button>
+                <button class="tag-pill">Corporate Law</button>
+                <button class="tag-pill">M&A</button>
+                <button class="tag-pill">Capital Markets</button>
+                <button class="tag-pill">AI & Tech</button>
+                <button class="tag-pill">International Affairs</button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% if featured_article %}
+<section class="section">
+    <div class="container split-layout">
+
+        <div>
+            <p class="section-label">Featured Article</p>
+
+            <h2 class="section-title">
+                {{ featured_article.title }}
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                {{ featured_article.excerpt }}
+            </p>
+
+            <div class="article-meta">
+                <span>
+                    By
+                    <a href="{{ url_for('person_detail', slug=featured_article.author.slug) }}" class="author-link">
+                        {{ featured_article.author.name }}
+                    </a>
+                </span>
+                <span>{{ featured_article.category }}</span>
+                <span>{{ featured_article.published_at[:10] }}</span>
+            </div>
+
+            <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="btn btn-primary">
+                Read Featured
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <p class="section-label">Latest Research</p>
+
+            <h2 class="section-title">
+                Browse the article library.
+            </h2>
+        </div>
+
+        <div class="article-grid">
+
+            {% for article in latest_articles %}
+            <article class="article-card">
+                <p class="article-tag">{{ article.category }}</p>
+
+                <h3>
+                    {{ article.title }}
+                </h3>
+
+                <p>
+                    {{ article.excerpt }}
+                </p>
+
+                <div class="article-card-footer">
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
+                        Read Article
+                    </a>
+                    <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
+                        {{ article.author.name }}
+                    </a>
+                    <span>{{ article.published_at[:10] }}</span>
+                </div>
+            </article>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Reserved Area{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+
+        <h1 class="page-hero-title">
+            Site Editor
+        </h1>
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+            Log Out
+        </a>
+        <p class="page-hero-text">
+            Manage CLA content across articles, people, journal editions and events.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="grid grid-3">
+
+            <article class="card">
+                <h3>Articles</h3>
+                <p>Create and edit publication content.</p>
+                <a href="{{ url_for('admin_articles') }}" class="card-link">
+                    Manage articles →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>People</h3>
+                <p>Manage team members and authors.</p>
+                <a href="{{ url_for('admin_people') }}" class="card-link">
+                    Manage people →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Journal</h3>
+                <p>Upload editions and select featured pieces.</p>
+                <a href="{{ url_for('admin_journal') }}" class="card-link">
+                    Manage journal →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Events</h3>
+                <p>Create events, upload flyers and add reports.</p>
+                <a href="{{ url_for('admin_events') }}" class="card-link">
+                    Manage events →
+                </a>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

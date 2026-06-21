@@ -1,0 +1,61 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Manage Events{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+
+        <p class="page-hero-label">Reserved Area</p>
+
+        <h1 class="page-hero-title">
+            Manage Events
+        </h1>
+
+        <p class="page-hero-text">
+            Create, edit and manage CLA events.
+        </p>
+
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <a href="{{ url_for('admin_create_event') }}" class="btn btn-primary">
+            Create Event
+        </a>
+
+        <div class="grid grid-3">
+
+            {% for event in events %}
+
+            <article class="card">
+
+                <h3>{{ event.title }}</h3>
+
+                <p>
+                    {{ event.start_datetime[:10] }}
+                </p>
+
+                <a href="{{ url_for('admin_edit_event', event_id=event.id) }}" class="card-link">
+                    Edit →
+                </a>
+                <form method="POST" action="{{ url_for('admin_delete_event', event_id=event.id) }}"
+                    onsubmit="return confirm('Delete this event?');">
+                    <button type="submit" class="text-danger">
+                        Delete
+                    </button>
+                </form>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

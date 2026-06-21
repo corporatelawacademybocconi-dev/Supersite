@@ -1,0 +1,60 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Create Journal Edition{% endblock %}
+
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Create Journal Edition</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <form method="POST" class="reserved-login-form">
+
+            <input type="text" name="title" value="{{ edition.title }}" required>
+
+            <input type="text" name="slug" value="{{ edition.slug }}" required>
+
+            <textarea name="description" rows="5">{{ edition.description or '' }}</textarea>
+
+            <input type="url" name="pdf_url" value="{{ edition.pdf_url or '' }}">
+
+            <input type="url" name="cover_image_url" value="{{ edition.cover_image_url or '' }}">
+
+            <input type="number" name="volume" value="{{ edition.volume or '' }}">
+
+            <input type="number" name="issue" value="{{ edition.issue or '' }}">
+
+            <input type="date" name="publication_date" value="{{ edition.publication_date }}">
+
+            <select name="status">
+
+                <option value="draft" {% if edition.status=="draft" %}selected{% endif %}>
+                    Draft
+                </option>
+
+                <option value="published" {% if edition.status=="published" %}selected{% endif %}>
+                    Published
+                </option>
+
+            </select>
+
+            <label>
+                <input type="checkbox" name="is_current" {% if edition.is_current %}checked{% endif %}>
+            </label>
+
+            <button type="submit" class="btn btn-primary">
+                Create Edition
+            </button>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

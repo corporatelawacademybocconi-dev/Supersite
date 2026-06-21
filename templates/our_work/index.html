@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Our Work{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HERO
+===================================================== -->
+
+<section class="page-hero">
+
+    <div class="page-hero-inner">
+
+        <p class="page-hero-label">
+            Our Work
+        </p>
+
+        <h1 class="page-hero-title">
+            Learning through action.
+        </h1>
+
+        <p class="page-hero-text">
+            We create opportunities for students to write,
+            compete, network, research, and engage directly
+            with the legal profession.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     INTRODUCTION
+===================================================== -->
+
+<section class="section">
+
+    <div class="container split-layout">
+
+        <div>
+
+            <p class="section-label">
+                What We Do
+            </p>
+
+            <h2 class="section-title">
+                Practical legal education beyond the classroom.
+            </h2>
+
+        </div>
+
+        <div>
+
+            <p class="section-text">
+                Corporate Law Academy complements academic study
+                through publications, competitions, networking
+                initiatives, podcasts and professional events.
+            </p>
+
+            <p class="section-text">
+                Every initiative is designed to help students
+                develop legal reasoning, communication skills,
+                commercial awareness and professional judgment.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     ACTIVITIES
+===================================================== -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-header">
+
+            <p class="section-label">
+                Activities
+            </p>
+
+            <h2 class="section-title">
+                Explore our initiatives.
+            </h2>
+
+        </div>
+
+        <div class="grid grid-3">
+
+            <article class="card">
+                <h3>Articles</h3>
+                <p>
+                    Research, commentary and analysis on law,
+                    finance and business.
+                </p>
+
+                <a href="{{ url_for('articles') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+            <article class="card">
+                <h3>Journal</h3>
+
+                <p>
+                    Our flagship semestral publication featuring legal research,
+                    commentary and academic contributions.
+                </p>
+
+                <a href="{{ url_for('journal') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Events</h3>
+                <p>
+                    Conferences, workshops and conversations
+                    with leading professionals.
+                </p>
+
+                <a href="{{ url_for('events') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Moot Court</h3>
+                <p>
+                    Advocacy, legal argumentation and
+                    competition preparation.
+                </p>
+
+                <a href="{{ url_for('moot_court') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Podcast</h3>
+                <p>
+                    Conversations on law, careers,
+                    business and innovation.
+                </p>
+
+                <a href="{{ url_for('podcast') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+
+            <article class="card">
+                <h3>Networking</h3>
+                <p>
+                    Connecting students, alumni,
+                    academics and practitioners.
+                </p>
+
+                <a href="{{ url_for('networking') }}" class="card-link">
+                    Explore →
+                </a>
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     FEATURED INITIATIVE
+===================================================== -->
+
+<section class="section">
+
+    <div class="container split-layout">
+
+        <div>
+
+            <p class="section-label">
+                Featured
+            </p>
+
+            <h2 class="section-title">
+                Moot Court Programme
+            </h2>
+
+        </div>
+
+        <div>
+
+            <p class="section-text">
+                Our Moot Court initiative allows students to
+                develop advocacy, legal writing and oral
+                argument skills through simulated proceedings.
+            </p>
+
+            <a href="{{ url_for('moot_court') }}" class="btn btn-primary">
+                Learn More
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
