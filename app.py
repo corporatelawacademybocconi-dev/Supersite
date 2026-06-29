@@ -236,6 +236,7 @@ def admin_create_article():
             "author_id": int(request.form.get("author_id")),
             "category": request.form.get("category"),
             "status": request.form.get("status"),
+            "cover_image_url": request.form.get("cover_image_url"),
             "is_featured": request.form.get("is_featured") == "on"
         }).execute()
 
@@ -272,6 +273,7 @@ def admin_edit_article(article_id):
             "author_id": int(request.form.get("author_id")),
             "category": request.form.get("category"),
             "status": request.form.get("status"),
+            "cover_image_url": request.form.get("cover_image_url"),
             "is_featured": request.form.get("is_featured") == "on"
         }).eq("id", article_id).execute()
 

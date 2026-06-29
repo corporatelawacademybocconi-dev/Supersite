@@ -45,7 +45,16 @@
                     Published
                 </option>
             </select>
+            <label>Cover Image URL</label>
+            <input type="url" name="cover_image_url" value="{{ article.cover_image_url or '' }}"
+                placeholder="https://your-project.supabase.co/storage/v1/object/public/media/...">
 
+            {% if article.cover_image_url %}
+            <div style="margin-top:20px;">
+                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}"
+                    style="max-width:300px;border-radius:10px;">
+            </div>
+            {% endif %}
             <label>
                 <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
                 Featured Article
