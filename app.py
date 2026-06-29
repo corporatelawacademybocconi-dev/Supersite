@@ -35,7 +35,7 @@ def upload_article_image(file):
         file_options= {
             "content-type": file.content_type }
     )
-    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}
+    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
 @app.route("/reserved-area-login", methods=["GET", "POST"])
 def reserved_area_login():
 
