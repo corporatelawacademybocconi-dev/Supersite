@@ -29,6 +29,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.6
 jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
+lxml==6.1.1
 MarkupSafe==3.0.3
 multidict==6.7.1
 narwhals==2.14.0
@@ -48,12 +49,14 @@ pydeck==0.9.1
 PyJWT==2.13.0
 python-dateutil==2.9.0.post0
 python-discovery==1.4.0
+python-docx==1.1.2
 python-dotenv==1.2.2
 pytz==2025.2
 realtime==2.31.0
 referencing==0.37.0
 requests==2.32.5
 rpds-py==0.30.0
+setuptools==82.0.1
 sgmllib3k==1.0.0
 six==1.17.0
 smmap==5.0.2
@@ -74,4 +77,5 @@ urllib3==2.6.2
 virtualenv==21.4.2
 websockets==15.0.1
 Werkzeug==3.1.7
+wheel==0.47.0
 yarl==1.24.2

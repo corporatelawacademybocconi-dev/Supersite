@@ -14,7 +14,7 @@
 <section class="section">
     <div class="container">
 
-        <form method="POST" class="reserved-login-form">
+        <form method="POST" enctype="multipart/form-data" class="reserved-login-form">
 
             <input type="text" name="title" placeholder="Title" required>
 
@@ -42,6 +42,11 @@
                 placeholder="https://your-project.supabase.co/storage/v1/object/public/media/...">
 
             <label>
+                <label>Upload Cover Image</label>
+
+                <input type="file" name="cover_image" accept="image/*">
+
+
                 <input type="checkbox" name="is_featured">
                 Featured Article
             </label>

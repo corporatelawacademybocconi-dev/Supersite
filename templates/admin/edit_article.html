@@ -14,7 +14,7 @@
 <section class="section">
     <div class="container">
 
-        <form method="POST" class="reserved-login-form">
+        <form method="POST" enctype="multipart/form-data" class="reserved-login-form">
 
             <input type="text" name="title" value="{{ article.title }}" required>
 
@@ -59,6 +59,9 @@
                 <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
                 Featured Article
             </label>
+            <label>Upload Cover Image</label>
+
+            <input type="file" name="cover_image" accept="image/*">
 
             <button type="submit" class="btn btn-primary">
                 Create Article

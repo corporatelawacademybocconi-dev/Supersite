@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from config import Config
 
 from flask import request, session, redirect, url_for
+from werkzeug.utils import secure_filename
+import uuid
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,7 +20,24 @@ supabase = create_client(
     app.config["SUPABASE_URL"],
     app.config["SUPABASE_KEY"]
 )
+def upload_article_image(file):
+    if not file or file.filename == "":
+        return None
 
+    filename = secure_filename(file.filename)
+    unique_filename = f"articles/{uuid.uuid4()}-{filename}"
+
+    file_bytes = file.read()
+
+    supabase.storage.from_("media").upload(
+        unique_filename,
+        file_bytes,
+        {
+            "content-type": file.content_type
+        }
+    )
+
+    return supabase.storage.from_("media").get_public_url(unique_filename)
 @app.route("/reserved-area-login", methods=["GET", "POST"])
 def reserved_area_login():
 
@@ -224,9 +243,12 @@ def admin_create_article():
     authors = authors_response.data or []
 
     if request.method == "POST":
-
         title = request.form.get("title")
         slug = title.lower().replace(" ", "-")
+        image = request.files.get("cover_image")
+        cover_image_url = request.form.get("cover_image_url")
+        if image and image.filename:
+            cover_image_url = upload_article_image(image)
 
         supabase.table("articles").insert({
             "title": title,
@@ -236,7 +258,7 @@ def admin_create_article():
             "author_id": int(request.form.get("author_id")),
             "category": request.form.get("category"),
             "status": request.form.get("status"),
-            "cover_image_url": request.form.get("cover_image_url"),
+            "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }).execute()
 
@@ -265,6 +287,10 @@ def admin_edit_article(article_id):
     authors = authors_response.data or []
 
     if request.method == "POST":
+        image = request.files.get("cover_image")
+        cover_image_url = request.form.get("cover_image_url")
+        if image and image.filename:
+            cover_image_url = upload_article_image(image)
 
         supabase.table("articles").update({
             "title": request.form.get("title"),
@@ -273,7 +299,7 @@ def admin_edit_article(article_id):
             "author_id": int(request.form.get("author_id")),
             "category": request.form.get("category"),
             "status": request.form.get("status"),
-            "cover_image_url": request.form.get("cover_image_url"),
+            "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }).eq("id", article_id).execute()
 
