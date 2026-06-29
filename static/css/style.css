@@ -922,3 +922,11 @@ img {
     color: #B5A99A;
     margin-bottom: 2rem;
 }
+
+.article-card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 1.25rem;
+}
