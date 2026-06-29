@@ -32,12 +32,10 @@ def upload_article_image(file):
     supabase.storage.from_("media").upload(
         unique_filename,
         file_bytes,
-        {
-            "content-type": file.content_type
-        }
+        file_options= {
+            "content-type": file.content_type }
     )
-
-    return supabase.storage.from_("media").get_public_url(unique_filename)
+    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}
 @app.route("/reserved-area-login", methods=["GET", "POST"])
 def reserved_area_login():
 
