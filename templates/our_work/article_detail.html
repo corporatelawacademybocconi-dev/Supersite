@@ -19,6 +19,11 @@
         </p>
 
         <div class="article-meta">
+            {% if article.cover_image_url %}
+            <section class="article-cover-wrap">
+                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
+            </section>
+            {% endif %}
             <span>
                 By <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
                     {{ article.author.name }}
