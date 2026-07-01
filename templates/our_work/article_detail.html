@@ -24,6 +24,7 @@
                 <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
             </section>
             {% endif %}
+            <span>{{ article.content | reading_time }} min read</span>
             <span>
                 By <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
                     {{ article.author.name }}
@@ -38,9 +39,7 @@
 <section class="section">
     <div class="container">
         <article class="prose">
-            <p>
-                {{ article.content }}
-            </p>
+            {{ article.content | safe }}
         </article>
     </div>
 </section>

@@ -34,6 +34,19 @@ def upload_article_image(file):
         file_bytes,
     )
     return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+
+import re
+
+def calculate_reading_time(html_content):
+    if not html_content:
+        return 1
+    text = re.sub(r'<[^>]+>', ' ', html_content)  # strip any HTML tags
+    word_count = len(text.split())
+    minutes = max(1, round(word_count / 200))  # ~200 wpm, rounded, min 1
+    return minutes
+
+app.jinja_env.filters["reading_time"] = calculate_reading_time
+
 @app.route("/reserved-area-login", methods=["GET", "POST"])
 def reserved_area_login():
 

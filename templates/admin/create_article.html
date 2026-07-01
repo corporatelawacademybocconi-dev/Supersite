@@ -20,9 +20,7 @@
 
             <select name="author_id" required>
                 {% for author in authors %}
-                <option value="{{ author.id }}">
-                    {{ author.name }}
-                </option>
+                <option value="{{ author.id }}">{{ author.name }}</option>
                 {% endfor %}
             </select>
 
@@ -30,7 +28,8 @@
 
             <textarea name="excerpt" rows="3" placeholder="Excerpt"></textarea>
 
-            <textarea name="content" rows="12" placeholder="Article Content"></textarea>
+            <!-- TinyMCE replaces this textarea -->
+            <textarea id="content-editor" name="content" placeholder="Article Content"></textarea>
 
             <select name="status">
                 <option value="draft">Draft</option>
@@ -49,13 +48,27 @@
                 Featured Article
             </label>
 
-            <button type="submit" class="btn btn-primary">
-                Create Article
-            </button>
+            <button type="submit" class="btn btn-primary">Create Article</button>
 
         </form>
 
     </div>
 </section>
+
+<!-- Replace YOUR_API_KEY with your key from tiny.cloud -->
+<script src="https://cdn.tiny.cloud/1/28no8almk00il0r0u1zzfpt4ere74sj6ntgzg7efe78phbrk/tinymce/7/tinymce.min.js"
+    referrerpolicy="origin"></script>
+
+<script>
+    tinymce.init({
+        selector: '#content-editor',
+        plugins: 'lists link',
+        toolbar: 'bold italic underline | h2 h3 | bullist numlist | link blockquote | removeformat',
+        menubar: false,
+        branding: false,
+        height: 500,
+        content_style: 'body { font-family: Georgia, serif; font-size: 17px; line-height: 1.8; max-width: 720px; margin: 0 auto; }',
+    });
+</script>
 
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends "admin/base_admin.html" %}
 
-{% block title %}Create Article{% endblock %}
+{% block title %}Edit Article{% endblock %}
 
 {% block admin_content %}
 
@@ -19,57 +19,65 @@
             <input type="text" name="title" value="{{ article.title }}" required>
 
             <select name="author_id" required>
-
                 {% for author in authors %}
-
-                <option value="{{ author.id }}" {% if author.id==article.author_id %} selected {% endif %}>
+                <option value="{{ author.id }}" {% if author.id==article.author_id %}selected{% endif %}>
                     {{ author.name }}
                 </option>
-
                 {% endfor %}
-
             </select>
 
             <input type="text" name="category" value="{{ article.category or '' }}">
 
             <textarea name="excerpt" rows="3">{{ article.excerpt or '' }}</textarea>
 
-            <textarea name="content" rows="12">{{ article.content or '' }}</textarea>
+            <!-- | safe here so TinyMCE receives the raw HTML, not escaped entities -->
+            <textarea id="content-editor" name="content">{{ article.content | safe }}</textarea>
 
             <select name="status">
-                <option value="draft" {% if article.status=="draft" %}selected{% endif %}>
-                    Draft
-                </option>
-
-                <option value="published" {% if article.status=="published" %}selected{% endif %}>
-                    Published
-                </option>
+                <option value="draft" {% if article.status=="draft" %}selected{% endif %}>Draft</option>
+                <option value="published" {% if article.status=="published" %}selected{% endif %}>Published</option>
             </select>
+
             <label>Cover Image URL</label>
             <input type="url" name="cover_image_url" value="{{ article.cover_image_url or '' }}"
                 placeholder="https://your-project.supabase.co/storage/v1/object/public/media/...">
 
             {% if article.cover_image_url %}
-            <div style="margin-top:20px;">
+            <div style="margin-top: 20px;">
                 <img src="{{ article.cover_image_url }}" alt="{{ article.title }}"
-                    style="max-width:300px;border-radius:10px;">
+                    style="max-width: 300px; border-radius: 10px;">
             </div>
             {% endif %}
+
+            <label>Upload Cover Image</label>
+            <input type="file" name="cover_image" accept="image/*">
+
             <label>
                 <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
                 Featured Article
             </label>
-            <label>Upload Cover Image</label>
 
-            <input type="file" name="cover_image" accept="image/*">
-
-            <button type="submit" class="btn btn-primary">
-                Create Article
-            </button>
+            <button type="submit" class="btn btn-primary">Save Article</button>
 
         </form>
 
     </div>
 </section>
+
+<!-- Replace YOUR_API_KEY with your key from tiny.cloud -->
+<script src="https://cdn.tiny.cloud/1/28no8almk00il0r0u1zzfpt4ere74sj6ntgzg7efe78phbrk/tinymce/7/tinymce.min.js"
+    referrerpolicy="origin"></script>
+
+<script>
+    tinymce.init({
+        selector: '#content-editor',
+        plugins: 'lists link',
+        toolbar: 'bold italic underline | h2 h3 | bullist numlist | link blockquote | removeformat',
+        menubar: false,
+        branding: false,
+        height: 500,
+        content_style: 'body { font-family: Georgia, serif; font-size: 17px; line-height: 1.8; max-width: 720px; margin: 0 auto; }',
+    });
+</script>
 
 {% endblock %}
