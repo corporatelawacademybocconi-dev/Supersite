@@ -275,18 +275,17 @@ def admin_edit_person(person_id):
         if image and image.filename:
             profile_image_url = upload_person_image(image)
 
-    supabase.table("people").update({
-        "name": request.form.get("name"),
-        "slug": request.form.get("slug"),
-        "role": request.form.get("role"),
-        "bio": request.form.get("bio"),
-        "linkedin_url": request.form.get("linkedin_url"),
-        "profile_image_url": request.form.get("profile_image_url"),
-        "is_author": request.form.get("is_author") == "on",
-        "is_team_member": request.form.get("is_team_member") == "on"
-    }).eq("id", person_id).execute()
-
-    return redirect(url_for("admin_people"))
+        supabase.table("people").update({
+            "name": request.form.get("name"),
+            "slug": request.form.get("slug"),
+            "role": request.form.get("role"),
+            "bio": request.form.get("bio"),
+            "linkedin_url": request.form.get("linkedin_url"),
+            "profile_image_url": request.form.get("profile_image_url"),
+            "is_author": request.form.get("is_author") == "on",
+            "is_team_member": request.form.get("is_team_member") == "on"
+        }).eq("id", person_id).execute()
+        return redirect(url_for("admin_people"))
 
     response = (
         supabase
