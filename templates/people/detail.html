@@ -9,77 +9,83 @@
 <section class="page-hero">
     <div class="page-hero-inner">
         <p class="page-hero-label">{{ person.role }}</p>
+        <section class="page-hero">
+            <div class="page-hero-inner">
 
-        <h1 class="page-hero-title">
-            {{ person.name }}
-        </h1>
+                {% if person.profile_image_url %}
+                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
+                    style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; display: block;">
+                {% endif %}
 
-        <p class="page-hero-text">
-            {{ person.bio }}
-        </p>
+                <p class="page-hero-label">{{ person.role }}</p>
+                <h1 class="page-hero-title">{{ person.name }}</h1>
 
-        {% if person.linkedin_url %}
-        <a href="{{ person.linkedin_url }}" class="btn btn-secondary" target="_blank">
-            LinkedIn
-        </a>
-        {% endif %}
-    </div>
-</section>
-
-<section class="section">
-    <div class="container">
-
-        <div class="section-header">
-            <p class="section-label">Articles</p>
-
-            <h2 class="section-title">
-                Articles by {{ person.name }}.
-            </h2>
-        </div>
-
-        {% if articles %}
-
-        <div class="article-grid">
-
-            {% for article in articles %}
-            <article class="article-card">
-
-                <p class="article-tag">
-                    {{ article.category }}
+                <p class="page-hero-text">
+                    {{ person.bio }}
                 </p>
 
-                <h3>
-                    {{ article.title }}
-                </h3>
+                {% if person.linkedin_url %}
+                <a href="{{ person.linkedin_url }}" class="btn btn-secondary" target="_blank">
+                    LinkedIn
+                </a>
+                {% endif %}
+            </div>
+        </section>
 
-                <p>
-                    {{ article.excerpt }}
-                </p>
+        <section class="section">
+            <div class="container">
 
-                <div class="article-card-footer">
-                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
-                        Read Article
-                    </a>
+                <div class="section-header">
+                    <p class="section-label">Articles</p>
 
-                    <span>
-                        {{ article.published_at[:10] }}
-                    </span>
+                    <h2 class="section-title">
+                        Articles by {{ person.name }}.
+                    </h2>
                 </div>
 
-            </article>
-            {% endfor %}
+                {% if articles %}
 
-        </div>
+                <div class="article-grid">
 
-        {% else %}
+                    {% for article in articles %}
+                    <article class="article-card">
 
-        <p class="section-text">
-            No published articles yet.
-        </p>
+                        <p class="article-tag">
+                            {{ article.category }}
+                        </p>
 
-        {% endif %}
+                        <h3>
+                            {{ article.title }}
+                        </h3>
 
-    </div>
-</section>
+                        <p>
+                            {{ article.excerpt }}
+                        </p>
 
-{% endblock %}
+                        <div class="article-card-footer">
+                            <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
+                                Read Article
+                            </a>
+
+                            <span>
+                                {{ article.published_at[:10] }}
+                            </span>
+                        </div>
+
+                    </article>
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <p class="section-text">
+                    No published articles yet.
+                </p>
+
+                {% endif %}
+
+            </div>
+        </section>
+
+        {% endblock %}

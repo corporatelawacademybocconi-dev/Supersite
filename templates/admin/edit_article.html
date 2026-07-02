@@ -61,6 +61,15 @@
 
         </form>
 
+        <!-- Delete form — separate from the save form -->
+        <form method="POST" action="{{ url_for('admin_delete_article', article_id=article.id) }}"
+            onsubmit="return confirm('Delete \'{{ article.title }}\'? This cannot be undone.')"
+            style="margin-top: 16px;">
+            <button type="submit" class="btn btn-danger">Delete Article</button>
+        </form>
+
+        </form>
+
     </div>
 </section>
 

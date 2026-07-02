@@ -46,6 +46,12 @@ def calculate_reading_time(html_content):
     return minutes
 
 app.jinja_env.filters["reading_time"] = calculate_reading_time
+@app.route("/reserved-area/articles/<article_id>/delete", methods=["POST"])
+def admin_delete_article(article_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+    supabase.table("articles").delete().eq("id", article_id).execute()
+    return redirect(url_for("admin_articles"))
 
 @app.route("/reserved-area-login", methods=["GET", "POST"])
 def reserved_area_login():
@@ -169,6 +175,7 @@ def admin_create_person():
             "role": role,
             "bio": bio,
             "linkedin_url": linkedin_url,
+            "profile_image_url": request.form.get("profile_image_url"), 
             "is_author": True,
             "is_team_member": True
         }).execute()
@@ -191,6 +198,7 @@ def admin_edit_person(person_id):
             "role": request.form.get("role"),
             "bio": request.form.get("bio"),
             "linkedin_url": request.form.get("linkedin_url"),
+                "profile_image_url": request.form.get("profile_image_url"),
             "is_author": request.form.get("is_author") == "on",
             "is_team_member": request.form.get("is_team_member") == "on"
         }).eq("id", person_id).execute()
@@ -207,7 +215,8 @@ def admin_edit_person(person_id):
     )
 
     person = response.data
-
+    # pyrefly: ignore [parse-error]
+    "profile_image_url": request.form.get("profile_image_url"),
     return render_template(
         "admin/edit_person.html",
         person=person

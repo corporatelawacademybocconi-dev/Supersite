@@ -942,3 +942,19 @@ img {
     display: block;
     border-radius: 18px;
 }
+
+.btn-danger {
+    background: transparent;
+    color: #c0392b;
+    border: 1px solid #c0392b;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+    color: #fff;
+}
