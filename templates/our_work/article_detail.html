@@ -1,10 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}
-{{ article.title }} | Corporate Law Academy
-{% endblock %}
+{% block title %}{{ article.title }} | Corporate Law Academy{% endblock %}
+{% block meta_description %}{{ article.excerpt }}{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.excerpt }}{% endblock %}
+{% if article.cover_image_url %}{% block og_image %}{{ article.cover_image_url }}{% endblock %}{% endif %}
 
 {% block content %}
+
 
 <section class="page-hero">
     <div class="page-hero-inner">

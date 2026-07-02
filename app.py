@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 # pyrefly: ignore [missing-import]
 from supabase import create_client
 
@@ -70,6 +70,36 @@ def upload_person_image(file):
     supabase.storage.from_("media").upload(unique_filename, file_bytes)
     return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
 
+@app.route("/sitemap.xml")
+def sitemap():
+    articles_response = supabase.table("articles").select("slug, published_at").eq("status", "published").execute()
+    articles = articles_response.data or []
+
+    pages = [
+        "/", "/about", "/our-work", "/our-work/articles",
+        "/our-work/events", "/our-work/journal", "/networking", "/contact", "/people"
+    ]
+
+    xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+    for page in pages:
+        xml.append(f"<url><loc>https://your-domain.com{page}</loc></url>")
+
+    for article in articles:
+        xml.append(f"<url><loc>https://your-domain.com/our-work/articles/{article['slug']}</loc><lastmod>{article['published_at'][:10]}</lastmod></url>")
+
+    xml.append("</urlset>")
+
+    return Response("\n".join(xml), mimetype="application/xml")
+
+@app.route("/robots.txt")
+def robots():
+    return Response(
+        "User-agent: *\nAllow: /\nDisallow: /reserved-area\nSitemap: https://your-domain.com/sitemap.xml",
+        mimetype="text/plain"
+    )
+
 @app.route("/reserved-area/articles/<article_id>/delete", methods=["POST"])
 def admin_delete_article(article_id):
     if not session.get("reserved_access"):
@@ -96,7 +126,31 @@ def reserved_area():
     if not session.get("reserved_access"):
         return redirect(url_for("reserved_area_login"))
 
-    return render_template("admin/dashboard.html")
+    articles_response = supabase.table("articles").select("*, author:people!articles_author_id_fkey(name)").execute()
+    all_articles = articles_response.data or []
+
+    total_articles = len(all_articles)
+    total_published = len([a for a in all_articles if a.get("status") == "published"])
+    total_drafts = len([a for a in all_articles if a.get("status") == "draft"])
+    total_views = sum(a.get("views") or 0 for a in all_articles)
+    most_viewed = max(all_articles, key=lambda a: a.get("views") or 0) if all_articles else None
+
+    # Most active author by article count
+    from collections import Counter
+    author_counts = Counter(
+        a["author"]["name"] for a in all_articles if a.get("author")
+    )
+    most_active_author = author_counts.most_common(1)[0] if author_counts else None
+
+    return render_template(
+        "admin/dashboard.html",
+        total_articles=total_articles,
+        total_published=total_published,
+        total_drafts=total_drafts,
+        total_views=total_views,
+        most_viewed=most_viewed,
+        most_active_author=most_active_author
+    )
 
 @app.route("/logout")
 def logout():
@@ -659,6 +713,7 @@ def articles():
 
     featured_article = next((a for a in articles if a.get("is_featured")), None)
     latest_articles = [a for a in articles if not a.get("is_featured")]
+    most_read = sorted(articles, key=lambda a: a.get("views") or 0, reverse=True)[:3]
 
     return render_template(
         "our_work/articles.html",
@@ -666,7 +721,8 @@ def articles():
         featured_article=featured_article,
         latest_articles=latest_articles,
         all_tags=all_tags,
-        selected_tag=selected_tag
+        selected_tag=selected_tag,
+            most_read=most_read
     )
 
 @app.route("/our-work/articles/<slug>")
@@ -681,6 +737,10 @@ def article_detail(slug):
     )
 
     article = response.data
+# Increment view count
+    supabase.table("articles").update({
+        "views": (article.get("views") or 0) + 1
+    }).eq("id", article["id"]).execute()
 
     return render_template(
     "our_work/article_detail.html",

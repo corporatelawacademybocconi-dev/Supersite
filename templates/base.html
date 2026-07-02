@@ -5,11 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {% block title %}
-        Corporate Law Academy
-        {% endblock %}
-    </title>
+    <title>{% block title %}Corporate Law Academy{% endblock %}</title>
+
+    <meta name="description"
+        content="{% block meta_description %}Corporate Law Academy — Legal education, professional development, and corporate practice at Bocconi University.{% endblock %}">
+
+    <!-- OpenGraph -->
+    <meta property="og:title" content="{% block og_title %}Corporate Law Academy{% endblock %}">
+    <meta property="og:description"
+        content="{% block og_description %}Corporate Law Academy — Legal education, professional development, and corporate practice at Bocconi University.{% endblock %}">
+    <meta property="og:image"
+        content="{% block og_image %}{{ url_for('static', filename='images/og-default.jpg', _external=True) }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Corporate Law Academy">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>

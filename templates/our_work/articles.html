@@ -24,17 +24,18 @@
 
         <div class="article-stats">
             <div>
-                <span class="stat-number">200+</span>
+                <span class="stat-number">{{ articles|length }}</span>
                 <span class="stat-label">Articles Published</span>
             </div>
 
             <div>
-                <span class="stat-number">12,480</span>
+                <span class="stat-number">{{ articles | sum(attribute='views') }}</span>
                 <span class="stat-label">Total Article Views</span>
             </div>
 
             <div>
-                <span class="stat-number">35+</span>
+                <span class="stat-number">{{ articles | map(attribute='author') | map(attribute='id') | list | unique |
+                    list | length }}</span>
                 <span class="stat-label">Authors</span>
             </div>
         </div>
@@ -89,7 +90,9 @@
                         {{ featured_article.author.name }}
                     </a>
                 </span>
-                <span>{{ featured_article.category }}</span>
+                {% if featured_article.tags %}
+                <span>{{ featured_article.tags[0].tag.name }}</span>
+                {% endif %}
                 <span>{{ featured_article.published_at[:10] }}</span>
             </div>
 
@@ -148,5 +151,40 @@
         </div>
     </div>
 </section>
+{% if most_read %}
+<section class="section">
+    <div class="container">
 
+        <div class="section-header">
+            <p class="section-label">Most Read</p>
+            <h2 class="section-title">Popular articles.</h2>
+        </div>
+
+        <div class="article-grid">
+            {% for article in most_read %}
+            <article class="article-card">
+                {% if article.cover_image_url %}
+                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-card-image">
+                {% endif %}
+
+                <p class="article-tag">
+                    {% if article.tags %}{{ article.tags[0].tag.name }}{% endif %}
+                </p>
+
+                <h3>{{ article.title }}</h3>
+                <p>{{ article.excerpt }}</p>
+
+                <div class="article-card-footer">
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
+                        Read Article
+                    </a>
+                    <span>{{ article.views }} views</span>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+{% endif %}
 {% endblock %}
