@@ -13,12 +13,10 @@ import uuid
 app = Flask(__name__)
 app.config.from_object(Config)
 app.secret_key = app.config["SECRET_KEY"]
-print("URL:", app.config["SUPABASE_URL"])
-print("KEY:", app.config["SUPABASE_KEY"][:20] if app.config["SUPABASE_KEY"] else None)
 
 supabase = create_client(
     app.config["SUPABASE_URL"],
-    app.config["SUPABASE_KEY"]
+    app.config["SUPABASE_SERVICE_ROLE_KEY"]
 )
 def upload_article_image(file):
     if not file or file.filename == "":
@@ -34,6 +32,14 @@ def upload_article_image(file):
         file_bytes,
     )
     return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+    def upload_person_image(file):
+        if not file or file.filename == "":
+            return None
+        filename = secure_filename(file.filename)
+        unique_filename = f"people/{uuid.uuid4()}-{filename}"
+        file_bytes = file.read()
+        supabase.storage.from_("media").upload(unique_filename, file_bytes)
+        return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
 
 import re
 
@@ -46,6 +52,24 @@ def calculate_reading_time(html_content):
     return minutes
 
 app.jinja_env.filters["reading_time"] = calculate_reading_time
+def upload_event_image(file):
+    if not file or file.filename == "":
+        return None
+    filename = secure_filename(file.filename)
+    unique_filename = f"events/{uuid.uuid4()}-{filename}"
+    file_bytes = file.read()
+    supabase.storage.from_("media").upload(unique_filename, file_bytes)
+    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+
+def upload_person_image(file):
+    if not file or file.filename == "":
+        return None
+    filename = secure_filename(file.filename)
+    unique_filename = f"people/{uuid.uuid4()}-{filename}"
+    file_bytes = file.read()
+    supabase.storage.from_("media").upload(unique_filename, file_bytes)
+    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+
 @app.route("/reserved-area/articles/<article_id>/delete", methods=["POST"])
 def admin_delete_article(article_id):
     if not session.get("reserved_access"):
@@ -192,18 +216,23 @@ def admin_edit_person(person_id):
 
     if request.method == "POST":
 
-        supabase.table("people").update({
-            "name": request.form.get("name"),
-            "slug": request.form.get("slug"),
-            "role": request.form.get("role"),
-            "bio": request.form.get("bio"),
-            "linkedin_url": request.form.get("linkedin_url"),
-                "profile_image_url": request.form.get("profile_image_url"),
-            "is_author": request.form.get("is_author") == "on",
-            "is_team_member": request.form.get("is_team_member") == "on"
-        }).eq("id", person_id).execute()
+        image = request.files.get("profile_image")
+        profile_image_url = request.form.get("profile_image_url")
+        if image and image.filename:
+            profile_image_url = upload_person_image(image)
 
-        return redirect(url_for("admin_people"))
+    supabase.table("people").update({
+        "name": request.form.get("name"),
+        "slug": request.form.get("slug"),
+        "role": request.form.get("role"),
+        "bio": request.form.get("bio"),
+        "linkedin_url": request.form.get("linkedin_url"),
+        "profile_image_url": profile_image_url,
+        "is_author": request.form.get("is_author") == "on",
+        "is_team_member": request.form.get("is_team_member") == "on"
+    }).eq("id", person_id).execute()
+
+    return redirect(url_for("admin_people"))
 
     response = (
         supabase
@@ -376,12 +405,16 @@ def admin_edit_event(event_id):
         return redirect(url_for("reserved_area_login"))
 
     if request.method == "POST":
+        image = request.files.get("flyer_image")
+        flyer_image_url = request.form.get("flyer_image_url")
+        if image and image.filename:
+            flyer_image_url = upload_event_image(image)
 
         supabase.table("events").update({
             "title": request.form.get("title"),
             "slug": request.form.get("slug"),
             "description": request.form.get("description"),
-            "flyer_image_url": request.form.get("flyer_image_url"),
+            "flyer_image_url": flyer_image_url,
             "event_report": request.form.get("event_report"),
             "location": request.form.get("location"),
             "start_datetime": request.form.get("start_datetime"),

@@ -10,3 +10,4 @@ class Config:
     SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
     ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
     SECRET_KEY = os.getenv("SECRET_KEY")
+    SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")

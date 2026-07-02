@@ -14,7 +14,7 @@
 <section class="section">
     <div class="container">
 
-        <form method="POST" class="reserved-login-form">
+        <form method="POST" class="reserved-login-form" enctype="multipart/form-data">
 
             <input type="text" name="title" value="{{ event.title }}" required>
 
@@ -24,6 +24,8 @@
 
             <input type="text" name="flyer_image_url" value="{{ event.flyer_image_url or '' }}"
                 placeholder="Flyer image URL">
+            <label>Upload Flyer Image</label>
+            <input type="file" name="flyer_image" accept="image/*">
 
             <input type="text" name="location" value="{{ event.location or '' }}" placeholder="Location">
 

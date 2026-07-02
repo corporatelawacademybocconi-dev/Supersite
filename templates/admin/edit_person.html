@@ -14,7 +14,7 @@
 <section class="section">
     <div class="container">
 
-        <form method="POST" class="reserved-login-form">
+        <form method="POST" class="reserved-login-form" enctype="multipart/form-data">
 
             <input type="text" name="name" value="{{ person.name }}" required>
 
@@ -38,6 +38,8 @@
             <label>Profile Picture URL</label>
             <input type="url" name="profile_image_url" value="{{ person.profile_image_url or '' }}"
                 placeholder="https://...">
+            <label>Upload Profile Picture</label>
+            <input type="file" name="profile_image" accept="image/*">
 
             <button type="submit" class="btn btn-primary">
                 Save Changes
