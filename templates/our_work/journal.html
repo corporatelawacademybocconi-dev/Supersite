@@ -7,11 +7,7 @@
 <section class="page-hero">
     <div class="page-hero-inner">
         <p class="page-hero-label">Corporate Law Academy Journal</p>
-
-        <h1 class="page-hero-title">
-            Our flagship semestral publication.
-        </h1>
-
+        <h1 class="page-hero-title">Our flagship semestral publication.</h1>
         <p class="page-hero-text">
             A curated collection of legal research, commentary and student
             scholarship on corporate law, finance, technology and markets.
@@ -19,78 +15,19 @@
     </div>
 </section>
 
-{% extends "admin/base_admin.html" %}
-
-{% block title %}Manage Journal{% endblock %}
-
-{% block admin_content %}
-
-<section class="page-hero">
-    <div class="page-hero-inner">
-        <p class="page-hero-label">Reserved Area</p>
-        <h1 class="page-hero-title">Manage Journal</h1>
-        <p class="page-hero-text">
-            Manage CLA Journal editions, PDFs and selected pieces.
-        </p>
-    </div>
-</section>
-
-<section class="section">
-    <div class="container">
-
-        <a href="{{ url_for('admin_create_journal_edition') }}" class="btn btn-primary">
-            Create Edition
-        </a>
-
-        <div class="grid grid-3">
-
-            {% for edition in editions %}
-
-            <article class="card">
-                <h3>{{ edition.title }}</h3>
-
-                <p>
-                    Volume {{ edition.volume }} · Issue {{ edition.issue }}
-                </p>
-
-                {% if edition.is_current %}
-                <p class="section-label">Current Edition</p>
-                {% endif %}
-
-                <a href="{{ url_for('admin_edit_journal_edition', edition_id=edition.id) }}" class="card-link">
-                    Edit →
-                </a>
-            </article>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
-</section>
-
-{% endblock %}
-
 <section class="section">
     <div class="container">
         <div class="section-header">
             <p class="section-label">Inside This Issue</p>
-
-            <h2 class="section-title">
-                Featured contributions.
-            </h2>
+            <h2 class="section-title">Featured contributions.</h2>
         </div>
 
         <div class="article-grid">
             {% for item in selected_pieces %}
-
             {% set article = item.article %}
 
             <article class="article-card">
-
-                <p class="article-tag">
-                    {{ article.category }}
-                </p>
+                <p class="article-tag">{{ article.category }}</p>
 
                 <h3>
                     <a href="{{ url_for('article_detail', slug=article.slug) }}">
@@ -98,16 +35,12 @@
                     </a>
                 </h3>
 
-                <p>
-                    {{ article.excerpt }}
-                </p>
+                <p>{{ article.excerpt }}</p>
 
                 <div class="article-card-footer">
                     <span>Journal Selection</span>
                 </div>
-
             </article>
-
             {% endfor %}
         </div>
     </div>
@@ -117,16 +50,11 @@
     <div class="container">
         <div class="section-header">
             <p class="section-label">Archive</p>
-
-            <h2 class="section-title">
-                Previous editions.
-            </h2>
+            <h2 class="section-title">Previous editions.</h2>
         </div>
 
         <div class="grid grid-3">
-
             {% for edition in editions %}
-
             <article class="card">
                 {% if edition.cover_image_url %}
                 <img src="{{ edition.cover_image_url }}" alt="{{ edition.title }}"
@@ -140,9 +68,7 @@
                     View edition →
                 </a>
             </article>
-
             {% endfor %}
-
         </div>
     </div>
 </section>
@@ -151,10 +77,7 @@
     <div class="container split-layout">
         <div>
             <p class="section-label">Submissions</p>
-
-            <h2 class="section-title">
-                Contribute to the next edition.
-            </h2>
+            <h2 class="section-title">Contribute to the next edition.</h2>
         </div>
 
         <div>
