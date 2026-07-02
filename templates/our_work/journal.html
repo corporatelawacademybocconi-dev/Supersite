@@ -19,33 +19,57 @@
     </div>
 </section>
 
-<section class="section">
-    <div class="container split-layout">
-        <div>
-            <p class="section-label">Current Edition</p>
+{% extends "admin/base_admin.html" %}
 
-            <h2 class="section-title">
-                {{ current_edition.title }}
-            </h2>
-        </div>
+{% block title %}Manage Journal{% endblock %}
 
-        <div>
-            <p class="section-text">
-                {{ current_edition.description }}
-            </p>
+{% block admin_content %}
 
-            <div class="journal-meta">
-                <span>Spring 2026</span>
-                <span>12 contributions</span>
-                <span>PDF edition</span>
-            </div>
-
-            <a href="{{ current_edition.pdf_url }}" target="_blank" class="btn btn-primary">
-                Read Edition
-            </a>
-        </div>
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Manage Journal</h1>
+        <p class="page-hero-text">
+            Manage CLA Journal editions, PDFs and selected pieces.
+        </p>
     </div>
 </section>
+
+<section class="section">
+    <div class="container">
+
+        <a href="{{ url_for('admin_create_journal_edition') }}" class="btn btn-primary">
+            Create Edition
+        </a>
+
+        <div class="grid grid-3">
+
+            {% for edition in editions %}
+
+            <article class="card">
+                <h3>{{ edition.title }}</h3>
+
+                <p>
+                    Volume {{ edition.volume }} · Issue {{ edition.issue }}
+                </p>
+
+                {% if edition.is_current %}
+                <p class="section-label">Current Edition</p>
+                {% endif %}
+
+                <a href="{{ url_for('admin_edit_journal_edition', edition_id=edition.id) }}" class="card-link">
+                    Edit →
+                </a>
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
 
 <section class="section">
     <div class="container">
@@ -104,17 +128,17 @@
             {% for edition in editions %}
 
             <article class="card">
+                {% if edition.cover_image_url %}
+                <img src="{{ edition.cover_image_url }}" alt="{{ edition.title }}"
+                    style="width: 100%; border-radius: 8px; margin-bottom: 16px;">
+                {% endif %}
 
                 <h3>{{ edition.title }}</h3>
-
-                <p>
-                    {{ edition.description }}
-                </p>
+                <p>{{ edition.description }}</p>
 
                 <a href="{{ url_for('journal_detail', slug=edition.slug) }}" class="card-link">
                     View edition →
                 </a>
-
             </article>
 
             {% endfor %}

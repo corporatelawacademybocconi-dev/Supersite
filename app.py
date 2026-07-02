@@ -215,8 +215,7 @@ def admin_edit_person(person_id):
     )
 
     person = response.data
-    # pyrefly: ignore [parse-error]
-    "profile_image_url": request.form.get("profile_image_url"),
+    
     return render_template(
         "admin/edit_person.html",
         person=person
@@ -257,7 +256,6 @@ def admin_create_article():
         .order("name")
         .execute()
     )
-
     authors = authors_response.data or []
 
     if request.method == "POST":
@@ -268,23 +266,34 @@ def admin_create_article():
         if image and image.filename:
             cover_image_url = upload_article_image(image)
 
-        supabase.table("articles").insert({
+        result = supabase.table("articles").insert({
             "title": title,
             "slug": slug,
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
             "author_id": int(request.form.get("author_id")),
-            "category": request.form.get("category"),
             "status": request.form.get("status"),
             "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }).execute()
 
+        article_id = result.data[0]["id"]
+
+        tag_ids = request.form.getlist("tag_ids")
+        if tag_ids:
+            supabase.table("article_tags").insert([
+                {"article_id": article_id, "tag_id": int(tid)} for tid in tag_ids
+            ]).execute()
+
         return redirect(url_for("admin_articles"))
+
+    tags_response = supabase.table("tags").select("*").order("name").execute()
+    all_tags = tags_response.data or []
 
     return render_template(
         "admin/create_article.html",
-        authors=authors
+        authors=authors,
+        all_tags=all_tags
     )
 
 @app.route("/reserved-area/articles/<article_id>/edit", methods=["GET", "POST"])
@@ -301,8 +310,10 @@ def admin_edit_article(article_id):
         .order("name")
         .execute()
     )
-
     authors = authors_response.data or []
+
+    tags_response = supabase.table("tags").select("*").order("name").execute()
+    all_tags = tags_response.data or []
 
     if request.method == "POST":
         image = request.files.get("cover_image")
@@ -315,11 +326,18 @@ def admin_edit_article(article_id):
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
             "author_id": int(request.form.get("author_id")),
-            "category": request.form.get("category"),
             "status": request.form.get("status"),
             "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }).eq("id", article_id).execute()
+
+        # Replace tags: delete existing, insert new
+        supabase.table("article_tags").delete().eq("article_id", article_id).execute()
+        tag_ids = request.form.getlist("tag_ids")
+        if tag_ids:
+            supabase.table("article_tags").insert([
+                {"article_id": article_id, "tag_id": int(tid)} for tid in tag_ids
+            ]).execute()
 
         return redirect(url_for("admin_articles"))
 
@@ -331,13 +349,24 @@ def admin_edit_article(article_id):
         .single()
         .execute()
     )
-
     article = response.data
+
+    # Fetch currently selected tag ids for this article
+    existing_tags_response = (
+        supabase
+        .table("article_tags")
+        .select("tag_id")
+        .eq("article_id", article_id)
+        .execute()
+    )
+    selected_tag_ids = [row["tag_id"] for row in (existing_tags_response.data or [])]
 
     return render_template(
         "admin/edit_article.html",
         article=article,
-        authors=authors
+        authors=authors,
+        all_tags=all_tags,
+        selected_tag_ids=selected_tag_ids
     )
 
 @app.route("/reserved-area/events/<event_id>/edit", methods=["GET", "POST"])
@@ -573,32 +602,38 @@ def our_work():
 
 @app.route("/our-work/articles")
 def articles():
-    response = (
+    selected_tag = request.args.get("tag")
+
+    tags_response = supabase.table("tags").select("*").order("name").execute()
+    all_tags = tags_response.data or []
+
+    query = (
         supabase
         .table("articles")
-        .select("*, author:people!articles_author_id_fkey(*)")
+        .select("*, author:people!articles_author_id_fkey(*), tags:article_tags(tag:tags(*))")
         .eq("status", "published")
         .order("published_at", desc=True)
-        .execute()
     )
 
-    articles = response.data
+    articles = query.execute().data or []
 
-    featured_article = next(
-        (article for article in articles if article.get("is_featured")),
-        None
-    )
+    # Filter by tag client-side after fetch (Supabase join filtering is complex)
+    if selected_tag and selected_tag != "all":
+        articles = [
+            a for a in articles
+            if any(item["tag"]["slug"] == selected_tag for item in (a.get("tags") or []))
+        ]
 
-    latest_articles = [
-        article for article in articles
-        if not article.get("is_featured")
-    ]
+    featured_article = next((a for a in articles if a.get("is_featured")), None)
+    latest_articles = [a for a in articles if not a.get("is_featured")]
 
     return render_template(
         "our_work/articles.html",
         articles=articles,
         featured_article=featured_article,
-        latest_articles=latest_articles
+        latest_articles=latest_articles,
+        all_tags=all_tags,
+        selected_tag=selected_tag
     )
 
 @app.route("/our-work/articles/<slug>")
@@ -606,7 +641,7 @@ def article_detail(slug):
     response = (
         supabase
         .table("articles")
-        .select("*, author:people!articles_author_id_fkey(*)")
+        .select("*, author:people!articles_author_id_fkey(*), tags:article_tags(tag:tags(*))")
         .eq("slug", slug)
         .single()
         .execute()
