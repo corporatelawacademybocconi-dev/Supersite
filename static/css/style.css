@@ -996,3 +996,9 @@ img {
     max-width: 960px;
     padding: 130px 48px 80px;
 }
+
+.nav-logo-img {
+    height: 36px;
+    width: auto;
+    display: block;
+}
