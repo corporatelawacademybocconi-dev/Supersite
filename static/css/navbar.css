@@ -1,0 +1,139 @@
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(28, 28, 30, 0.96);
+    border-bottom: 1px solid rgba(232, 224, 213, 0.12);
+    backdrop-filter: blur(14px);
+}
+
+.nav-inner {
+    max-width: 1500px;
+    min-height: 112px;
+    margin: 0 auto;
+    padding: 0 42px;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding-right: 42px;
+    border-right: 1px solid rgba(232, 224, 213, 0.16);
+}
+
+.nav-logo-img {
+    height: 58px;
+    width: auto;
+}
+
+.nav-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 36px;
+    color: var(--stone);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.nav-links a {
+    color: var(--stone);
+    opacity: 0.92;
+}
+
+.nav-links a:hover {
+    color: var(--taupe);
+    opacity: 1;
+}
+
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown>a::after {
+    content: "⌄";
+    margin-left: 8px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 0;
+    display: none;
+    min-width: 220px;
+    padding: 16px;
+    background: rgba(28, 28, 30, 0.98);
+    border: 1px solid rgba(232, 224, 213, 0.14);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    z-index: 200;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 9px 0;
+    color: var(--taupe);
+}
+
+.dropdown-menu a:hover {
+    color: var(--stone);
+}
+
+.nav-dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.nav-reserved {
+    border: 1px solid var(--taupe);
+    padding: 15px 22px;
+    border-radius: 3px;
+    color: var(--stone) !important;
+    white-space: nowrap;
+}
+
+.nav-reserved:hover {
+    background: var(--taupe);
+    color: var(--charcoal) !important;
+}
+
+.nav-search {
+    display: flex;
+    align-items: center;
+    color: var(--stone);
+}
+
+.nav-search:hover {
+    color: var(--taupe);
+}
+
+@media (max-width: 980px) {
+    .nav-inner {
+        min-height: auto;
+        padding: 22px 24px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .logo {
+        border-right: none;
+        padding-right: 0;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 18px 24px;
+        margin-left: 0;
+    }
+
+    .nav-reserved {
+        padding: 11px 16px;
+    }
+}
