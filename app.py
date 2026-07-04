@@ -32,14 +32,6 @@ def upload_article_image(file):
         file_bytes,
     )
     return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
-    def upload_person_image(file):
-        if not file or file.filename == "":
-            return None
-        filename = secure_filename(file.filename)
-        unique_filename = f"people/{uuid.uuid4()}-{filename}"
-        file_bytes = file.read()
-        supabase.storage.from_("media").upload(unique_filename, file_bytes)
-        return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
 
 import re
 
