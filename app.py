@@ -164,7 +164,31 @@ def home():
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    leadership_response = (
+        supabase
+        .table("people")
+        .select("*")
+        .eq("is_team_member", True)
+        .eq("division", "leadership")
+        .order("name")
+        .execute()
+    )
+
+    heads_response = (
+        supabase
+        .table("people")
+        .select("*")
+        .eq("is_team_member", True)
+        .eq("division", "heads")
+        .order("name")
+        .execute()
+    )
+
+    return render_template(
+        "about.html",
+        leadership=leadership_response.data or [],
+        heads=heads_response.data or []
+    )
 
 @app.route("/reserved-area/events")
 def admin_events():
@@ -254,6 +278,7 @@ def admin_create_person():
             "bio": bio,
             "linkedin_url": linkedin_url,
             "profile_image_url": request.form.get("profile_image_url"), 
+            "division": request.form.get("division") or None ,
             "is_author": True,
             "is_team_member": True
         }).execute()
@@ -282,6 +307,7 @@ def admin_edit_person(person_id):
             "bio": request.form.get("bio"),
             "linkedin_url": request.form.get("linkedin_url"),
             "profile_image_url": request.form.get("profile_image_url"),
+            "division": request.form.get("division") or None ,
             "is_author": request.form.get("is_author") == "on",
             "is_team_member": request.form.get("is_team_member") == "on"
         }).eq("id", person_id).execute()

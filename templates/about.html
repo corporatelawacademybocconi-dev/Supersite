@@ -79,68 +79,74 @@
     </div>
 </section>
 
-<!-- Leadership -->
-
+{% if leadership %}
 <section class="section">
-
     <div class="container">
-
         <div class="section-header">
             <p class="section-label">Leadership</p>
-
-            <h2 class="section-title">
-                Meet the team.
-            </h2>
+            <h2 class="section-title">President & Vice Presidents.</h2>
         </div>
 
         <div class="grid grid-3">
-
+            {% for person in leadership %}
             <article class="team-card">
+                {% if person.profile_image_url %}
+                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
+                    style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
+                {% else %}
                 <div class="team-photo"></div>
+                {% endif %}
 
-                <h3>Vice President</h3>
+                <h3>{{ person.name }}</h3>
+                <p class="team-role">{{ person.role }}</p>
 
-                <p class="team-role">
-                    President
-                </p>
+                {% if person.bio %}
+                <p>{{ person.bio }}</p>
+                {% endif %}
 
-                <p>
-                    Short professional biography.
-                </p>
+                {% if person.linkedin_url %}
+                <a href="{{ person.linkedin_url }}" target="_blank" class="card-link">LinkedIn →</a>
+                {% endif %}
             </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
 
-            <article class="team-card">
-                <div class="team-photo"></div>
-
-                <h3>President</h3>
-
-                <p class="team-role">
-                    Vice President
-                </p>
-
-                <p>
-                    Short professional biography.
-                </p>
-            </article>
-
-            <article class="team-card">
-                <div class="team-photo"></div>
-
-                <h3>Vice President</h3>
-
-                <p class="team-role">
-                    Director
-                </p>
-
-                <p>
-                    Short professional biography.
-                </p>
-            </article>
-
+{% if heads %}
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Heads</p>
+            <h2 class="section-title">Department leads.</h2>
         </div>
 
-    </div>
+        <div class="grid grid-3">
+            {% for person in heads %}
+            <article class="team-card">
+                {% if person.profile_image_url %}
+                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
+                    style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
+                {% else %}
+                <div class="team-photo"></div>
+                {% endif %}
 
+                <h3>{{ person.name }}</h3>
+                <p class="team-role">{{ person.role }}</p>
+
+                {% if person.bio %}
+                <p>{{ person.bio }}</p>
+                {% endif %}
+
+                {% if person.linkedin_url %}
+                <a href="{{ person.linkedin_url }}" target="_blank" class="card-link">LinkedIn →</a>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    </div>
 </section>
+{% endif %}
 
 {% endblock %}

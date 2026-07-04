@@ -11,6 +11,12 @@
     </div>
 </section>
 
+<select name="division">
+    <option value="">— None —</option>
+    <option value="leadership" {% if person.division=="leadership" %}selected{% endif %}>Leadership</option>
+    <option value="heads" {% if person.division=="heads" %}selected{% endif %}>Heads</option>
+</select>
+
 <section class="section">
     <div class="container">
 
