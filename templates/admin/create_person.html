@@ -12,35 +12,35 @@
 </section>
 <label>Division</label>
 <select name="division">
-    <option value="">— None —</option>
-    <option value="leadership">Leadership</option>
-    <option value="heads">Heads</option>
+
+    <section class="section">
+        <div class="container">
+
+            <form method="POST" class="reserved-login-form">
+
+                <input type="text" name="name" placeholder="Full Name" required>
+
+                <input type="text" name="slug" placeholder="name-surname" required>
+
+                <input type="text" name="role" placeholder="Role">
+
+                <textarea name="bio" placeholder="Bio" rows="6"></textarea>
+
+                <input type="url" name="linkedin_url" placeholder="LinkedIn URL">
+
+                <button type="submit" class="btn btn-primary">
+                    Add Person
+                </button>
+                <label>Profile Picture URL</label>
+                <input type="url" name="profile_image_url" placeholder="https://...">
+                <option value="">— None —</option>
+                <option value="leadership">Leadership</option>
+                <option value="heads">Heads</option>
 </select>
 
-<section class="section">
-    <div class="container">
+</form>
 
-        <form method="POST" class="reserved-login-form">
-
-            <input type="text" name="name" placeholder="Full Name" required>
-
-            <input type="text" name="slug" placeholder="name-surname" required>
-
-            <input type="text" name="role" placeholder="Role">
-
-            <textarea name="bio" placeholder="Bio" rows="6"></textarea>
-
-            <input type="url" name="linkedin_url" placeholder="LinkedIn URL">
-
-            <button type="submit" class="btn btn-primary">
-                Add Person
-            </button>
-            <label>Profile Picture URL</label>
-            <input type="url" name="profile_image_url" placeholder="https://...">
-
-        </form>
-
-    </div>
+</div>
 </section>
 
 {% endblock %}

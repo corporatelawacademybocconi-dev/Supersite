@@ -11,12 +11,6 @@
     </div>
 </section>
 
-<select name="division">
-    <option value="">— None —</option>
-    <option value="leadership" {% if person.division=="leadership" %}selected{% endif %}>Leadership</option>
-    <option value="heads" {% if person.division=="heads" %}selected{% endif %}>Heads</option>
-</select>
-
 <section class="section">
     <div class="container">
 
@@ -41,6 +35,11 @@
                 <input type="checkbox" name="is_team_member" {% if person.is_team_member %}checked{% endif %}>
                 Team Member
             </label>
+            <select name="division">
+                <option value="">— None —</option>
+                <option value="leadership" {% if person.division=="leadership" %}selected{% endif %}>Leadership</option>
+                <option value="heads" {% if person.division=="heads" %}selected{% endif %}>Heads</option>
+            </select>
             <label>Profile Picture URL</label>
             <input type="url" name="profile_image_url" value="{{ person.profile_image_url or '' }}"
                 placeholder="https://...">
