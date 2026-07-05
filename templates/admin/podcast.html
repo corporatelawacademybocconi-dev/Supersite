@@ -1,0 +1,35 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Manage Podcast{% endblock %}
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Manage Podcast</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <a href="{{ url_for('admin_create_episode') }}" class="btn btn-primary">Add Episode</a>
+
+        <div class="grid grid-3" style="margin-top: 48px;">
+            {% for episode in episodes %}
+            <article class="card">
+                <h3>{{ episode.title }}</h3>
+                <p>{{ episode.date }}</p>
+                <p style="margin-top: 8px;">{{ episode.status }}</p>
+                <a href="{{ url_for('admin_edit_episode', episode_id=episode.id) }}" class="card-link">Edit →</a>
+                <form method="POST" action="{{ url_for('admin_delete_episode', episode_id=episode.id) }}"
+                    onsubmit="return confirm('Delete this episode?');" style="margin-top: 12px;">
+                    <button type="submit" class="text-danger">Delete</button>
+                </form>
+            </article>
+            {% else %}
+            <p class="section-text">No episodes yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -624,6 +624,130 @@ def admin_edit_journal_edition(edition_id):
         edition=edition
     )
 
+@app.route("/reserved-area/moot-court")
+def admin_moot_court():
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    response = supabase.table("moot_court_competitions").select("*").order("date", desc=True).execute()
+    competitions = response.data or []
+
+    return render_template("admin/moot_court.html", competitions=competitions)
+
+@app.route("/reserved-area/moot-court/create", methods=["GET", "POST"])
+def admin_create_competition():
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        slug = title.lower().replace(" ", "-")
+
+        supabase.table("moot_court_competitions").insert({
+            "title": title,
+            "slug": slug,
+            "description": request.form.get("description"),
+            "date": request.form.get("date") or None,
+            "cover_image_url": request.form.get("cover_image_url"),
+            "status": request.form.get("status")
+        }).execute()
+
+        return redirect(url_for("admin_moot_court"))
+
+    return render_template("admin/create_competition.html")
+
+@app.route("/reserved-area/moot-court/<competition_id>/edit", methods=["GET", "POST"])
+def admin_edit_competition(competition_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    if request.method == "POST":
+        supabase.table("moot_court_competitions").update({
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "date": request.form.get("date") or None,
+            "cover_image_url": request.form.get("cover_image_url"),
+            "status": request.form.get("status")
+        }).eq("id", competition_id).execute()
+
+        return redirect(url_for("admin_moot_court"))
+
+    response = supabase.table("moot_court_competitions").select("*").eq("id", competition_id).single().execute()
+    competition = response.data
+
+    return render_template("admin/edit_competition.html", competition=competition)
+
+@app.route("/reserved-area/moot-court/<competition_id>/delete", methods=["POST"])
+def admin_delete_competition(competition_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    supabase.table("moot_court_competitions").delete().eq("id", competition_id).execute()
+    return redirect(url_for("admin_moot_court"))
+
+@app.route("/reserved-area/podcast")
+def admin_podcast():
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    response = supabase.table("podcast_episodes").select("*").order("date", desc=True).execute()
+    episodes = response.data or []
+
+    return render_template("admin/podcast.html", episodes=episodes)
+
+@app.route("/reserved-area/podcast/create", methods=["GET", "POST"])
+def admin_create_episode():
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        slug = title.lower().replace(" ", "-")
+
+        supabase.table("podcast_episodes").insert({
+            "title": title,
+            "slug": slug,
+            "description": request.form.get("description"),
+            "date": request.form.get("date") or None,
+            "spotify_url": request.form.get("spotify_url"),
+            "cover_image_url": request.form.get("cover_image_url"),
+            "status": request.form.get("status")
+        }).execute()
+
+        return redirect(url_for("admin_podcast"))
+
+    return render_template("admin/create_episode.html")
+
+@app.route("/reserved-area/podcast/<episode_id>/edit", methods=["GET", "POST"])
+def admin_edit_episode(episode_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    if request.method == "POST":
+        supabase.table("podcast_episodes").update({
+            "title": request.form.get("title"),
+            "description": request.form.get("description"),
+            "date": request.form.get("date") or None,
+            "spotify_url": request.form.get("spotify_url"),
+            "cover_image_url": request.form.get("cover_image_url"),
+            "status": request.form.get("status")
+        }).eq("id", episode_id).execute()
+
+        return redirect(url_for("admin_podcast"))
+
+    response = supabase.table("podcast_episodes").select("*").eq("id", episode_id).single().execute()
+    episode = response.data
+
+    return render_template("admin/edit_episode.html", episode=episode)
+
+@app.route("/reserved-area/podcast/<episode_id>/delete", methods=["POST"])
+def admin_delete_episode(episode_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    supabase.table("podcast_episodes").delete().eq("id", episode_id).execute()
+    return redirect(url_for("admin_podcast"))
+
 @app.route("/search")
 def search():
 
@@ -835,12 +959,15 @@ def team_building():
 
 @app.route("/our-work/moot-court")
 def moot_court():
-    return render_template("our_work/moot_court.html")
-
+    response = supabase.table("moot_court_competitions").select("*").eq("status", "published").order("date", desc=True).execute()
+    competitions = response.data or []
+    return render_template("our_work/moot_court.html", competitions=competitions)
 
 @app.route("/our-work/podcast")
 def podcast():
-    return render_template("our_work/podcast.html")
+    response = supabase.table("podcast_episodes").select("*").eq("status", "published").order("date", desc=True).execute()
+    episodes = response.data or []
+    return render_template("our_work/podcast.html", episodes=episodes)
 
 @app.route("/our-work/journal")
 

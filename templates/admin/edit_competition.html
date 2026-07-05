@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Edit Competition{% endblock %}
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Edit Competition</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="POST" class="reserved-login-form">
+            <input type="text" name="title" value="{{ competition.title }}" required>
+            <textarea name="description" rows="5">{{ competition.description or '' }}</textarea>
+            <input type="date" name="date" value="{{ competition.date or '' }}">
+            <input type="url" name="cover_image_url" value="{{ competition.cover_image_url or '' }}"
+                placeholder="Cover Image URL">
+            <select name="status">
+                <option value="draft" {% if competition.status=="draft" %}selected{% endif %}>Draft</option>
+                <option value="published" {% if competition.status=="published" %}selected{% endif %}>Published</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

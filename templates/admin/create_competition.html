@@ -1,0 +1,28 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Add Competition{% endblock %}
+{% block admin_content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Reserved Area</p>
+        <h1 class="page-hero-title">Add Competition</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="POST" class="reserved-login-form">
+            <input type="text" name="title" placeholder="Title" required>
+            <textarea name="description" rows="5" placeholder="Description"></textarea>
+            <input type="date" name="date">
+            <input type="url" name="cover_image_url" placeholder="Cover Image URL">
+            <select name="status">
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Add Competition</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

@@ -82,28 +82,54 @@
     </div>
 </section>
 
+{% if competitions %}
+<section class="section">
+    <div class="container">
+
+        <div class="section-header">
+            <p class="section-label">Competitions</p>
+            <h2 class="section-title">Preparing for national and international moots.</h2>
+        </div>
+
+        <div class="grid grid-3">
+            {% for competition in competitions %}
+            <article class="card">
+                {% if competition.cover_image_url %}
+                <img src="{{ competition.cover_image_url }}" alt="{{ competition.title }}"
+                    style="width: 100%; border-radius: 8px; margin-bottom: 16px;">
+                {% endif %}
+
+                <h3>{{ competition.title }}</h3>
+
+                {% if competition.date %}
+                <p style="color: var(--taupe); font-size: 14px; margin-bottom: 12px;">{{ competition.date }}</p>
+                {% endif %}
+
+                <p>{{ competition.description }}</p>
+            </article>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+{% else %}
 <section class="section">
     <div class="container split-layout">
         <div>
             <p class="section-label">Competitions</p>
-
-            <h2 class="section-title">
-                Preparing for national and international moots.
-            </h2>
+            <h2 class="section-title">Preparing for national and international moots.</h2>
         </div>
-
         <div>
             <p class="section-text">
                 The Moot Court initiative may support teams preparing for
                 external competitions, internal rounds, workshops and advocacy
                 training sessions.
             </p>
-
-            <a href="{{ url_for('contact') }}" class="btn btn-primary">
-                Get Involved
-            </a>
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">Get Involved</a>
         </div>
     </div>
+</section>
+{% endif %}
 </section>
 
 {% endblock %}

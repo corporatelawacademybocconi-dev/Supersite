@@ -7,11 +7,7 @@
 <section class="page-hero">
     <div class="page-hero-inner">
         <p class="page-hero-label">Podcast</p>
-
-        <h1 class="page-hero-title">
-            Conversations on law, business and careers.
-        </h1>
-
+        <h1 class="page-hero-title">Conversations on law, business and careers.</h1>
         <p class="page-hero-text">
             Episodes featuring students, alumni, practitioners and academics
             discussing corporate law, legal careers, markets and innovation.
@@ -19,25 +15,23 @@
     </div>
 </section>
 
+{% if episodes %}
+
+{% set latest = episodes[0] %}
 <section class="section">
     <div class="container split-layout">
         <div>
             <p class="section-label">Latest Episode</p>
-
-            <h2 class="section-title">
-                Spotify episode title will appear here.
-            </h2>
+            <h2 class="section-title">{{ latest.title }}</h2>
         </div>
-
         <div>
-            <p class="section-text">
-                This section will later pull the latest episode directly from
-                Spotify, including title, description, publication date and link.
-            </p>
+            <p class="section-text">{{ latest.description }}</p>
 
-            <a href="#" class="btn btn-primary">
+            {% if latest.spotify_url %}
+            <a href="{{ latest.spotify_url }}" target="_blank" class="btn btn-primary">
                 Listen on Spotify
             </a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -46,41 +40,51 @@
     <div class="container">
         <div class="section-header">
             <p class="section-label">Episodes</p>
-
-            <h2 class="section-title">
-                Latest conversations.
-            </h2>
+            <h2 class="section-title">Latest conversations.</h2>
         </div>
 
         <div class="episode-list">
+            {% for episode in episodes %}
             <article class="episode-card">
-                <p class="episode-date">Episode · Spotify Import</p>
-                <h3>Episode title placeholder</h3>
-                <p>
-                    Episode description imported from Spotify will appear here.
-                </p>
-                <a href="#" class="card-link">Listen →</a>
-            </article>
 
-            <article class="episode-card">
-                <p class="episode-date">Episode · Spotify Import</p>
-                <h3>Episode title placeholder</h3>
-                <p>
-                    Episode description imported from Spotify will appear here.
-                </p>
-                <a href="#" class="card-link">Listen →</a>
-            </article>
+                {% if episode.cover_image_url %}
+                <img src="{{ episode.cover_image_url }}" alt="{{ episode.title }}"
+                    style="width: 100%; border-radius: 8px; margin-bottom: 16px;">
+                {% endif %}
 
-            <article class="episode-card">
-                <p class="episode-date">Episode · Spotify Import</p>
-                <h3>Episode title placeholder</h3>
-                <p>
-                    Episode description imported from Spotify will appear here.
+                <p class="episode-date">
+                    Episode {% if episode.date %}· {{ episode.date }}{% endif %}
                 </p>
-                <a href="#" class="card-link">Listen →</a>
+
+                <h3>{{ episode.title }}</h3>
+                <p>{{ episode.description }}</p>
+
+                {% if episode.spotify_url %}
+                <a href="{{ episode.spotify_url }}" target="_blank" class="card-link">Listen →</a>
+                {% endif %}
+
             </article>
+            {% endfor %}
         </div>
     </div>
 </section>
+
+{% else %}
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Latest Episode</p>
+            <h2 class="section-title">Coming soon.</h2>
+        </div>
+        <div>
+            <p class="section-text">
+                Episodes will appear here once published.
+            </p>
+        </div>
+    </div>
+</section>
+
+{% endif %}
 
 {% endblock %}
