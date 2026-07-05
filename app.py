@@ -298,7 +298,7 @@ def admin_edit_person(person_id):
             "role": request.form.get("role"),
             "bio": request.form.get("bio"),
             "linkedin_url": request.form.get("linkedin_url"),
-            "profile_image_url": request.form.get("profile_image_url"),
+            "profile_image_url": profile_image_url,
             "division": request.form.get("division") or None ,
             "is_author": request.form.get("is_author") == "on",
             "is_team_member": request.form.get("is_team_member") == "on"
