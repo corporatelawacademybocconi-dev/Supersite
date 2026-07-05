@@ -4,46 +4,43 @@
 
 {% block content %}
 
-<section class="page-hero" style="background-image: url('/static/images/people.jpg');"">
-    <div class=" page-hero-inner">
-    <p class="page-hero-label">People</p>
-
-    <h1 class="page-hero-title">
-        The people behind Corporate Law Academy.
-    </h1>
-
-    <p class="page-hero-text">
-        Meet the contributors, authors, editors, and team members shaping CLA’s research,
-        events, journal, and professional development initiatives.
-    </p>
+<section class="page-hero" style="background-image: url('/static/images/people.jpg');">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">People</p>
+        <h1 class="page-hero-title">The people behind Corporate Law Academy.</h1>
+        <p class="page-hero-text">
+            Meet the contributors, authors, editors, and team members shaping CLA's research,
+            events, journal, and professional development initiatives.
+        </p>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-
         <div class="grid grid-3">
-
             {% for person in people %}
             <article class="team-card">
+
+                {% if person.profile_image_url %}
+                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
+                    style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
+                {% else %}
                 <div class="team-photo"></div>
+                {% endif %}
 
                 <h3>{{ person.name }}</h3>
-
                 <p class="team-role">{{ person.role }}</p>
 
-                <p>
-                    {{ person.bio }}
-                </p>
+                {% if person.bio %}
+                <p>{{ person.bio }}</p>
+                {% endif %}
 
                 <a href="{{ url_for('person_detail', slug=person.slug) }}" class="card-link">
-                    View Profile
+                    View Profile →
                 </a>
             </article>
             {% endfor %}
-
         </div>
-
     </div>
 </section>
 
