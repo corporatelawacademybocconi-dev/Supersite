@@ -58,6 +58,7 @@
 
                 <h3>{{ episode.title }}</h3>
                 <p>{{ episode.description }}</p>
+                <a href="{{ url_for('episode_detail', slug=episode.slug) }}" class="card-link">View →</a>
 
                 {% if episode.spotify_url %}
                 <a href="{{ episode.spotify_url }}" target="_blank" class="card-link">Listen →</a>

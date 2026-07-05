@@ -106,6 +106,7 @@
                 {% endif %}
 
                 <p>{{ competition.description }}</p>
+                <a href="{{ url_for('competition_detail', slug=competition.slug) }}" class="card-link">View →</a>
             </article>
             {% endfor %}
         </div>

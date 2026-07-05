@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ episode.title }} | Corporate Law Academy{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Podcast</p>
+        <h1 class="page-hero-title">{{ episode.title }}</h1>
+        {% if episode.date %}
+        <p class="page-hero-text">{{ episode.date }}</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if episode.cover_image_url %}
+        <img src="{{ episode.cover_image_url }}" alt="{{ episode.title }}"
+            style="width: 100%; max-height: 520px; object-fit: cover; border-radius: 10px; margin-bottom: 48px;">
+        {% endif %}
+
+        <div class="prose">
+            <p>{{ episode.description }}</p>
+        </div>
+
+        {% if episode.spotify_url %}
+        <div style="margin-top: 48px;">
+            <a href="{{ episode.spotify_url }}" target="_blank" class="btn btn-primary">Listen on Spotify</a>
+        </div>
+        {% endif %}
+
+        <div style="margin-top: 24px;">
+            <a href="{{ url_for('podcast') }}" class="btn btn-secondary">← Back to Podcast</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

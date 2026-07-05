@@ -969,6 +969,17 @@ def podcast():
     episodes = response.data or []
     return render_template("our_work/podcast.html", episodes=episodes)
 
+@app.route("/our-work/moot-court/<slug>")
+def competition_detail(slug):
+    response = supabase.table("moot_court_competitions").select("*").eq("slug", slug).eq("status", "published").single().execute()
+    competition = response.data
+    return render_template("our_work/competition_detail.html", competition=competition)
+
+@app.route("/our-work/podcast/<slug>")
+def episode_detail(slug):
+    response = supabase.table("podcast_episodes").select("*").eq("slug", slug).eq("status", "published").single().execute()
+    episode = response.data
+    return render_template("our_work/episode_detail.html", episode=episode)
 @app.route("/our-work/journal")
 
 def journal():
