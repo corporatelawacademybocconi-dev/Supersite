@@ -251,29 +251,35 @@ def admin_people():
     )
 @app.route("/reserved-area/people/create", methods=["GET", "POST"])
 def admin_create_person():
-
     if not session.get("reserved_access"):
         return redirect(url_for("reserved_area_login"))
 
     if request.method == "POST":
+        image = request.files.get("profile_image")
+        profile_image_url = request.form.get("profile_image_url")
 
-        name = request.form.get("name")
-        slug = request.form.get("slug")
-        role = request.form.get("role")
-        bio = request.form.get("bio")
-        linkedin_url = request.form.get("linkedin_url")
+        if image and image.filename:
+            profile_image_url = upload_person_image(image)
 
-        supabase.table("people").insert({
+        name = request.form.get("name", "").strip()
+        slug = request.form.get("slug", "").strip()
+
+        if not slug:
+            slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+        person_data = {
             "name": name,
             "slug": slug,
-            "role": role,
-            "bio": bio,
-            "linkedin_url": linkedin_url,
-            "profile_image_url": request.form.get("profile_image_url"), 
-            "division": request.form.get("division") or None ,
-            "is_author": True,
-            "is_team_member": True
-        }).execute()
+            "role": request.form.get("role"),
+            "bio": request.form.get("bio"),
+            "linkedin_url": request.form.get("linkedin_url"),
+            "profile_image_url": profile_image_url,
+            "division": request.form.get("division") or None,
+            "is_author": request.form.get("is_author") == "on",
+            "is_team_member": request.form.get("is_team_member") == "on"
+        }
+
+        supabase.table("people").insert(person_data).execute()
 
         return redirect(url_for("admin_people"))
 

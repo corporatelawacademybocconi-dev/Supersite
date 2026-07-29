@@ -10,37 +10,59 @@
         <h1 class="page-hero-title">Add Person</h1>
     </div>
 </section>
-<label>Division</label>
-<select name="division">
 
-    <section class="section">
-        <div class="container">
+<section class="section">
+    <div class="container">
 
-            <form method="POST" class="reserved-login-form">
+        <form method="POST" class="reserved-login-form" enctype="multipart/form-data">
 
-                <input type="text" name="name" placeholder="Full Name" required>
+            <input type="text" name="name" placeholder="Full name" required>
 
-                <input type="text" name="slug" placeholder="name-surname" required>
+            <input type="text" name="slug" placeholder="Slug, e.g. mario-rossi">
 
-                <input type="text" name="role" placeholder="Role">
+            <input type="text" name="role" placeholder="Role">
 
-                <textarea name="bio" placeholder="Bio" rows="6"></textarea>
+            <textarea name="bio" rows="6" placeholder="Biography"></textarea>
 
-                <input type="url" name="linkedin_url" placeholder="LinkedIn URL">
+            <input type="url" name="linkedin_url" placeholder="LinkedIn URL">
 
-                <button type="submit" class="btn btn-primary">
-                    Add Person
-                </button>
-                <label>Profile Picture URL</label>
-                <input type="url" name="profile_image_url" placeholder="https://...">
-                <option value="">— None —</option>
+            <label>
+                <input type="checkbox" name="is_author">
+                Author
+            </label>
+
+            <label>
+                <input type="checkbox" name="is_team_member">
+                Team Member
+            </label>
+
+            <label for="division">Division</label>
+
+            <select name="division" id="division">
+                <option value="">None</option>
                 <option value="leadership">Leadership</option>
                 <option value="heads">Heads</option>
-</select>
+            </select>
 
-</form>
+            <label for="profile_image_url">
+                Profile Picture URL
+            </label>
 
-</div>
+            <input type="url" id="profile_image_url" name="profile_image_url" placeholder="https://...">
+
+            <label for="profile_image">
+                Upload Profile Picture
+            </label>
+
+            <input type="file" id="profile_image" name="profile_image" accept="image/*">
+
+            <button type="submit" class="btn btn-primary">
+                Add Person
+            </button>
+
+        </form>
+
+    </div>
 </section>
 
 {% endblock %}
