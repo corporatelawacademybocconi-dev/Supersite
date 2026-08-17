@@ -26,7 +26,8 @@
         posthog.init('phc_z5iJ5T9DcJog585GYdtDZhrbwXZxNY7UjhaWZY8xsa8i', {
             api_host: 'https://eu.i.posthog.com',
             defaults: '2026-05-30',
-            person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+            person_profiles: 'identified_only',
+            opt_out_capturing_by_default: true,
         })
     </script>
 </head>
@@ -109,6 +110,57 @@
 
     </footer>
 
+    <div class="cookie-banner" id="cookie-banner" role="dialog" aria-labelledby="cookie-title"
+        aria-describedby="cookie-text" hidden>
+        <div>
+            <p class="cookie-banner-label">Privacy</p>
+            <h2 id="cookie-title">Your privacy matters.</h2>
+            <p id="cookie-text">
+                We use optional analytics cookies to understand how visitors use
+                this website. You can accept or reject them without affecting access.
+                Read our <a href="{{ url_for('privacy') }}">Privacy Notice</a>.
+            </p>
+        </div>
+
+        <div class="cookie-banner-actions">
+            <button class="btn btn-secondary" id="cookie-reject" type="button">
+                Reject analytics
+            </button>
+            <button class="btn btn-primary" id="cookie-accept" type="button">
+                Accept analytics
+            </button>
+        </div>
+    </div>
+
+    <script>
+            (function () {
+                const banner = document.getElementById('cookie-banner');
+                const choice = localStorage.getItem('cla_analytics_consent');
+
+                function setChoice(value) {
+                    localStorage.setItem('cla_analytics_consent', value);
+                    banner.hidden = true;
+
+                    if (value === 'accepted') {
+                        posthog.opt_in_capturing();
+                        posthog.capture('$pageview');
+                    } else {
+                        posthog.opt_out_capturing();
+                    }
+                }
+
+                if (choice === 'accepted') {
+                    posthog.opt_in_capturing();
+                } else if (choice === 'rejected') {
+                    posthog.opt_out_capturing();
+                } else {
+                    banner.hidden = false;
+                }
+
+                document.getElementById('cookie-accept').addEventListener('click', () => setChoice('accepted'));
+                document.getElementById('cookie-reject').addEventListener('click', () => setChoice('rejected'));
+            })();
+    </script>
 </body>
 
 </html>

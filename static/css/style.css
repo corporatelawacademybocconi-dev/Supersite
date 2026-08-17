@@ -1247,3 +1247,57 @@ body {
 .page-hero-light .page-hero-text {
     color: rgba(28, 28, 30, 0.78);
 }
+
+.cookie-banner {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1000;
+    width: min(560px, calc(100% - 48px));
+    padding: 28px;
+    color: var(--stone);
+    background: rgba(28, 28, 30, 0.98);
+    border: 1px solid rgba(232, 224, 213, 0.24);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.cookie-banner[hidden] {
+    display: none;
+}
+
+.cookie-banner-label {
+    margin-bottom: 8px;
+    color: var(--taupe);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.cookie-banner h2 {
+    margin-bottom: 10px;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.1;
+}
+
+.cookie-banner p {
+    color: var(--taupe);
+    font-size: 14px;
+}
+
+.cookie-banner p a {
+    color: var(--stone);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.cookie-banner-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.cookie-banner-actions .btn {
+    cursor: pointer;
+}

@@ -1086,6 +1086,9 @@ def journal_detail(slug):
 def networking():
     return render_template("networking.html")
 
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
 
 @app.route("/contact")
 def contact():
