@@ -5,6 +5,7 @@
     background: rgba(28, 28, 30, 0.96);
     border-bottom: 1px solid rgba(232, 224, 213, 0.12);
     backdrop-filter: blur(14px);
+    transition: background-color 420ms cubic-bezier(0.16, 1, 0.3, 1), border-color 420ms ease, box-shadow 420ms ease;
 }
 
 .nav-inner {
@@ -46,11 +47,32 @@
 .nav-links a {
     color: var(--stone);
     opacity: 0.92;
+    position: relative;
+    transition: color 180ms ease, opacity 180ms ease;
+}
+
+.nav-links a:not(.nav-reserved)::before {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -8px;
+    left: 0;
+    height: 1px;
+    background: var(--stone);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-links a:hover {
     color: var(--taupe);
     opacity: 1;
+}
+
+.nav-links a:not(.nav-reserved):hover::before,
+.nav-links a:not(.nav-reserved):focus-visible::before {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .nav-dropdown {
@@ -66,13 +88,17 @@
     position: absolute;
     top: calc(100% + 18px);
     left: 0;
-    display: none;
+    display: block;
     min-width: 220px;
     padding: 16px;
     background: rgba(28, 28, 30, 0.98);
     border: 1px solid rgba(232, 224, 213, 0.14);
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
     z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 180ms ease, transform 280ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 280ms;
 }
 
 .dropdown-menu a {
@@ -86,7 +112,17 @@
 }
 
 .nav-dropdown:hover .dropdown-menu {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.nav-dropdown:focus-within .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
 }
 
 .nav-reserved {
@@ -110,6 +146,15 @@
 
 .nav-search:hover {
     color: var(--taupe);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .navbar,
+    .nav-links a,
+    .dropdown-menu {
+        transition: none;
+    }
 }
 
 @media (max-width: 980px) {

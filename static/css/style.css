@@ -973,3 +973,264 @@ img {
     width: auto;
     display: block;
 }
+
+/*
+=================================
+MOTION + EDITORIAL GRAPHIC LAYER
+=================================
+Deliberately quiet: movement is used to establish hierarchy, not decoration.
+*/
+:root {
+    --motion-fast: 180ms;
+    --motion-base: 420ms;
+    --motion-slow: 760ms;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --rule-strong: rgba(232, 224, 213, 0.28);
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* The fine rule and radial wash give plain page heroes an institutional frame. */
+.hero,
+.page-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.hero::after,
+.page-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: min(46vw, 620px);
+    aspect-ratio: 1;
+    right: -12%;
+    top: -38%;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+    box-shadow: 0 0 0 72px rgba(232, 224, 213, 0.025),
+        0 0 0 144px rgba(232, 224, 213, 0.018);
+    pointer-events: none;
+}
+
+.hero::before,
+.page-hero::before {
+    background: linear-gradient(90deg, transparent 0 86%, rgba(232, 224, 213, 0.16) 86% 86.1%, transparent 86.1%);
+    opacity: 0.55;
+}
+
+.hero-content,
+.page-hero-inner,
+.hero>.container {
+    animation: cla-enter var(--motion-slow) var(--ease-out) both;
+}
+
+.hero-label,
+.hero-eyebrow,
+.page-hero-label,
+.section-label {
+    position: relative;
+    padding-left: 18px;
+}
+
+.hero-label::before,
+.hero-eyebrow::before,
+.page-hero-label::before,
+.section-label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 9px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.8;
+}
+
+.btn,
+.tag-pill,
+.nav-reserved {
+    position: relative;
+    overflow: hidden;
+    transition: color var(--motion-fast) ease, background-color var(--motion-base) var(--ease-out), border-color var(--motion-fast) ease, transform var(--motion-fast) var(--ease-out), box-shadow var(--motion-base) var(--ease-out);
+}
+
+.btn::before,
+.nav-reserved::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--stone);
+    transform: translateY(102%);
+    transition: transform var(--motion-base) var(--ease-out);
+}
+
+.btn:hover,
+.btn:focus-visible,
+.nav-reserved:hover,
+.nav-reserved:focus-visible {
+    color: var(--charcoal);
+    border-color: var(--stone);
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before,
+.nav-reserved:hover::before,
+.nav-reserved:focus-visible::before {
+    transform: translateY(0);
+}
+
+.btn-primary:hover,
+.btn-primary:focus-visible {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+}
+
+.card,
+.article-card,
+.event-card,
+.episode-card,
+.team-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--motion-base) var(--ease-out), border-color var(--motion-base) ease, background-color var(--motion-base) ease, box-shadow var(--motion-base) var(--ease-out);
+}
+
+.card::after,
+.article-card::after,
+.event-card::after,
+.episode-card::after,
+.team-card::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    background: var(--stone);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--motion-base) var(--ease-out);
+}
+
+.card:hover,
+.article-card:hover,
+.event-card:hover,
+.episode-card:hover,
+.team-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(232, 224, 213, 0.38);
+    background-color: rgba(232, 224, 213, 0.075);
+    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.14);
+}
+
+.card:hover::after,
+.article-card:hover::after,
+.event-card:hover::after,
+.episode-card:hover::after,
+.team-card:hover::after {
+    transform: scaleY(1);
+}
+
+.card-link,
+.author-link {
+    transition: color var(--motion-fast) ease, letter-spacing var(--motion-base) var(--ease-out);
+}
+
+.card-link:hover,
+.author-link:hover {
+    color: var(--white);
+    letter-spacing: 0.13em;
+}
+
+.article-card-image,
+.article-cover-image,
+.team-photo {
+    transition: transform var(--motion-slow) var(--ease-out), filter var(--motion-base) ease;
+}
+
+.article-card:hover .article-card-image,
+.team-card:hover .team-photo {
+    transform: scale(1.045);
+    filter: saturate(0.86) contrast(1.05);
+}
+
+.event-date strong,
+.stat-number {
+    text-shadow: 18px 18px 0 rgba(232, 224, 213, 0.045);
+}
+
+@keyframes cla-enter {
+    from {
+        opacity: 0;
+        transform: translateY(22px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cla-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modern browsers reveal each major section as it enters the reading field. */
+@supports (animation-timeline: view()) {
+
+    .section>.container,
+    .article-grid>*,
+    .event-list>*,
+    .episode-list>* {
+        animation: cla-reveal var(--motion-slow) var(--ease-out) both;
+        animation-timeline: view();
+        animation-range: entry 8% cover 30%;
+    }
+}
+
+:focus-visible {
+    outline: 2px solid var(--stone);
+    outline-offset: 4px;
+}
+
+@media (max-width: 800px) {
+
+    .hero::after,
+    .page-hero::after {
+        width: 82vw;
+        right: -34%;
+        top: -16%;
+    }
+
+    .card:hover,
+    .article-card:hover,
+    .event-card:hover,
+    .episode-card:hover,
+    .team-card:hover {
+        transform: translateY(-3px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
