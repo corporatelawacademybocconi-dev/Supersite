@@ -1234,3 +1234,16 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+
+.page-hero-light::before {
+    background: rgba(232, 224, 213, 0.42);
+}
+
+.page-hero-light .page-hero-label,
+.page-hero-light .page-hero-title {
+    color: var(--charcoal);
+}
+
+.page-hero-light .page-hero-text {
+    color: rgba(28, 28, 30, 0.78);
+}
