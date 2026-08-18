@@ -1305,3 +1305,15 @@ body {
 .article-download {
     margin-top: 28px;
 }
+
+.episode-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.episode-actions .btn {
+    padding: 10px 14px;
+    font-size: 12px;
+}

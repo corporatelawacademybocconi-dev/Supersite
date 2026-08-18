@@ -47,6 +47,10 @@
                 <option value="published" {% if article.status=="published" %}selected{% endif %}>Published</option>
             </select>
 
+            <label>Publication date</label>
+            <input type="date" name="published_at"
+                value="{{ article.published_at[:10] if article.published_at else '' }}">
+
             <label>Cover Image URL</label>
             <input type="url" name="cover_image_url" value="{{ article.cover_image_url or '' }}"
                 placeholder="https://your-project.supabase.co/storage/v1/object/public/media/...">
