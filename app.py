@@ -478,7 +478,7 @@ def admin_edit_article(article_id):
             except ValueError as error:
                 return str(error), 400
 
-                article_data = {
+        article_data = {
             "title": request.form.get("title"),
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
