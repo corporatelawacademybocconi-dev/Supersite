@@ -55,10 +55,12 @@ def upload_article_pdf(file):
     unique_filename = f"articles/{uuid.uuid4()}-{filename}"
 
     supabase.storage.from_("article-pdf").upload(
-        unique_filename,
-        file_bytes
-    )
-
+    unique_filename,
+    file_bytes,
+    file_options={
+        "content-type": "application/pdf"
+    }
+)
     return (
         f"{app.config['SUPABASE_URL']}"
         f"/storage/v1/object/public/article-pdf/{unique_filename}"
