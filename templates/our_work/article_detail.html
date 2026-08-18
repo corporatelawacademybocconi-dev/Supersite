@@ -34,6 +34,14 @@
             </span>
             <span>{{ article.category }}</span>
             <span>{{ article.published_at[:10] }}</span>
+            {% if article.pdf_url %}
+            <div class="article-download">
+                <a class="btn btn-secondary" href="{{ article.pdf_url }}?download"
+                    aria-label="Download PDF of {{ article.title }}">
+                    Download PDF
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>

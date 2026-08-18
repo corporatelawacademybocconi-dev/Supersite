@@ -1301,3 +1301,7 @@ body {
 .cookie-banner-actions .btn {
     cursor: pointer;
 }
+
+.article-download {
+    margin-top: 28px;
+}

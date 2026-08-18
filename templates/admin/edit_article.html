@@ -60,6 +60,17 @@
 
             <label>Upload Cover Image</label>
             <input type="file" name="cover_image" accept="image/*">
+            <label>Upload article PDF</label>
+            <input type="file" name="article_pdf" accept="application/pdf,.pdf">
+
+            {% if article.pdf_url %}
+            <div style="margin: 12px 0 20px;">
+                <p class="section-label">Current article PDF</p>
+                <a href="{{ article.pdf_url }}" target="_blank" rel="noopener" class="card-link">
+                    View current PDF →
+                </a>
+            </div>
+            {% endif %}
 
             <label>
                 <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>

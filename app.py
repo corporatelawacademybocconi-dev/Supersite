@@ -33,6 +33,36 @@ def upload_article_image(file):
     )
     return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
 
+MAX_PDF_SIZE = 10 * 1024 * 1024  # 10 MB
+
+def upload_article_pdf(file):
+    if not file or file.filename == "":
+        return None
+
+    filename = secure_filename(file.filename)
+
+    if not filename.lower().endswith(".pdf"):
+        raise ValueError("Only PDF files are allowed.")
+
+    file_bytes = file.read()
+
+    if len(file_bytes) > MAX_PDF_SIZE:
+        raise ValueError("PDF must be 10 MB or smaller.")
+
+    if not file_bytes.startswith(b"%PDF-"):
+        raise ValueError("The uploaded file is not a valid PDF.")
+
+    unique_filename = f"articles/{uuid.uuid4()}-{filename}"
+
+    supabase.storage.from_("article-pdfs").upload(
+        unique_filename,
+        file_bytes
+    )
+
+    return (
+        f"{app.config['SUPABASE_URL']}"
+        f"/storage/v1/object/public/article-pdfs/{unique_filename}"
+    )
 import re
 
 def calculate_reading_time(html_content):
@@ -371,6 +401,15 @@ def admin_create_article():
         cover_image_url = request.form.get("cover_image_url")
         if image and image.filename:
             cover_image_url = upload_article_image(image)
+        
+        pdf = request.files.get("article_pdf")
+        pdf_url = None
+
+        if pdf and pdf.filename:
+            try:
+                pdf_url = upload_article_pdf(pdf)
+            except ValueError as error:
+                return str(error), 400
 
         result = supabase.table("articles").insert({
             "title": title,
@@ -380,6 +419,7 @@ def admin_create_article():
             "author_id": int(request.form.get("author_id")),
             "status": request.form.get("status"),
             "cover_image_url": cover_image_url,
+            "pdf_url": pdf_url,
             "is_featured": request.form.get("is_featured") == "on"
         }).execute()
 
@@ -426,8 +466,17 @@ def admin_edit_article(article_id):
         cover_image_url = request.form.get("cover_image_url")
         if image and image.filename:
             cover_image_url = upload_article_image(image)
+        
+        pdf = request.files.get("article_pdf")
+        pdf_url = None
 
-        supabase.table("articles").update({
+        if pdf and pdf.filename:
+            try:
+                pdf_url = upload_article_pdf(pdf)
+            except ValueError as error:
+                return str(error), 400
+
+                article_data = {
             "title": request.form.get("title"),
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
@@ -435,7 +484,12 @@ def admin_edit_article(article_id):
             "status": request.form.get("status"),
             "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
-        }).eq("id", article_id).execute()
+        }
+
+        if pdf_url:
+            article_data["pdf_url"] = pdf_url
+
+        supabase.table("articles").update(article_data).eq("id", article_id).execute()
 
         # Replace tags: delete existing, insert new
         supabase.table("article_tags").delete().eq("article_id", article_id).execute()
