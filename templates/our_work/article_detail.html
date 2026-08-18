@@ -33,7 +33,11 @@
                 </a>
             </span>
             <span>{{ article.category }}</span>
+            {% if article.published_at %}
             <span>{{ article.published_at[:10] }}</span>
+            {% else %}
+            <span>Date forthcoming</span>
+            {% endif %}
             {% if article.pdf_url %}
             <div class="article-download">
                 <a class="btn btn-secondary" href="{{ article.pdf_url }}?download"
