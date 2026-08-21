@@ -986,29 +986,81 @@ def our_work():
 def articles():
     selected_tag = request.args.get("tag")
 
-    tags_response = supabase.table("tags").select("*").order("name").execute()
+    tags_response = (
+        supabase
+        .table("tags")
+        .select("*")
+        .order("name")
+        .execute()
+    )
     all_tags = tags_response.data or []
 
-    query = (
+    articles_response = (
         supabase
         .table("articles")
-        .select("*, author:people!articles_author_id_fkey(*), tags:article_tags(tag:tags(*))")
+        .select(
+            "*, "
+            "author_links:article_authors("
+            "author_order, "
+            "person:people(*)"
+            "), "
+            "tags:article_tags("
+            "tag:tags(*)"
+            ")"
+        )
         .eq("status", "published")
         .order("published_at", desc=True)
+        .execute()
     )
 
-    articles = query.execute().data or []
+    articles = articles_response.data or []
 
-    # Filter by tag client-side after fetch (Supabase join filtering is complex)
-    if selected_tag and selected_tag != "all":
-        articles = [
-            a for a in articles
-            if any(item["tag"]["slug"] == selected_tag for item in (a.get("tags") or []))
+    # Convert the junction-table response into a simple article["authors"] list.
+    for article in articles:
+        author_links = article.pop("author_links", []) or []
+
+        author_links.sort(
+            key=lambda link: link.get("author_order") or 0
+        )
+
+        article["authors"] = [
+            link["person"]
+            for link in author_links
+            if link.get("person")
         ]
 
-    featured_article = next((a for a in articles if a.get("is_featured")), None)
-    latest_articles = [a for a in articles if not a.get("is_featured")]
-    most_read = sorted(articles, key=lambda a: a.get("views") or 0, reverse=True)[:3]
+    # Filter articles by their selected tag.
+    if selected_tag and selected_tag != "all":
+        articles = [
+            article
+            for article in articles
+            if any(
+                item.get("tag")
+                and item["tag"].get("slug") == selected_tag
+                for item in (article.get("tags") or [])
+            )
+        ]
+
+    featured_article = next(
+        (
+            article
+            for article in articles
+            if article.get("is_featured")
+        ),
+        None
+    )
+
+    latest_articles = [
+        article
+        for article in articles
+        if not article.get("is_featured")
+    ]
+
+    most_read = sorted(
+        articles,
+        key=lambda article: article.get("views") or 0,
+        reverse=True
+    )[:3]
 
     return render_template(
         "our_work/articles.html",
@@ -1017,7 +1069,7 @@ def articles():
         latest_articles=latest_articles,
         all_tags=all_tags,
         selected_tag=selected_tag,
-            most_read=most_read
+        most_read=most_read,
     )
 
 @app.route("/our-work/articles/<slug>")
