@@ -18,11 +18,16 @@
 
             <input type="text" name="title" placeholder="Title" required>
 
-            <select name="author_id" required>
+            <label>Authors</label>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
                 {% for author in authors %}
-                <option value="{{ author.id }}">{{ author.name }}</option>
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" name="author_ids" value="{{ author.id }}">
+                    {{ author.name }}
+                </label>
                 {% endfor %}
-            </select>
+            </div>
 
             <label>Tags</label>
             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">

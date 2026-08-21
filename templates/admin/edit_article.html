@@ -18,13 +18,17 @@
 
             <input type="text" name="title" value="{{ article.title }}" required>
 
-            <select name="author_id" required>
+            <label>Authors</label>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
                 {% for author in authors %}
-                <option value="{{ author.id }}" {% if author.id==article.author_id %}selected{% endif %}>
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                    <input type="checkbox" name="author_ids" value="{{ author.id }}" {% if author.id in
+                        selected_author_ids %}checked{% endif %}>
                     {{ author.name }}
-                </option>
+                </label>
                 {% endfor %}
-            </select>
+            </div>
 
             <label>Tags</label>
             <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">

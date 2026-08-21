@@ -1,3 +1,4 @@
+from flask import flash
 from flask import Flask, render_template, Response
 # pyrefly: ignore [missing-import]
 from supabase import create_client
@@ -397,13 +398,24 @@ def admin_create_article():
     authors = authors_response.data or []
 
     if request.method == "POST":
+        author_ids = [
+            int(author_id)
+            for author_id in request.form.getlist("author_ids")
+        ]
+
+        if not author_ids:
+            flash("Select at least one author.", "error")
+            return redirect(url_for("admin_create_article"))
+
         title = request.form.get("title")
         slug = title.lower().replace(" ", "-")
+
         image = request.files.get("cover_image")
         cover_image_url = request.form.get("cover_image_url")
+
         if image and image.filename:
             cover_image_url = upload_article_image(image)
-        
+
         pdf = request.files.get("article_pdf")
         pdf_url = None
 
@@ -418,7 +430,7 @@ def admin_create_article():
             "slug": slug,
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
-            "author_id": int(request.form.get("author_id")),
+            "author_id": author_ids[0],
             "status": request.form.get("status"),
             "cover_image_url": cover_image_url,
             "pdf_url": pdf_url,
@@ -427,10 +439,24 @@ def admin_create_article():
 
         article_id = result.data[0]["id"]
 
+        supabase.table("article_authors").insert([
+            {
+                "article_id": article_id,
+                "person_id": author_id,
+                "author_order": index
+            }
+            for index, author_id in enumerate(author_ids, start=1)
+        ]).execute()
+
         tag_ids = request.form.getlist("tag_ids")
+
         if tag_ids:
             supabase.table("article_tags").insert([
-                {"article_id": article_id, "tag_id": int(tid)} for tid in tag_ids
+                {
+                    "article_id": article_id,
+                    "tag_id": int(tag_id)
+                }
+                for tag_id in tag_ids
             ]).execute()
 
         return redirect(url_for("admin_articles"))
@@ -446,7 +472,6 @@ def admin_create_article():
 
 @app.route("/reserved-area/articles/<article_id>/edit", methods=["GET", "POST"])
 def admin_edit_article(article_id):
-
     if not session.get("reserved_access"):
         return redirect(url_for("reserved_area_login"))
 
@@ -460,15 +485,33 @@ def admin_edit_article(article_id):
     )
     authors = authors_response.data or []
 
-    tags_response = supabase.table("tags").select("*").order("name").execute()
+    tags_response = (
+        supabase
+        .table("tags")
+        .select("*")
+        .order("name")
+        .execute()
+    )
     all_tags = tags_response.data or []
 
     if request.method == "POST":
+        author_ids = [
+            int(author_id)
+            for author_id in request.form.getlist("author_ids")
+        ]
+
+        if not author_ids:
+            flash("Select at least one author.", "error")
+            return redirect(
+                url_for("admin_edit_article", article_id=article_id)
+            )
+
         image = request.files.get("cover_image")
         cover_image_url = request.form.get("cover_image_url")
+
         if image and image.filename:
             cover_image_url = upload_article_image(image)
-        
+
         pdf = request.files.get("article_pdf")
         pdf_url = None
 
@@ -482,8 +525,13 @@ def admin_edit_article(article_id):
             "title": request.form.get("title"),
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
-            "author_id": int(request.form.get("author_id")),
+
+            # Temporary compatibility value until all queries use
+            # the article_authors junction table.
+            "author_id": author_ids[0],
+
             "status": request.form.get("status"),
+            "published_at": request.form.get("published_at") or None,
             "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }
@@ -491,19 +539,45 @@ def admin_edit_article(article_id):
         if pdf_url:
             article_data["pdf_url"] = pdf_url
 
-        supabase.table("articles").update(article_data).eq("id", article_id).execute()
+        supabase.table("articles").update(
+            article_data
+        ).eq(
+            "id", article_id
+        ).execute()
 
-        # Replace tags: delete existing, insert new
-        supabase.table("article_tags").delete().eq("article_id", article_id).execute()
+        # Replace existing author relationships.
+        supabase.table("article_authors").delete().eq(
+            "article_id", article_id
+        ).execute()
+
+        supabase.table("article_authors").insert([
+            {
+                "article_id": int(article_id),
+                "person_id": author_id,
+                "author_order": index
+            }
+            for index, author_id in enumerate(author_ids, start=1)
+        ]).execute()
+
+        # Replace existing tag relationships.
+        supabase.table("article_tags").delete().eq(
+            "article_id", article_id
+        ).execute()
+
         tag_ids = request.form.getlist("tag_ids")
+
         if tag_ids:
             supabase.table("article_tags").insert([
-                {"article_id": article_id, "tag_id": int(tid)} for tid in tag_ids
+                {
+                    "article_id": int(article_id),
+                    "tag_id": int(tag_id)
+                }
+                for tag_id in tag_ids
             ]).execute()
 
         return redirect(url_for("admin_articles"))
 
-    response = (
+    article_response = (
         supabase
         .table("articles")
         .select("*")
@@ -511,9 +585,22 @@ def admin_edit_article(article_id):
         .single()
         .execute()
     )
-    article = response.data
+    article = article_response.data
 
-    # Fetch currently selected tag ids for this article
+    existing_authors_response = (
+        supabase
+        .table("article_authors")
+        .select("person_id")
+        .eq("article_id", article_id)
+        .order("author_order")
+        .execute()
+    )
+
+    selected_author_ids = [
+        row["person_id"]
+        for row in (existing_authors_response.data or [])
+    ]
+
     existing_tags_response = (
         supabase
         .table("article_tags")
@@ -521,16 +608,21 @@ def admin_edit_article(article_id):
         .eq("article_id", article_id)
         .execute()
     )
-    selected_tag_ids = [row["tag_id"] for row in (existing_tags_response.data or [])]
+
+    selected_tag_ids = [
+        row["tag_id"]
+        for row in (existing_tags_response.data or [])
+    ]
 
     return render_template(
         "admin/edit_article.html",
         article=article,
         authors=authors,
         all_tags=all_tags,
+        selected_author_ids=selected_author_ids,
         selected_tag_ids=selected_tag_ids
     )
-
+    
 @app.route("/reserved-area/events/<event_id>/edit", methods=["GET", "POST"])
 def admin_edit_event(event_id):
 
