@@ -17,17 +17,13 @@
 
 <section class="section">
     <div class="container">
-        <div class="grid grid-3">
+        <div class="grid grid-3 people-grid">
             {% for person in people %}
             <article class="team-card">
 
-                {% if person.division in ['leadership', 'heads'] %}
-                {% if person.profile_image_url %}
+                {% if person.division in ['leadership', 'heads'] and person.profile_image_url %}
                 <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
                     style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
-                {% else %}
-                <div class="team-photo"></div>
-                {% endif %}
                 {% endif %}
 
                 <h3>{{ person.name }}</h3>

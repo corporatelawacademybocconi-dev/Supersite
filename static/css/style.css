@@ -1420,3 +1420,27 @@ body {
     background-repeat: no-repeat;
     background-color: var(--charcoal);
 }
+
+.networking-image-section {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--charcoal);
+}
+
+.networking-image-section img {
+    display: block;
+    width: 100%;
+    height: min(42vw, 560px);
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 800px) {
+    .networking-image-section img {
+        height: 320px;
+    }
+}
+
+.people-grid {
+    align-items: start;
+}
