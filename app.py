@@ -209,10 +209,20 @@ def about():
         .execute()
     )
 
+    past_presidents_response = (
+    supabase
+    .table("people")
+    .select("*")
+    .eq("division", "past_president")
+    .order("term_year", desc=True)
+    .execute()
+)
+
     return render_template(
         "about.html",
         leadership=leadership_response.data or [],
-        heads=heads_response.data or []
+        heads=heads_response.data or [],
+        past_presidents=past_presidents_response.data or []
     )
 
 @app.route("/reserved-area/events")
@@ -309,7 +319,8 @@ def admin_create_person():
             "profile_image_url": profile_image_url,
             "division": request.form.get("division") or None,
             "is_author": request.form.get("is_author") == "on",
-            "is_team_member": request.form.get("is_team_member") == "on"
+            "is_team_member": request.form.get("is_team_member") == "on",
+            "term_year": request.form.get("term_year", "").strip() or None,
         }
 
         supabase.table("people").insert(person_data).execute()
@@ -340,7 +351,8 @@ def admin_edit_person(person_id):
             "profile_image_url": profile_image_url,
             "division": request.form.get("division") or None ,
             "is_author": request.form.get("is_author") == "on",
-            "is_team_member": request.form.get("is_team_member") == "on"
+            "is_team_member": request.form.get("is_team_member") == "on",
+            "term_year": request.form.get("term_year", "").strip() or None,
         }).eq("id", person_id).execute()
         return redirect(url_for("admin_people"))
 

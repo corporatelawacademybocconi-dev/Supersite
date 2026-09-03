@@ -21,6 +21,8 @@
             <input type="text" name="slug" value="{{ person.slug }}" required>
 
             <input type="text" name="role" value="{{ person.role or '' }}">
+            <input type="text" name="term_year" value="{{ person.term_year or '' }}"
+                placeholder="Term year, e.g. 2024–2025">
 
             <textarea name="bio" rows="6">{{ person.bio or '' }}</textarea>
 
@@ -39,6 +41,8 @@
                 <option value="">— None —</option>
                 <option value="leadership" {% if person.division=="leadership" %}selected{% endif %}>Leadership</option>
                 <option value="heads" {% if person.division=="heads" %}selected{% endif %}>Heads</option>
+                <option value="past_president" {% if person.division=="past_president" %}selected{% endif %}>Past
+                    President</option>
             </select>
             <label>Profile Picture URL</label>
             <input type="url" name="profile_image_url" value="{{ person.profile_image_url or '' }}"
