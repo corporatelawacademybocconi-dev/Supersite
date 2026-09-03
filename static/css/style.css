@@ -1391,6 +1391,23 @@ body {
     justify-self: center;
 }
 
+.leadership-card {
+    aspect-ratio: 1 / 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.leadership-card>img,
+.leadership-card .team-photo {
+    width: 100%;
+    height: 56%;
+    aspect-ratio: auto !important;
+    object-fit: cover;
+    margin-bottom: 16px !important;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 800px) {
     .leadership-grid {
         grid-template-columns: 1fr;
@@ -1398,26 +1415,6 @@ body {
 
     .leadership-card--president {
         width: 100%;
-    }
-}
-
-.leadership-card {
-    padding: 20px;
-}
-
-.leadership-card>img,
-.leadership-card .team-photo {
-    height: 230px;
-    aspect-ratio: auto !important;
-    object-fit: cover;
-    margin-bottom: 16px !important;
-}
-
-@media (max-width: 800px) {
-
-    .leadership-card>img,
-    .leadership-card .team-photo {
-        height: 200px;
     }
 }
 
