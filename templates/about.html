@@ -6,19 +6,19 @@
 
 <!-- HEADER -->
 
-<section class="page-hero" style="background-image: url('/static/images/balcone.jpg');"">
+<section class="page-hero" style="background-image: url('/static/images/balcone.jpg');">
     <div class=" page-hero-inner">
-    <p class="page-hero-label">About</p>
+        <p class="page-hero-label">About</p>
 
-    <h1 class="page-hero-title">
-        Developing future corporate lawyers.
-    </h1>
+        <h1 class="page-hero-title">
+            Developing future corporate lawyers.
+        </h1>
 
-    <p class="page-hero-text">
-        Corporate Law Academy promotes legal education,
-        professional growth, and meaningful engagement
-        with the legal industry.
-    </p>
+        <p class="page-hero-text">
+            Corporate Law Academy promotes legal education,
+            professional growth, and meaningful engagement
+            with the legal industry.
+        </p>
     </div>
 </section>
 
@@ -87,16 +87,16 @@
             <h2 class="section-title">Executives</h2>
         </div>
 
-        <div class="grid grid-3">
+        <div class="leadership-grid">
             {% for person in leadership %}
-            <article class="team-card">
+            <article
+                class="team-card leadership-card {% if person.role == 'President' %}leadership-card--president{% else %}leadership-card--vp{% endif %}">
                 {% if person.profile_image_url %}
                 <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
                     style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
                 {% else %}
                 <div class="team-photo"></div>
                 {% endif %}
-
                 <h3>{{ person.name }}</h3>
                 <p class="team-role">{{ person.role }}</p>
 
