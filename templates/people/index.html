@@ -19,13 +19,8 @@
     <div class="container">
         <div class="grid grid-3 people-grid">
             {% for person in people %}
+            {% if person.division not in ['leadership', 'heads', 'past_president'] %}
             <article class="team-card">
-
-                {% if person.division in ['leadership', 'heads'] and person.profile_image_url %}
-                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}"
-                    style="width: 100%; aspect-ratio: 1/1; object-fit: cover; margin-bottom: 20px;">
-                {% endif %}
-
                 <h3>{{ person.name }}</h3>
                 <p class="team-role">{{ person.role }}</p>
 
@@ -37,6 +32,7 @@
                     View Profile →
                 </a>
             </article>
+            {% endif %}
             {% endfor %}
         </div>
     </div>
