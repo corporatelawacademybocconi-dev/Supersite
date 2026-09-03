@@ -1317,3 +1317,34 @@ body {
     padding: 10px 14px;
     font-size: 12px;
 }
+
+/* Image page heroes: reliable text contrast */
+.page-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+        linear-gradient(90deg,
+            rgba(28, 28, 30, 0.94) 0%,
+            rgba(28, 28, 30, 0.86) 48%,
+            rgba(28, 28, 30, 0.60) 100%),
+        linear-gradient(0deg,
+            rgba(28, 28, 30, 0.48) 0%,
+            transparent 60%);
+    opacity: 1;
+}
+
+.page-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.page-hero-label {
+    color: rgba(247, 244, 239, 0.82);
+}
+
+.page-hero-title,
+.page-hero-text {
+    color: #F7F4EF;
+}
