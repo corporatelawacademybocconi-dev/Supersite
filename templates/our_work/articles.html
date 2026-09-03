@@ -120,9 +120,6 @@
 
             {% for article in latest_articles %}
             <article class="article-card">
-                {% if article.cover_image_url %}
-                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-card-image">
-                {% endif %}
 
                 <p class="article-tag">
                     {% if article.tags %}{{ article.tags[0].tag.name }}{% endif %}
@@ -167,9 +164,6 @@
         <div class="article-grid">
             {% for article in most_read %}
             <article class="article-card">
-                {% if article.cover_image_url %}
-                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-card-image">
-                {% endif %}
 
                 <p class="article-tag">
                     {% if article.tags %}{{ article.tags[0].tag.name }}{% endif %}
