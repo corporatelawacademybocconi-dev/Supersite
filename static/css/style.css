@@ -1400,3 +1400,30 @@ body {
         width: 100%;
     }
 }
+
+.leadership-card {
+    padding: 20px;
+}
+
+.leadership-card>img,
+.leadership-card .team-photo {
+    height: 230px;
+    aspect-ratio: auto !important;
+    object-fit: cover;
+    margin-bottom: 16px !important;
+}
+
+@media (max-width: 800px) {
+
+    .leadership-card>img,
+    .leadership-card .team-photo {
+        height: 200px;
+    }
+}
+
+.values-section {
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--charcoal);
+}
