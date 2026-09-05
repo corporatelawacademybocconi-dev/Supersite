@@ -6,7 +6,9 @@
 {% if article.cover_image_url %}{% block og_image %}{{ article.cover_image_url }}{% endblock %}{% endif %}
 
 {% block content %}
-
+<div class="article-reading-progress" aria-hidden="true">
+    <span class="article-reading-progress__bar"></span>
+</div>
 
 <section class="page-hero">
     <div class="page-hero-inner">

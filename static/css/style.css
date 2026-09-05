@@ -1444,3 +1444,87 @@ body {
 .people-grid {
     align-items: start;
 }
+
+/* Reliable, cross-browser scroll reveal */
+@supports (animation-timeline: view()) {
+
+    .section>.container,
+    .article-grid>*,
+    .event-list>*,
+    .episode-list>* {
+        animation: none;
+    }
+}
+
+.hero-content {
+    animation: none;
+}
+
+.hero-content>* {
+    animation: cla-enter var(--motion-slow) var(--ease-out) both;
+}
+
+.hero-content> :nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.hero-content> :nth-child(2) {
+    animation-delay: 80ms;
+}
+
+.hero-content> :nth-child(3) {
+    animation-delay: 160ms;
+}
+
+.hero-content> :nth-child(4) {
+    animation-delay: 240ms;
+}
+
+.hero-content> :nth-child(5) {
+    animation-delay: 320ms;
+}
+
+.cla-reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+        opacity var(--motion-slow) var(--ease-out) var(--reveal-delay, 0ms),
+        transform var(--motion-slow) var(--ease-out) var(--reveal-delay, 0ms);
+}
+
+.cla-reveal.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.article-reading-progress {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 110;
+    height: 2px;
+    background: rgba(232, 224, 213, 0.13);
+    pointer-events: none;
+}
+
+.article-reading-progress__bar {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--stone);
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cla-reveal {
+        opacity: 1;
+        transform: none;
+    }
+
+    .hero-content>* {
+        animation: none;
+    }
+}
