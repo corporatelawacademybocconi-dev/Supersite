@@ -19,11 +19,19 @@
         <p class="page-hero-text">{{ person.bio }}</p>
         {% endif %}
 
-        {% if person.linkedin_url %}
-        <a href="{{ person.linkedin_url }}" class="btn btn-secondary" target="_blank">
-            LinkedIn
-        </a>
-        {% endif %}
+        <div class="profile-actions">
+            {% if person.linkedin_url %}
+            <a href="{{ person.linkedin_url }}" class="btn btn-secondary" target="_blank" rel="noopener">
+                LinkedIn
+            </a>
+            {% endif %}
+
+            {% if person.email %}
+            <a href="mailto:{{ person.email }}" class="btn btn-secondary">
+                Email
+            </a>
+            {% endif %}
+        </div>
 
     </div>
 </section>

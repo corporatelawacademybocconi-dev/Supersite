@@ -1326,11 +1326,11 @@ body {
     z-index: 0;
     background:
         linear-gradient(90deg,
-            rgba(28, 28, 30, 0.94) 0%,
-            rgba(28, 28, 30, 0.86) 48%,
-            rgba(28, 28, 30, 0.60) 100%),
+            rgba(28, 28, 30, 0.78) 0%,
+            rgba(28, 28, 30, 0.62) 48%,
+            rgba(28, 28, 30, 0.32) 100%),
         linear-gradient(0deg,
-            rgba(28, 28, 30, 0.48) 0%,
+            rgba(28, 28, 30, 0.24) 0%,
             transparent 60%);
     opacity: 1;
 }
