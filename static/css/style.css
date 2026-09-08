@@ -1633,9 +1633,38 @@ body {
 }
 
 .marquee-band--organisations {
+    overflow: hidden;
+    margin: 5rem 0;
+    padding: 1.35rem 0 1.5rem;
     color: var(--stone);
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+}
+
+.marquee-band--organisations .marquee-band__label {
+    width: min(100% - 3rem, 1560px);
+    margin-bottom: 1rem;
+    color: var(--taupe);
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+}
+
+.marquee-band--organisations .cla-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right,
+            transparent 0,
+            #000 7rem,
+            #000 calc(100% - 7rem),
+            transparent 100%);
+    mask-image: linear-gradient(to right,
+            transparent 0,
+            #000 7rem,
+            #000 calc(100% - 7rem),
+            transparent 100%);
+}
+
+.marquee-band--organisations .cla-marquee__track {
+    animation-duration: 88s;
 }
 
 .marquee-band--organisations .cla-marquee__group {
@@ -1644,16 +1673,58 @@ body {
 }
 
 .marquee-band--organisations .cla-marquee__track span {
+    color: rgba(232, 224, 213, 0.82);
     font-family: inherit;
-    font-size: clamp(0.68rem, 1vw, 0.8rem);
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-size: clamp(0.63rem, 0.85vw, 0.74rem);
+    font-weight: 650;
+    letter-spacing: 0.105em;
     text-transform: uppercase;
 }
 
 .marquee-band--organisations .cla-marquee__track span::after {
-    width: 0.22rem;
-    height: 0.22rem;
-    margin: 0 1.25rem;
-    color: var(--taupe);
+    width: 0.2rem;
+    height: 0.2rem;
+    margin: 0 1.45rem;
+    background: var(--taupe);
+    opacity: 0.55;
+}
+
+@media (max-width: 800px) {
+    .marquee-band--organisations {
+        margin: 3.5rem 0;
+        padding: 1.15rem 0 1.25rem;
+    }
+
+    .marquee-band--organisations .marquee-band__label {
+        width: min(100% - 2rem, 1560px);
+    }
+
+    .marquee-band--organisations .cla-marquee__track {
+        animation-duration: 62s;
+    }
+
+    .marquee-band--organisations .cla-marquee {
+        -webkit-mask-image: linear-gradient(to right,
+                transparent 0,
+                #000 2.5rem,
+                #000 calc(100% - 2.5rem),
+                transparent 100%);
+        mask-image: linear-gradient(to right,
+                transparent 0,
+                #000 2.5rem,
+                #000 calc(100% - 2.5rem),
+                transparent 100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .marquee-band--organisations .cla-marquee {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+        mask-image: none;
+    }
+
+    .marquee-band--organisations .cla-marquee__track {
+        animation: none;
+    }
 }
