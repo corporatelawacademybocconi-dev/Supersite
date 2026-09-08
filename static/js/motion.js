@@ -54,4 +54,21 @@
     }, { rootMargin: '0px 0px -8%', threshold: 0.08 });
 
     targets.forEach((element) => observer.observe(element));
+    const scrollZoomImages = document.querySelectorAll('.scroll-zoom');
+
+    const updateImageZoom = () => {
+        scrollZoomImages.forEach((image) => {
+            const rect = image.getBoundingClientRect();
+            const imageCentre = rect.top + rect.height / 2;
+            const viewportCentre = window.innerHeight / 2;
+            const distance = Math.abs(imageCentre - viewportCentre);
+            const scale = 1 - Math.min(distance / window.innerHeight, 1) * 0.045;
+
+            image.style.setProperty('--scroll-scale', scale.toFixed(3));
+        });
+    };
+
+    updateImageZoom();
+    window.addEventListener('scroll', updateImageZoom, { passive: true });
+    window.addEventListener('resize', updateImageZoom);
 })();
