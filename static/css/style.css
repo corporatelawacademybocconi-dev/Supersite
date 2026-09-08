@@ -1535,3 +1535,125 @@ body {
     transition: transform 120ms linear;
     will-change: transform;
 }
+
+/* Homepage marquees */
+
+.marquee-band {
+    overflow: hidden;
+    padding: 1.1rem 0 1.35rem;
+}
+
+.marquee-band--topics {
+    color: var(--charcoal);
+    background: var(--stone);
+}
+
+.marquee-band__label {
+    width: min(100% - 3rem, 1280px);
+    margin: 0 auto 0.8rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.cla-marquee {
+    overflow: hidden;
+    width: 100%;
+}
+
+.cla-marquee__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: cla-marquee-scroll 52s linear infinite;
+    will-change: transform;
+}
+
+.cla-marquee__track:hover {
+    animation-play-state: paused;
+}
+
+.cla-marquee__track span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
+    line-height: 1;
+}
+
+.cla-marquee__track span::after {
+    width: 0.32rem;
+    height: 0.32rem;
+    margin: 0 1.4rem;
+    border-radius: 50%;
+    background: currentColor;
+    content: "";
+    opacity: 0.5;
+}
+
+@keyframes cla-marquee-scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 800px) {
+    .marquee-band {
+        padding: 1rem 0 1.15rem;
+    }
+
+    .marquee-band__label {
+        width: min(100% - 2rem, 1280px);
+    }
+
+    .cla-marquee__track {
+        animation-duration: 38s;
+    }
+
+    .cla-marquee__track span::after {
+        margin: 0 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cla-marquee {
+        overflow-x: auto;
+    }
+
+    .cla-marquee__track {
+        animation: none;
+    }
+}
+
+.marquee-band--organisations {
+    color: var(--stone);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.marquee-band--organisations .cla-marquee__group {
+    display: flex;
+    align-items: center;
+}
+
+.marquee-band--organisations .cla-marquee__track span {
+    font-family: inherit;
+    font-size: clamp(0.68rem, 1vw, 0.8rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.marquee-band--organisations .cla-marquee__track span::after {
+    width: 0.22rem;
+    height: 0.22rem;
+    margin: 0 1.25rem;
+    color: var(--taupe);
+}

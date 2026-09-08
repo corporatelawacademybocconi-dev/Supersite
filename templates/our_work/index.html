@@ -170,6 +170,55 @@
 
 </section>
 
+{% set organisations = [
+'BonelliErede',
+'Freshfields',
+'Chiomenti',
+'Hogan Lovells',
+'Cleary Gottlieb',
+'Clifford Chance',
+'Linklaters',
+'Carnelutti',
+'FinecoBank',
+'Academy Legal',
+'White & Case',
+'Ropes & Gray',
+'Ardian',
+'Latham & Watkins',
+'PedersoliGattai',
+'Gianni & Origoni',
+'ADVANT Nctm',
+'ZNR notai',
+'Allianz',
+'Chanel',
+'Deloitte',
+'Eni',
+'Gatti Pavesi Bianchi Ludovici',
+'J.P. Morgan',
+'Morgan Stanley',
+'LCA Studio Legale',
+'Withers',
+'Orrick',
+'Orsingher Ortu'
+] %}
+
+<section class="marquee-band marquee-band--organisations"
+    aria-label="Selected firms and organisations we have worked with">
+    <p class="marquee-band__label">Selected firms and organisations we have worked with</p>
+
+    <div class="cla-marquee">
+        <div class="cla-marquee__track">
+            {% for copy in range(2) %}
+            <div class="cla-marquee__group" {% if copy==1 %} aria-hidden="true" {% endif %}>
+                {% for organisation in organisations %}
+                <span>{{ organisation }}</span>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <!-- =====================================================
      FEATURED INITIATIVE
 ===================================================== -->
