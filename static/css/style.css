@@ -1812,3 +1812,9 @@ body {
         animation-duration: 50s;
     }
 }
+
+/* Homepage: attach the focus-area band directly to the hero */
+
+.hero+.marquee-band--topics {
+    margin-top: 0;
+}
