@@ -4,6 +4,7 @@ import hmac
 import re
 import uuid
 
+# pyrefly: ignore [missing-import]
 from flask import (
     Flask, Response, abort, flash, redirect, render_template, request, session, url_for
 )
@@ -12,6 +13,7 @@ from supabase import create_client, ClientOptions
 
 # pyrefly: ignore [missing-import]
 from config import Config
+# pyrefly: ignore [missing-import]
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -108,6 +110,30 @@ def slugify(value):
     value = (value or "").strip().lower()
     value = re.sub(r"[^a-z0-9]+", "-", value)
     return value.strip("-")
+
+def generate_unique_slug(table_name, title, exclude_id=None):
+    base_slug = slugify(title)
+    slug = base_slug
+    counter = 2
+
+    while True:
+        query = (
+            supabase
+            .table(table_name)
+            .select("id")
+            .eq("slug", slug)
+        )
+
+        if exclude_id is not None:
+            query = query.neq("id", exclude_id)
+
+        response = query.limit(1).execute()
+
+        if not response.data:
+            return slug
+
+        slug = f"{base_slug}-{counter}"
+        counter += 1
 
 def upload_event_image(file):
     if not file or file.filename == "":
@@ -503,7 +529,7 @@ def admin_create_article():
             return redirect(url_for("admin_create_article"))
 
         title = (request.form.get("title") or "").strip()
-        slug = slugify(title)
+        slug = generate_unique_slug("articles", title)
 
         image = request.files.get("cover_image")
         cover_image_url = request.form.get("cover_image_url")
