@@ -90,14 +90,9 @@
                         {{ featured_article.author.name }}
                     </a>
                 </span>
-                {% if featured_article.published_at %}
-                <span>{{ featured_article.{% if featured_article.published_at %}
-                    <span>{{ featured_article.published_at[:10] }}</span>
-                    {% endif %} }}</span>
+                {% if featured_article and featured_article.published_at %}
+                <span>{{ featured_article.published_at[:10] }}</span>
                 {% endif %}
-                <span>{{ featured_article.{% if featured_article.published_at %}
-                    <span>{{ featured_article.published_at[:10] }}</span>
-                    {% endif %} }}</span>
             </div>
 
             <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="btn btn-primary">
