@@ -139,10 +139,9 @@
                     <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
                         {{ article.author.name }}
                     </a>
-                    {% if featured_article.published_at %}
-                    <span>{{ featured_article.{% if featured_article.published_at %}
-                        <span>{{ featured_article.published_at[:10] }}</span>
-                        {% endif %} }}</span>
+                    {% if featured_article and featured_article.published_at %}
+                    <span>{{ featured_article.published_at[:10] }}</span>
+                    {% endif %}
                     {% else %}
                     <span>Date forthcoming</span>
                     {% endif %}
