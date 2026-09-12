@@ -19,6 +19,7 @@
     </div>
 </section>
 
+
 <section class="section">
     <div class="container">
 
@@ -29,19 +30,31 @@
             </div>
 
             <div>
-                <span class="stat-number">{{ articles | sum(attribute='views') }}</span>
+                <span class="stat-number">
+                    {{ articles | sum(attribute='views') }}
+                </span>
                 <span class="stat-label">Total Article Views</span>
             </div>
 
             <div>
-                <span class="stat-number">{{ articles | map(attribute='author') | map(attribute='id') | list | unique |
-                    list | length }}</span>
+                {% set author_ids = [] %}
+
+                {% for article in articles %}
+                {% for author in article.authors or [] %}
+                {% if author.id not in author_ids %}
+                {% set _ = author_ids.append(author.id) %}
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+
+                <span class="stat-number">{{ author_ids|length }}</span>
                 <span class="stat-label">Authors</span>
             </div>
         </div>
 
     </div>
 </section>
+
 
 <section class="section">
     <div class="container">
@@ -50,21 +63,25 @@
             <input type="search" class="search-input" placeholder="Search articles, authors, tags...">
 
             <div class="tag-filter-row">
+
                 <a href="{{ url_for('articles') }}"
                     class="tag-pill {% if not selected_tag or selected_tag == 'all' %}active{% endif %}">
                     All
                 </a>
+
                 {% for tag in all_tags %}
                 <a href="{{ url_for('articles', tag=tag.slug) }}"
                     class="tag-pill {% if selected_tag == tag.slug %}active{% endif %}">
                     {{ tag.name }}
                 </a>
                 {% endfor %}
+
             </div>
         </div>
 
     </div>
 </section>
+
 
 {% if featured_article %}
 <section class="section">
@@ -84,15 +101,22 @@
             </p>
 
             <div class="article-meta">
+
+                {% if featured_article.authors %}
                 <span>
                     By
-                    <a href="{{ url_for('person_detail', slug=featured_article.author.slug) }}" class="author-link">
-                        {{ featured_article.author.name }}
-                    </a>
+                    {% for author in featured_article.authors %}
+                    <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
+                        {{ author.name }}
+                    </a>{% if not loop.last %}, {% endif %}
+                    {% endfor %}
                 </span>
-                {% if featured_article and featured_article.published_at %}
+                {% endif %}
+
+                {% if featured_article.published_at %}
                 <span>{{ featured_article.published_at[:10] }}</span>
                 {% endif %}
+
             </div>
 
             <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="btn btn-primary">
@@ -103,6 +127,7 @@
     </div>
 </section>
 {% endif %}
+
 
 <section class="section">
     <div class="container">
@@ -121,7 +146,11 @@
             <article class="article-card">
 
                 <p class="article-tag">
-                    {% if article.tags %}{{ article.tags[0].tag.name }}{% endif %}
+                    {% if article.tags
+                    and article.tags[0]
+                    and article.tags[0].tag %}
+                    {{ article.tags[0].tag.name }}
+                    {% endif %}
                 </p>
 
                 <h3>
@@ -133,25 +162,42 @@
                 </p>
 
                 <div class="article-card-footer">
+
                     <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
                         Read Article
                     </a>
-                    <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
-                        {{ article.author.name }}
-                    </a>
-                    {% if featured_article and featured_article.published_at %}
-                    <span>{{ featured_article.published_at[:10] }}</span>
+
+                    {% if article.authors %}
+                    <span>
+                        By
+                        {% for author in article.authors %}
+                        <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
+                            {{ author.name }}
+                        </a>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
                     {% endif %}
-                    {% else %}
-                    <span>Date forthcoming</span>
+
+                    {% if article.published_at %}
+                    <span>{{ article.published_at[:10] }}</span>
                     {% endif %}
+
                 </div>
+
             </article>
+
+            {% else %}
+
+            <p>No published articles found.</p>
+
             {% endfor %}
 
         </div>
+
     </div>
 </section>
+
+
 {% if most_read %}
 <section class="section">
     <div class="container">
@@ -162,27 +208,39 @@
         </div>
 
         <div class="article-grid">
+
             {% for article in most_read %}
             <article class="article-card">
 
                 <p class="article-tag">
-                    {% if article.tags %}{{ article.tags[0].tag.name }}{% endif %}
+                    {% if article.tags
+                    and article.tags[0]
+                    and article.tags[0].tag %}
+                    {{ article.tags[0].tag.name }}
+                    {% endif %}
                 </p>
 
                 <h3>{{ article.title }}</h3>
+
                 <p>{{ article.excerpt }}</p>
 
                 <div class="article-card-footer">
+
                     <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
                         Read Article
                     </a>
-                    <span>{{ article.views }} views</span>
+
+                    <span>{{ article.views or 0 }} views</span>
+
                 </div>
+
             </article>
             {% endfor %}
+
         </div>
 
     </div>
 </section>
 {% endif %}
+
 {% endblock %}
