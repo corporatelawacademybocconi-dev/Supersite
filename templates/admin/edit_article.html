@@ -75,8 +75,9 @@
 
             <label>Publication date</label>
 
-            <input type="date" name="published_at"
-                value="{{ article.published_at[:10] if article.published_at else '' }}">
+            <input type="date" name="published_at" value="{{ article.{% if featured_article.published_at %}
+    <span>{{ featured_article.published_at[:10] }}</span>
+{% endif %} if article.published_at else '' }}">
 
             <label>Cover Image URL</label>
 

@@ -36,7 +36,9 @@
             </span>
             <span>{{ article.category }}</span>
             {% if article.published_at %}
-            <span>{{ article.published_at[:10] }}</span>
+            <span>{{ article.{% if featured_article.published_at %}
+                <span>{{ featured_article.published_at[:10] }}</span>
+                {% endif %} }}</span>
             {% else %}
             <span>Date forthcoming</span>
             {% endif %}

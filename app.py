@@ -97,31 +97,78 @@ def upload_person_image(file):
 
 @app.route("/sitemap.xml")
 def sitemap():
-    articles_response = supabase.table("articles").select("slug, published_at").eq("status", "published").execute()
+    articles_response = (
+        supabase
+        .table("articles")
+        .select("slug, published_at")
+        .eq("status", "published")
+        .not_.is_("published_at", "null")
+        .execute()
+    )
+
     articles = articles_response.data or []
 
     pages = [
-        "/", "/about", "/our-work", "/our-work/articles",
-        "/our-work/events", "/our-work/journal", "/networking", "/contact", "/people"
+        "/",
+        "/about",
+        "/our-work",
+        "/our-work/articles",
+        "/our-work/events",
+        "/our-work/journal",
+        "/our-work/moot-court",
+        "/our-work/podcast",
+        "/networking",
+        "/contact",
+        "/people",
     ]
 
+    base_url = "https://corporatelawacademy.net"
+
     xml = ['<?xml version="1.0" encoding="UTF-8"?>']
-    xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    xml.append(
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    )
 
     for page in pages:
-        xml.append(f"<url><loc>https://your-domain.com{page}</loc></url>")
+        xml.append(
+            f"<url><loc>{base_url}{page}</loc></url>"
+        )
 
     for article in articles:
-        xml.append(f"<url><loc>https://your-domain.com/our-work/articles/{article['slug']}</loc><lastmod>{article['published_at'][:10]}</lastmod></url>")
+        slug = article.get("slug")
+
+        if not slug:
+            continue
+
+        xml.append("<url>")
+        xml.append(
+            f"<loc>{base_url}/our-work/articles/{slug}</loc>"
+        )
+
+        published_at = article.get("published_at")
+
+        if published_at:
+            xml.append(
+                f"<lastmod>{published_at[:10]}</lastmod>"
+            )
+
+        xml.append("</url>")
 
     xml.append("</urlset>")
 
-    return Response("\n".join(xml), mimetype="application/xml")
+    return Response(
+        "\n".join(xml),
+        mimetype="application/xml"
+    )
 
 @app.route("/robots.txt")
 def robots():
     return Response(
-        "User-agent: *\nAllow: /\nDisallow: /reserved-area\nSitemap: https://your-domain.com/sitemap.xml",
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /reserved-area\n"
+        "Disallow: /reserved-area-login\n"
+        "Sitemap: https://corporatelawacademy.net/sitemap.xml\n",
         mimetype="text/plain"
     )
 
@@ -1021,6 +1068,7 @@ def articles():
             ")"
         )
         .eq("status", "published")
+        .not_.is_("published_at", "null")
         .order("published_at", desc=True)
         .execute()
     )
