@@ -7,8 +7,8 @@ import uuid
 from flask import (
     Flask, Response, abort, flash, redirect, render_template, request, session, url_for
 )
-# pyrefly: ignore [missing-import]
-from supabase import create_client
+import httpx
+from supabase import create_client, ClientOptions
 
 # pyrefly: ignore [missing-import]
 from config import Config
@@ -20,7 +20,27 @@ app.secret_key = app.config["SECRET_KEY"]
 
 supabase = create_client(
     app.config["SUPABASE_URL"],
-    app.config["SUPABASE_SERVICE_ROLE_KEY"]
+    app.config["SUPABASE_SERVICE_ROLE_KEY"],
+    options=ClientOptions(
+        postgrest_client_timeout=10,
+        storage_client_timeout=20,
+        schema="public",
+    ),
+)
+
+# Force PostgREST onto HTTP/1.1.
+supabase.postgrest.session = httpx.Client(
+    http2=False,
+    timeout=httpx.Timeout(10.0),
+    limits=httpx.Limits(
+        max_connections=20,
+        max_keepalive_connections=10,
+        keepalive_expiry=5.0,
+    ),
+    headers={
+        "apikey": app.config["SUPABASE_SERVICE_ROLE_KEY"],
+        "Authorization": f"Bearer {app.config['SUPABASE_SERVICE_ROLE_KEY']}",
+    },
 )
 def upload_article_image(file):
     if not file or file.filename == "":
