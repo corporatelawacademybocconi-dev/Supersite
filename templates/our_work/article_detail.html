@@ -1,47 +1,95 @@
 {% extends "base.html" %}
+
 {% block title %}{{ article.title }} | Corporate Law Academy{% endblock %}
-{% block meta_description %}{{ article.excerpt }}{% endblock %}
-{% block og_title %}{{ article.title }}{% endblock %}
-{% block og_description %}{{ article.excerpt }}{% endblock %}
-{% if article.cover_image_url %}{% block og_image %}{{ article.cover_image_url }}{% endblock %}{% endif %}
+
+{% block meta_description %}
+{{ article.excerpt or '' }}
+{% endblock %}
+
+{% block og_title %}
+{{ article.title }}
+{% endblock %}
+
+{% block og_description %}
+{{ article.excerpt or '' }}
+{% endblock %}
+
+{% block og_image %}
+{% if article.cover_image_url %}
+{{ article.cover_image_url }}
+{% endif %}
+{% endblock %}
+
 
 {% block content %}
+
 <div class="article-reading-progress" aria-hidden="true">
     <span class="article-reading-progress__bar"></span>
 </div>
 
+
 <section class="page-hero">
     <div class="page-hero-inner">
-        <p class="page-hero-label">{{ article.category }}</p>
+
+        {% if article.category %}
+        <p class="page-hero-label">
+            {{ article.category }}
+        </p>
+        {% endif %}
 
         <h1 class="page-hero-title">
             {{ article.title }}
         </h1>
 
+        {% if article.excerpt %}
         <p class="page-hero-text">
             {{ article.excerpt }}
         </p>
+        {% endif %}
+
+
+        {% if article.cover_image_url %}
+        <section class="article-cover-wrap">
+            <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
+        </section>
+        {% endif %}
+
 
         <div class="article-meta">
-            {% if article.cover_image_url %}
-            <section class="article-cover-wrap">
-                <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
-            </section>
-            {% endif %}
-            <span>{{ article.content | reading_time }} min read</span>
+
             <span>
-                By <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
+                {{ article.content | reading_time }} min read
+            </span>
+
+
+            {% if article.author %}
+            <span>
+                By
+                <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
                     {{ article.author.name }}
                 </a>
             </span>
-            <span>{{ article.category }}</span>
-            {% if article.published_at %}
-            <span>{{ article.{% if featured_article.published_at %}
-                <span>{{ featured_article.published_at[:10] }}</span>
-                {% endif %} }}</span>
-            {% else %}
-            <span>Date forthcoming</span>
             {% endif %}
+
+
+            {% if article.category %}
+            <span>
+                {{ article.category }}
+            </span>
+            {% endif %}
+
+
+            {% if article.published_at %}
+            <span>
+                {{ article.published_at[:10] }}
+            </span>
+            {% else %}
+            <span>
+                Date forthcoming
+            </span>
+            {% endif %}
+
+
             {% if article.pdf_url %}
             <div class="article-download">
                 <a class="btn btn-secondary" href="{{ article.pdf_url }}?download"
@@ -50,15 +98,21 @@
                 </a>
             </div>
             {% endif %}
+
         </div>
+
     </div>
 </section>
 
+
 <section class="section">
     <div class="container">
+
         <article class="prose">
             {{ article.content | safe }}
         </article>
+
     </div>
 </section>
+
 {% endblock %}

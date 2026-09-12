@@ -16,7 +16,8 @@
 
         <form method="POST" enctype="multipart/form-data" class="reserved-login-form">
 
-            <input type="text" name="title" value="{{ article.title }}" required>
+            <label>Title</label>
+            <input type="text" name="title" value="{{ article.title or '' }}" required>
 
             <label for="author-search">Authors</label>
 
@@ -34,11 +35,11 @@
                 ">
                 {% for author in authors %}
                 <label class="author-option" data-author-name="{{ author.name | lower }}" style="
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        cursor: pointer;
-                    ">
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            cursor: pointer;
+                        ">
                     <input type="checkbox" name="author_ids" value="{{ author.id }}" {% if author.id in
                         selected_author_ids %}checked{% endif %}>
                     <span>{{ author.name }}</span>
@@ -46,11 +47,22 @@
                 {% endfor %}
             </div>
 
+
             <label>Tags</label>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+            <div style="
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    margin-bottom: 16px;
+                ">
                 {% for tag in all_tags %}
-                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <label style="
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                            cursor: pointer;
+                        ">
                     <input type="checkbox" name="tag_ids" value="{{ tag.id }}" {% if tag.id in selected_tag_ids
                         %}checked{% endif %}>
                     {{ tag.name }}
@@ -58,10 +70,19 @@
                 {% endfor %}
             </div>
 
+
+            <label>Excerpt</label>
+
             <textarea name="excerpt" rows="3">{{ article.excerpt or '' }}</textarea>
+
+
+            <label>Article Content</label>
 
             <!-- TinyMCE receives the stored HTML without escaped entities. -->
             <textarea id="content-editor" name="content">{{ article.content | safe }}</textarea>
+
+
+            <label>Status</label>
 
             <select name="status">
                 <option value="draft" {% if article.status=="draft" %}selected{% endif %}>
@@ -73,16 +94,18 @@
                 </option>
             </select>
 
-            <label>Publication date</label>
 
-            <input type="date" name="published_at" value="{{ article.{% if featured_article.published_at %}
-    <span>{{ featured_article.published_at[:10] }}</span>
-{% endif %} if article.published_at else '' }}">
+            <label>Publication Date</label>
+
+            <input type="date" name="published_at"
+                value="{{ article.published_at[:10] if article.published_at else '' }}">
+
 
             <label>Cover Image URL</label>
 
             <input type="url" name="cover_image_url" value="{{ article.cover_image_url or '' }}"
                 placeholder="https://your-project.supabase.co/storage/v1/object/public/media/...">
+
 
             {% if article.cover_image_url %}
             <div style="margin-top: 20px;">
@@ -91,17 +114,20 @@
             </div>
             {% endif %}
 
+
             <label>Upload Cover Image</label>
 
             <input type="file" name="cover_image" accept="image/*">
 
-            <label>Upload article PDF</label>
+
+            <label>Upload Article PDF</label>
 
             <input type="file" name="article_pdf" accept="application/pdf,.pdf">
 
+
             {% if article.pdf_url %}
             <div style="margin: 12px 0 20px;">
-                <p class="section-label">Current article PDF</p>
+                <p class="section-label">Current Article PDF</p>
 
                 <a href="{{ article.pdf_url }}" target="_blank" rel="noopener" class="card-link">
                     View current PDF →
@@ -109,10 +135,12 @@
             </div>
             {% endif %}
 
+
             <label>
                 <input type="checkbox" name="is_featured" {% if article.is_featured %}checked{% endif %}>
                 Featured Article
             </label>
+
 
             <button type="submit" class="btn btn-primary">
                 Save Article
@@ -120,10 +148,10 @@
 
         </form>
 
+
         <!-- Delete form must remain separate from the edit form. -->
         <form method="POST" action="{{ url_for('admin_delete_article', article_id=article.id) }}"
-            onsubmit="return confirm('Delete \'{{ article.title }}\'? This cannot be undone.')"
-            style="margin-top: 16px;">
+            onsubmit="return confirm('Delete this article? This cannot be undone.')" style="margin-top: 16px;">
             <button type="submit" class="btn btn-danger">
                 Delete Article
             </button>
@@ -131,6 +159,7 @@
 
     </div>
 </section>
+
 
 <script src="https://cdn.tiny.cloud/1/28no8almk00il0r0u1zzfpt4ere74sj6ntgzg7efe78phbrk/tinymce/7/tinymce.min.js"
     referrerpolicy="origin"></script>
@@ -147,21 +176,24 @@
     });
 </script>
 
+
 <script>
     const authorSearch = document.getElementById("author-search");
     const authorOptions = document.querySelectorAll(".author-option");
 
-    authorSearch.addEventListener("input", function () {
-        const searchTerm = this.value.trim().toLowerCase();
+    if (authorSearch) {
+        authorSearch.addEventListener("input", function () {
+            const searchTerm = this.value.trim().toLowerCase();
 
-        authorOptions.forEach(function (option) {
-            const authorName = option.dataset.authorName;
+            authorOptions.forEach(function (option) {
+                const authorName = option.dataset.authorName || "";
 
-            option.style.display = authorName.includes(searchTerm)
-                ? "flex"
-                : "none";
+                option.style.display = authorName.includes(searchTerm)
+                    ? "flex"
+                    : "none";
+            });
         });
-    });
+    }
 </script>
 
 {% endblock %}

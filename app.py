@@ -1,15 +1,18 @@
-from flask import flash
-from flask import Flask, render_template, Response
+from collections import Counter
+from datetime import datetime, timezone
+import hmac
+import re
+import uuid
+
+from flask import (
+    Flask, Response, abort, flash, redirect, render_template, request, session, url_for
+)
 # pyrefly: ignore [missing-import]
 from supabase import create_client
 
-from datetime import datetime, timezone
-
+# pyrefly: ignore [missing-import]
 from config import Config
-
-from flask import request, session, redirect, url_for
 from werkzeug.utils import secure_filename
-import uuid
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -32,7 +35,10 @@ def upload_article_image(file):
         unique_filename,
         file_bytes,
     )
-    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+    return (
+        f"{app.config['SUPABASE_URL']}"
+        f"/storage/v1/object/public/media/{unique_filename}"
+    )
 
 MAX_PDF_SIZE = 10 * 1024 * 1024  # 10 MB
 
@@ -66,7 +72,6 @@ def upload_article_pdf(file):
         f"{app.config['SUPABASE_URL']}"
         f"/storage/v1/object/public/article-pdf/{unique_filename}"
     )
-import re
 
 def calculate_reading_time(html_content):
     if not html_content:
@@ -77,6 +82,13 @@ def calculate_reading_time(html_content):
     return minutes
 
 app.jinja_env.filters["reading_time"] = calculate_reading_time
+
+
+def slugify(value):
+    value = (value or "").strip().lower()
+    value = re.sub(r"[^a-z0-9]+", "-", value)
+    return value.strip("-")
+
 def upload_event_image(file):
     if not file or file.filename == "":
         return None
@@ -84,7 +96,10 @@ def upload_event_image(file):
     unique_filename = f"events/{uuid.uuid4()}-{filename}"
     file_bytes = file.read()
     supabase.storage.from_("media").upload(unique_filename, file_bytes)
-    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+    return (
+        f"{app.config['SUPABASE_URL']}"
+        f"/storage/v1/object/public/media/{unique_filename}"
+    )
 
 def upload_person_image(file):
     if not file or file.filename == "":
@@ -93,7 +108,10 @@ def upload_person_image(file):
     unique_filename = f"people/{uuid.uuid4()}-{filename}"
     file_bytes = file.read()
     supabase.storage.from_("media").upload(unique_filename, file_bytes)
-    return f"https://ggtmmkxrhukausrlnyhm.supabase.co/storage/v1/object/public/media/{unique_filename}"
+    return (
+        f"{app.config['SUPABASE_URL']}"
+        f"/storage/v1/object/public/media/{unique_filename}"
+    )
 
 @app.route("/sitemap.xml")
 def sitemap():
@@ -102,7 +120,6 @@ def sitemap():
         .table("articles")
         .select("slug, published_at")
         .eq("status", "published")
-        .not_.is_("published_at", "null")
         .execute()
     )
 
@@ -186,7 +203,7 @@ def reserved_area_login():
 
         password = request.form.get("password")
 
-        if password == app.config["ADMIN_PASSWORD"]:
+        if hmac.compare_digest(password or "", app.config["ADMIN_PASSWORD"]):
             session["reserved_access"] = True
             return redirect(url_for("reserved_area"))
 
@@ -208,7 +225,6 @@ def reserved_area():
     most_viewed = max(all_articles, key=lambda a: a.get("views") or 0) if all_articles else None
 
     # Most active author by article count
-    from collections import Counter
     author_counts = Counter(
         a["author"]["name"] for a in all_articles if a.get("author")
     )
@@ -466,8 +482,8 @@ def admin_create_article():
             flash("Select at least one author.", "error")
             return redirect(url_for("admin_create_article"))
 
-        title = request.form.get("title")
-        slug = title.lower().replace(" ", "-")
+        title = (request.form.get("title") or "").strip()
+        slug = slugify(title)
 
         image = request.files.get("cover_image")
         cover_image_url = request.form.get("cover_image_url")
@@ -491,6 +507,11 @@ def admin_create_article():
             "content": request.form.get("content"),
             "author_id": author_ids[0],
             "status": request.form.get("status"),
+            "published_at": (
+                datetime.now(timezone.utc).isoformat()
+                if request.form.get("status") == "published"
+                else None
+            ),
             "cover_image_url": cover_image_url,
             "pdf_url": pdf_url,
             "is_featured": request.form.get("is_featured") == "on"
@@ -590,7 +611,10 @@ def admin_edit_article(article_id):
             "author_id": author_ids[0],
 
             "status": request.form.get("status"),
-            "published_at": request.form.get("published_at") or None,
+            "published_at": (
+                request.form.get("published_at")
+                or (datetime.now(timezone.utc).isoformat() if request.form.get("status") == "published" else None)
+            ),
             "cover_image_url": cover_image_url,
             "is_featured": request.form.get("is_featured") == "on"
         }
@@ -853,8 +877,8 @@ def admin_create_competition():
         return redirect(url_for("reserved_area_login"))
 
     if request.method == "POST":
-        title = request.form.get("title")
-        slug = title.lower().replace(" ", "-")
+        title = (request.form.get("title") or "").strip()
+        slug = slugify(title)
 
         supabase.table("moot_court_competitions").insert({
             "title": title,
@@ -914,8 +938,8 @@ def admin_create_episode():
         return redirect(url_for("reserved_area_login"))
 
     if request.method == "POST":
-        title = request.form.get("title")
-        slug = title.lower().replace(" ", "-")
+        title = (request.form.get("title") or "").strip()
+        slug = slugify(title)
 
         supabase.table("podcast_episodes").insert({
             "title": title,
@@ -1068,7 +1092,6 @@ def articles():
             ")"
         )
         .eq("status", "published")
-        .not_.is_("published_at", "null")
         .order("published_at", desc=True)
         .execute()
     )
@@ -1139,20 +1162,29 @@ def article_detail(slug):
         .table("articles")
         .select("*, author:people!articles_author_id_fkey(*), tags:article_tags(tag:tags(*))")
         .eq("slug", slug)
-        .single()
+        .eq("status", "published")
+        .limit(1)
         .execute()
     )
 
-    article = response.data
-# Increment view count
-    supabase.table("articles").update({
-        "views": (article.get("views") or 0) + 1
-    }).eq("id", article["id"]).execute()
+    rows = response.data or []
+    if not rows:
+        abort(404)
+
+    article = rows[0]
+
+    # View counting should never make the article itself unavailable.
+    try:
+        supabase.table("articles").update({
+            "views": (article.get("views") or 0) + 1
+        }).eq("id", article["id"]).execute()
+    except Exception:
+        app.logger.exception("Failed to increment article view count for %s", article.get("id"))
 
     return render_template(
-    "our_work/article_detail.html",
-    article=article
-)
+        "our_work/article_detail.html",
+        article=article
+    )
 
 @app.route("/our-work/events")
 def events():
@@ -1356,6 +1388,8 @@ def contact():
 
 @app.route("/test-db")
 def test_db():
+    if not session.get("reserved_access"):
+        abort(404)
 
     response = (
         supabase
@@ -1391,23 +1425,37 @@ def person_detail(slug):
         .table("people")
         .select("*")
         .eq("slug", slug)
-        .single()
+        .limit(1)
         .execute()
     )
 
-    person = person_response.data
+    people_rows = person_response.data or []
+    if not people_rows:
+        abort(404)
 
-    articles_response = (
+    person = people_rows[0]
+
+    links_response = (
         supabase
-        .table("articles")
-        .select("*")
-        .eq("author_id", person["id"])
-        .eq("status", "published")
-        .order("published_at", desc=True)
+        .table("article_authors")
+        .select("article_id")
+        .eq("person_id", person["id"])
         .execute()
     )
+    article_ids = [row["article_id"] for row in (links_response.data or [])]
 
-    articles = articles_response.data
+    articles = []
+    if article_ids:
+        articles_response = (
+            supabase
+            .table("articles")
+            .select("*, tags:article_tags(tag:tags(*))")
+            .in_("id", article_ids)
+            .eq("status", "published")
+            .order("published_at", desc=True)
+            .execute()
+        )
+        articles = articles_response.data or []
 
     return render_template(
         "people/detail.html",
