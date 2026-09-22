@@ -1463,6 +1463,21 @@ def people():
         people=people
     )
 
+@app.route("/alumni")
+def alumni():
+    response = (
+        supabase
+        .table("people")
+        .select("*")
+        .eq("division", "alumni")
+        .order("name")
+        .execute()
+    )
+
+    return render_template(
+        "people/alumni.html",
+        alumni=response.data or []
+    )
 
 @app.route("/people/<slug>")
 def person_detail(slug):

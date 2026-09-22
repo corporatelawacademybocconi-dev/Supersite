@@ -19,7 +19,7 @@
     <div class="container">
         <div class="grid grid-3 people-grid">
             {% for person in people %}
-            {% if person.division not in ['leadership', 'heads', 'past_president'] %}
+            {% if person.division not in ['leadership', 'heads', 'past_president', 'alumni'] %}
             <article class="team-card">
                 <h3>{{ person.name }}</h3>
                 <p class="team-role">{{ person.role }}</p>

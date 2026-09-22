@@ -1845,3 +1845,18 @@ body {
 .hero-video {
     filter: brightness(1.08);
 }
+
+.team-photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    margin-bottom: 24px;
+}
+
+.alumni-year {
+    margin: 8px 0 16px;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}

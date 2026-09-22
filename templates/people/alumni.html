@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Alumni | Corporate Law Academy{% endblock %}
+
+{% block meta_description %}
+Meet the Corporate Law Academy alumni community.
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero">
+    <div class="page-hero-inner">
+        <p class="page-hero-label">Our Community</p>
+
+        <h1 class="page-hero-title">
+            Corporate Law Academy Alumni.
+        </h1>
+
+        <p class="page-hero-text">
+            Meet former members of Corporate Law Academy and discover
+            where their academic and professional paths have taken them.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% if alumni %}
+        <div class="grid grid-3 people-grid">
+
+            {% for person in alumni %}
+            <article class="team-card">
+
+                {% if person.profile_image_url %}
+                <img src="{{ person.profile_image_url }}" alt="{{ person.name }}" class="team-photo" loading="lazy">
+                {% endif %}
+
+                <h2>{{ person.name }}</h2>
+
+                {% if person.role %}
+                <p class="team-role">{{ person.role }}</p>
+                {% endif %}
+
+                {% if person.term_year %}
+                <p class="alumni-year">
+                    Class of {{ person.term_year }}
+                </p>
+                {% endif %}
+
+                {% if person.bio %}
+                <p>{{ person.bio }}</p>
+                {% endif %}
+
+                <a href="{{ url_for('person_detail', slug=person.slug) }}" class="card-link">
+                    View profile →
+                </a>
+
+            </article>
+            {% endfor %}
+
+        </div>
+        {% else %}
+        <p class="section-text">
+            Alumni profiles will be published soon.
+        </p>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

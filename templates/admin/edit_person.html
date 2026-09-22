@@ -43,6 +43,9 @@
                 <option value="heads" {% if person.division=="heads" %}selected{% endif %}>Heads</option>
                 <option value="past_president" {% if person.division=="past_president" %}selected{% endif %}>Past
                     President</option>
+                <option value="alumni" {% if person.division=="alumni" %}selected{% endif %}>
+                    Alumni
+                </option>
             </select>
             <label>Profile Picture URL</label>
             <input type="url" name="profile_image_url" value="{{ person.profile_image_url or '' }}"
