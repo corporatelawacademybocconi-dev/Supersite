@@ -1818,3 +1818,30 @@ body {
 .hero+.marquee-band--topics {
     margin-top: 0;
 }
+
+/* Remove the line before “Corporate Law Academy” */
+.hero-eyebrow {
+    padding-left: 0;
+}
+
+.hero-eyebrow::before {
+    content: none;
+}
+
+/* Claude-inspired editorial serif for the main headline */
+.hero-title {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino,
+        "Book Antiqua", Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+}
+
+/* Make the background video brighter */
+.hero-overlay {
+    background: rgba(28, 28, 30, 0.42);
+}
+
+.hero-video {
+    filter: brightness(1.08);
+}
