@@ -1,13 +1,13 @@
 {% extends "admin/base_admin.html" %}
 
-{% block title %}Create Journal Edition{% endblock %}
+{% block title %}Edit Journal Edition{% endblock %}
 
 {% block admin_content %}
 
 <section class="page-hero">
     <div class="page-hero-inner">
         <p class="page-hero-label">Reserved Area</p>
-        <h1 class="page-hero-title">Create Journal Edition</h1>
+        <h1 class="page-hero-title">Edit Journal Edition</h1>
     </div>
 </section>
 
@@ -16,24 +16,33 @@
 
         <form method="POST" class="reserved-login-form">
 
-            <input type="text" name="title" value="{{ edition.title }}" required>
+            <label for="title">Edition title</label>
+            <input type="text" id="title" name="title" value="{{ edition.title }}" required>
 
-            <input type="text" name="slug" value="{{ edition.slug }}" required>
+            <label for="slug">URL slug</label>
+            <input type="text" id="slug" name="slug" value="{{ edition.slug }}" required>
 
-            <textarea name="description" rows="5">{{ edition.description or '' }}</textarea>
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="5">{{ edition.description or '' }}</textarea>
 
-            <input type="url" name="pdf_url" value="{{ edition.pdf_url or '' }}">
+            <label for="pdf_url">PDF URL</label>
+            <input type="url" id="pdf_url" name="pdf_url" value="{{ edition.pdf_url or '' }}">
 
-            <input type="url" name="cover_image_url" value="{{ edition.cover_image_url or '' }}">
+            <label for="cover_image_url">Cover image URL</label>
+            <input type="url" id="cover_image_url" name="cover_image_url" value="{{ edition.cover_image_url or '' }}">
 
-            <input type="number" name="volume" value="{{ edition.volume or '' }}">
+            <label for="volume">Volume</label>
+            <input type="number" id="volume" name="volume" value="{{ edition.volume or '' }}" min="1">
 
-            <input type="number" name="issue" value="{{ edition.issue or '' }}">
+            <label for="issue">Issue</label>
+            <input type="number" id="issue" name="issue" value="{{ edition.issue or '' }}" min="1">
 
-            <input type="date" name="publication_date" value="{{ edition.publication_date }}">
+            <label for="publication_date">Publication date</label>
+            <input type="date" id="publication_date" name="publication_date"
+                value="{{ edition.publication_date or '' }}">
 
-            <select name="status">
-
+            <label for="status">Status</label>
+            <select id="status" name="status">
                 <option value="draft" {% if edition.status=="draft" %}selected{% endif %}>
                     Draft
                 </option>
@@ -41,15 +50,48 @@
                 <option value="published" {% if edition.status=="published" %}selected{% endif %}>
                     Published
                 </option>
-
             </select>
 
-            <label>
+            <label class="checkbox-field">
                 <input type="checkbox" name="is_current" {% if edition.is_current %}checked{% endif %}>
+                <span>Current edition</span>
             </label>
 
+            <fieldset class="admin-form-section">
+                <legend>Selected readings</legend>
+
+                <p>
+                    Select the articles that belong to this Journal edition.
+                </p>
+
+                {% if articles %}
+                <div class="article-selection-list">
+
+                    {% for article in articles %}
+                    <label class="article-selection-item">
+                        <input type="checkbox" name="selected_article_ids" value="{{ article.id }}" {% if article.id in
+                            selected_article_ids %} checked {% endif %}>
+
+                        <span>
+                            <strong>{{ article.title }}</strong>
+
+                            {% if article.published_at %}
+                            <small>
+                                {{ article.published_at[:10] }}
+                            </small>
+                            {% endif %}
+                        </span>
+                    </label>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                <p>No published articles are available.</p>
+                {% endif %}
+            </fieldset>
+
             <button type="submit" class="btn btn-primary">
-                Create Edition
+                Save Changes
             </button>
 
         </form>

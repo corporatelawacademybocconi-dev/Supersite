@@ -31,6 +31,33 @@
             <input type="number" name="issue" placeholder="Issue">
 
             <input type="date" name="publication_date">
+            <fieldset class="admin-form-section">
+                <legend>Selected readings</legend>
+
+                <p class="form-help">
+                    Select the published articles that belong to this edition.
+                </p>
+
+                {% if articles %}
+                <div class="article-selection-list">
+                    {% for article in articles %}
+                    <label class="article-selection-item">
+                        <input type="checkbox" name="selected_article_ids" value="{{ article.id }}">
+
+                        <span class="article-selection-item__content">
+                            <strong>{{ article.title }}</strong>
+
+                            {% if article.published_at %}
+                            <span>{{ article.published_at[:10] }}</span>
+                            {% endif %}
+                        </span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No published articles are currently available.</p>
+                {% endif %}
+            </fieldset>
 
             <select name="status">
                 <option value="draft">Draft</option>

@@ -828,83 +828,301 @@ def admin_journal():
 
 @app.route("/reserved-area/journal/create", methods=["GET", "POST"])
 def admin_create_journal_edition():
-
     if not session.get("reserved_access"):
         return redirect(url_for("reserved_area_login"))
 
+    articles_response = (
+        supabase
+        .table("articles")
+        .select("id, title, slug, published_at")
+        .eq("status", "published")
+        .order("published_at", desc=True)
+        .execute()
+    )
+
+    articles = articles_response.data or []
+
     if request.method == "POST":
-
-        title = request.form.get("title")
-        slug = request.form.get("slug")
-
+        title = (request.form.get("title") or "").strip()
+        slug = (request.form.get("slug") or "").strip()
+        status = request.form.get("status", "draft")
         is_current = request.form.get("is_current") == "on"
 
-        if is_current:
-            supabase.table("journal_editions").update({
-                "is_current": False
-            }).neq("id", "00000000-0000-0000-0000-000000000000").execute()
+        selected_article_ids = [
+            int(article_id)
+            for article_id in request.form.getlist(
+                "selected_article_ids"
+            )
+            if article_id.isdigit()
+        ]
 
-        supabase.table("journal_editions").insert({
-            "title": title,
-            "slug": slug,
-            "description": request.form.get("description"),
-            "pdf_url": request.form.get("pdf_url"),
-            "cover_image_url": request.form.get("cover_image_url"),
-            "volume": int(request.form.get("volume")) if request.form.get("volume") else None,
-            "issue": int(request.form.get("issue")) if request.form.get("issue") else None,
-            "publication_date": request.form.get("publication_date") or None,
-            "status": request.form.get("status"),
-            "is_current": is_current
-        }).execute()
+        if not title or not slug:
+            flash("Title and slug are required.", "error")
+
+            return render_template(
+                "admin/create_journal.html",
+                articles=articles,
+            )
+
+        existing_slug = (
+            supabase
+            .table("journal_editions")
+            .select("id")
+            .eq("slug", slug)
+            .limit(1)
+            .execute()
+        )
+
+        if existing_slug.data:
+            flash("That Journal edition slug is already in use.", "error")
+
+            return render_template(
+                "admin/create_journal.html",
+                articles=articles,
+            )
+
+        if is_current:
+            (
+                supabase
+                .table("journal_editions")
+                .update({"is_current": False})
+                .neq(
+                    "id",
+                    "00000000-0000-0000-0000-000000000000",
+                )
+                .execute()
+            )
+
+        edition_result = (
+            supabase
+            .table("journal_editions")
+            .insert({
+                "title": title,
+                "slug": slug,
+                "description": (
+                    request.form.get("description") or ""
+                ).strip() or None,
+                "pdf_url": (
+                    request.form.get("pdf_url") or ""
+                ).strip() or None,
+                "cover_image_url": (
+                    request.form.get("cover_image_url") or ""
+                ).strip() or None,
+                "volume": (
+                    int(request.form["volume"])
+                    if request.form.get("volume")
+                    else None
+                ),
+                "issue": (
+                    int(request.form["issue"])
+                    if request.form.get("issue")
+                    else None
+                ),
+                "publication_date": (
+                    request.form.get("publication_date") or None
+                ),
+                "status": status,
+                "is_current": is_current,
+            })
+            .execute()
+        )
+
+        edition = edition_result.data[0]
+        edition_id = edition["id"]
+
+        if selected_article_ids:
+            valid_articles_response = (
+                supabase
+                .table("articles")
+                .select("id")
+                .in_("id", selected_article_ids)
+                .eq("status", "published")
+                .execute()
+            )
+
+            valid_article_ids = {
+                article["id"]
+                for article in (valid_articles_response.data or [])
+            }
+
+            relationships = [
+                {
+                    "journal_edition_id": edition_id,
+                    "article_id": article_id,
+                    "display_order": position,
+                    "is_featured": True,
+                }
+                for position, article_id
+                in enumerate(selected_article_ids, start=1)
+                if article_id in valid_article_ids
+            ]
+
+            if relationships:
+                (
+                    supabase
+                    .table("journal_articles")
+                    .insert(relationships)
+                    .execute()
+                )
+
+        flash("Journal edition created successfully.", "success")
 
         return redirect(url_for("admin_journal"))
 
-    return render_template("admin/create_journal.html")
+    return render_template(
+        "admin/create_journal.html",
+        articles=articles,
+    )
 
-@app.route("/reserved-area/journal/<edition_id>/edit", methods=["GET", "POST"])
+@app.route(
+    "/reserved-area/journal/<edition_id>/edit",
+    methods=["GET", "POST"]
+)
 def admin_edit_journal_edition(edition_id):
-
     if not session.get("reserved_access"):
         return redirect(url_for("reserved_area_login"))
 
+    # ---------------------------------
+    # Handle the submitted edit form
+    # ---------------------------------
     if request.method == "POST":
-
         is_current = request.form.get("is_current") == "on"
 
-        if is_current:
-            supabase.table("journal_editions").update({
-                "is_current": False
-            }).neq("id", edition_id).execute()
+        # Get every selected article checkbox.
+        selected_article_ids = [
+            int(article_id)
+            for article_id in request.form.getlist(
+                "selected_article_ids"
+            )
+            if article_id.isdigit()
+        ]
 
-        supabase.table("journal_editions").update({
-            "title": request.form.get("title"),
-            "slug": request.form.get("slug"),
-            "description": request.form.get("description"),
-            "pdf_url": request.form.get("pdf_url"),
-            "cover_image_url": request.form.get("cover_image_url"),
-            "volume": request.form.get("volume"),
-            "issue": request.form.get("issue"),
-            "publication_date": request.form.get("publication_date"),
-            "status": request.form.get("status"),
-            "is_current": is_current
-        }).eq("id", edition_id).execute()
+        # Only one Journal edition can be current.
+        if is_current:
+            (
+                supabase
+                .table("journal_editions")
+                .update({"is_current": False})
+                .neq("id", edition_id)
+                .execute()
+            )
+
+        # Update the edition itself.
+        (
+            supabase
+            .table("journal_editions")
+            .update({
+                "title": request.form.get("title"),
+                "slug": request.form.get("slug"),
+                "description": request.form.get("description"),
+                "pdf_url": request.form.get("pdf_url"),
+                "cover_image_url": request.form.get(
+                    "cover_image_url"
+                ),
+                "volume": (
+                    int(request.form["volume"])
+                    if request.form.get("volume")
+                    else None
+                ),
+                "issue": (
+                    int(request.form["issue"])
+                    if request.form.get("issue")
+                    else None
+                ),
+                "publication_date": (
+                    request.form.get("publication_date")
+                    or None
+                ),
+                "status": request.form.get("status"),
+                "is_current": is_current,
+            })
+            .eq("id", edition_id)
+            .execute()
+        )
+
+        # Remove the edition's old article selections.
+        (
+            supabase
+            .table("journal_articles")
+            .delete()
+            .eq("journal_edition_id", edition_id)
+            .execute()
+        )
+
+        # Save the new article selections.
+        if selected_article_ids:
+            relationships = [
+                {
+                    "journal_edition_id": edition_id,
+                    "article_id": article_id,
+                    "display_order": position,
+                    "is_featured": True,
+                }
+                for position, article_id
+                in enumerate(selected_article_ids, start=1)
+            ]
+
+            (
+                supabase
+                .table("journal_articles")
+                .insert(relationships)
+                .execute()
+            )
+
+        flash("Journal edition updated.", "success")
 
         return redirect(url_for("admin_journal"))
 
-    response = (
+    # ---------------------------------
+    # Display the edit form
+    # ---------------------------------
+
+    edition_response = (
         supabase
         .table("journal_editions")
         .select("*")
         .eq("id", edition_id)
-        .single()
+        .limit(1)
         .execute()
     )
 
-    edition = response.data
+    if not edition_response.data:
+        abort(404)
 
+    edition = edition_response.data[0]
+
+    # Load all published articles.
+    articles_response = (
+        supabase
+        .table("articles")
+        .select("id, title, slug, published_at")
+        .eq("status", "published")
+        .order("published_at", desc=True)
+        .execute()
+    )
+
+    articles = articles_response.data or []
+
+    # Find which articles are already selected.
+    selected_response = (
+        supabase
+        .table("journal_articles")
+        .select("article_id")
+        .eq("journal_edition_id", edition_id)
+        .execute()
+    )
+
+    selected_article_ids = {
+        item["article_id"]
+        for item in (selected_response.data or [])
+    }
+
+    # Send all three variables to the HTML template.
     return render_template(
         "admin/edit_journal.html",
-        edition=edition
+        edition=edition,
+        articles=articles,
+        selected_article_ids=selected_article_ids,
     )
 
 @app.route("/reserved-area/moot-court")
