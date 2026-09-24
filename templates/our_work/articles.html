@@ -4,9 +4,16 @@
 
 {% block content %}
 
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+
 <section class="page-hero" style="background-image: url('/static/images/duomoFront.jpg');">
     <div class="page-hero-inner">
-        <p class="page-hero-label">Articles</p>
+
+        <p class="page-hero-label">
+            Articles
+        </p>
 
         <h1 class="page-hero-title">
             Legal analysis, market insight, and student research.
@@ -16,27 +23,44 @@
             Explore commentary and research across corporate law, finance,
             technology, competition, capital markets and legal careers.
         </p>
+
     </div>
 </section>
 
+
+<!-- =====================================================
+     ARTICLE STATISTICS
+     ===================================================== -->
 
 <section class="section">
     <div class="container">
 
         <div class="article-stats">
+
             <div>
-                <span class="stat-number">{{ articles|length }}</span>
-                <span class="stat-label">Articles Published</span>
+                <span class="stat-number">
+                    {{ articles|length }}
+                </span>
+
+                <span class="stat-label">
+                    Articles Published
+                </span>
             </div>
+
 
             <div>
                 <span class="stat-number">
                     {{ articles | sum(attribute='views') }}
                 </span>
-                <span class="stat-label">Total Article Views</span>
+
+                <span class="stat-label">
+                    Total Article Views
+                </span>
             </div>
 
+
             <div>
+
                 {% set author_ids = [] %}
 
                 {% for article in articles %}
@@ -47,20 +71,33 @@
                 {% endfor %}
                 {% endfor %}
 
-                <span class="stat-number">{{ author_ids|length }}</span>
-                <span class="stat-label">Authors</span>
+                <span class="stat-number">
+                    {{ author_ids|length }}
+                </span>
+
+                <span class="stat-label">
+                    Authors
+                </span>
+
             </div>
+
         </div>
 
     </div>
 </section>
 
 
+<!-- =====================================================
+     SEARCH + FILTERS
+     ===================================================== -->
+
 <section class="section">
     <div class="container">
 
         <div class="articles-toolbar">
-            <input type="search" class="search-input" placeholder="Search articles, authors, tags...">
+
+            <input type="search" class="search-input" placeholder="Search articles, authors, tags..."
+                aria-label="Search articles">
 
             <div class="tag-filter-row">
 
@@ -70,125 +107,279 @@
                 </a>
 
                 {% for tag in all_tags %}
+
                 <a href="{{ url_for('articles', tag=tag.slug) }}"
                     class="tag-pill {% if selected_tag == tag.slug %}active{% endif %}">
                     {{ tag.name }}
                 </a>
+
                 {% endfor %}
 
             </div>
+
         </div>
 
     </div>
 </section>
 
 
+<!-- =====================================================
+     FEATURED ARTICLE
+     ===================================================== -->
+
 {% if featured_article %}
-<section class="section">
-    <div class="container split-layout">
 
-        <div>
-            <p class="section-label">Featured Article</p>
+<section class="section featured-article-section">
+    <div class="container">
 
-            <h2 class="section-title">
-                {{ featured_article.title }}
-            </h2>
-        </div>
+        <div class="featured-article">
 
-        <div>
-            <p class="section-text">
-                {{ featured_article.excerpt }}
-            </p>
 
-            <div class="article-meta">
+            <!-- IMAGE -->
 
-                {% if featured_article.authors %}
-                <span>
-                    By
-                    {% for author in featured_article.authors %}
-                    <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
-                        {{ author.name }}
-                    </a>{% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                </span>
+            {% if featured_article.cover_image_url %}
+
+            <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="featured-article-image-wrap"
+                aria-label="Read {{ featured_article.title }}">
+                <img src="{{ featured_article.cover_image_url }}" alt="{{ featured_article.title }}"
+                    class="featured-article-image">
+            </a>
+
+            {% endif %}
+
+
+            <!-- CONTENT -->
+
+            <div class="featured-article-content">
+
+                <p class="section-label">
+                    Featured Article
+                </p>
+
+
+                {% if featured_article.tags
+                and featured_article.tags[0]
+                and featured_article.tags[0].tag %}
+
+                <p class="featured-article-category">
+                    {{ featured_article.tags[0].tag.name }}
+                </p>
+
                 {% endif %}
 
-                {% if featured_article.published_at %}
-                <span>{{ featured_article.published_at[:10] }}</span>
+
+                <h2 class="featured-article-title">
+
+                    <a href="{{ url_for('article_detail', slug=featured_article.slug) }}">
+                        {{ featured_article.title }}
+                    </a>
+
+                </h2>
+
+
+                {% if featured_article.excerpt %}
+
+                <p class="featured-article-excerpt">
+                    {{ featured_article.excerpt }}
+                </p>
+
                 {% endif %}
+
+
+                <div class="featured-article-meta">
+
+                    {% if featured_article.authors %}
+
+                    <span>
+                        By
+
+                        {% for author in featured_article.authors %}
+
+                        <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
+                            {{ author.name }}
+                        </a>{% if not loop.last %}, {% endif %}
+
+                        {% endfor %}
+
+                    </span>
+
+                    {% endif %}
+
+
+                    {% if featured_article.published_at %}
+
+                    <span>
+                        {{ featured_article.published_at[:10] }}
+                    </span>
+
+                    {% endif %}
+
+
+                    <span>
+                        {{ featured_article.content | reading_time }} min read
+                    </span>
+
+                </div>
+
+
+                <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="featured-article-link">
+                    Read article
+                    <span aria-hidden="true">→</span>
+                </a>
 
             </div>
 
-            <a href="{{ url_for('article_detail', slug=featured_article.slug) }}" class="btn btn-primary">
-                Read Featured
-            </a>
         </div>
 
     </div>
 </section>
+
 {% endif %}
 
+
+<!-- =====================================================
+     LATEST RESEARCH
+     ===================================================== -->
 
 <section class="section">
     <div class="container">
 
         <div class="section-header">
-            <p class="section-label">Latest Research</p>
+
+            <p class="section-label">
+                Latest Research
+            </p>
 
             <h2 class="section-title">
                 Browse the article library.
             </h2>
+
         </div>
+
 
         <div class="article-grid">
 
             {% for article in latest_articles %}
+
             <article class="article-card">
 
-                <p class="article-tag">
-                    {% if article.tags
-                    and article.tags[0]
-                    and article.tags[0].tag %}
-                    {{ article.tags[0].tag.name }}
+
+                <!-- CARD IMAGE -->
+
+                {% if article.cover_image_url %}
+
+                <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card-image-wrap"
+                    aria-label="Read {{ article.title }}">
+                    <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-card-image">
+                </a>
+
+                {% endif %}
+
+
+                <!-- CARD BODY -->
+
+                <div class="article-card-body">
+
+
+                    <!-- CATEGORY + READING TIME -->
+
+                    <div class="article-card-topline">
+
+                        <p class="article-tag">
+
+                            {% if article.tags
+                            and article.tags[0]
+                            and article.tags[0].tag %}
+
+                            {{ article.tags[0].tag.name }}
+
+                            {% endif %}
+
+                        </p>
+
+
+                        <span class="article-card-reading-time">
+                            {{ article.content | reading_time }} min read
+                        </span>
+
+                    </div>
+
+
+                    <!-- TITLE -->
+
+                    <h3>
+
+                        <a href="{{ url_for('article_detail', slug=article.slug) }}">
+                            {{ article.title }}
+                        </a>
+
+                    </h3>
+
+
+                    <!-- EXCERPT -->
+
+                    {% if article.excerpt %}
+
+                    <p class="article-card-excerpt">
+                        {{ article.excerpt }}
+                    </p>
+
                     {% endif %}
-                </p>
 
-                <h3>
-                    {{ article.title }}
-                </h3>
 
-                <p>
-                    {{ article.excerpt }}
-                </p>
+                    <!-- FOOTER -->
 
-                <div class="article-card-footer">
+                    <div class="article-card-footer">
 
-                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
-                        Read Article
-                    </a>
+                        <div class="article-card-author">
 
-                    {% if article.authors %}
-                    <span>
-                        By
-                        {% for author in article.authors %}
-                        <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
-                            {{ author.name }}
-                        </a>{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                    </span>
-                    {% endif %}
 
-                    {% if article.published_at %}
-                    <span>{{ article.published_at[:10] }}</span>
-                    {% endif %}
+                            {% if article.authors %}
+
+                            <span>
+                                By
+
+                                {% for author in article.authors %}
+
+                                <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
+                                    {{ author.name }}
+                                </a>{% if not loop.last %}, {% endif %}
+
+                                {% endfor %}
+
+                            </span>
+
+                            {% endif %}
+
+
+                            {% if article.published_at %}
+
+                            <span class="article-card-date">
+                                {{ article.published_at[:10] }}
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card-read"
+                            aria-label="Read {{ article.title }}">
+                            →
+                        </a>
+
+                    </div>
 
                 </div>
 
             </article>
 
+
             {% else %}
 
-            <p>No published articles found.</p>
+            <p>
+                No published articles found.
+            </p>
 
             {% endfor %}
 
@@ -198,49 +389,99 @@
 </section>
 
 
+<!-- =====================================================
+     MOST READ
+     ===================================================== -->
+
 {% if most_read %}
+
 <section class="section">
     <div class="container">
 
         <div class="section-header">
-            <p class="section-label">Most Read</p>
-            <h2 class="section-title">Popular articles.</h2>
+
+            <p class="section-label">
+                Most Read
+            </p>
+
+            <h2 class="section-title">
+                Popular articles.
+            </h2>
+
         </div>
 
-        <div class="article-grid">
+
+        <div class="most-read-list">
 
             {% for article in most_read %}
-            <article class="article-card">
 
-                <p class="article-tag">
-                    {% if article.tags
-                    and article.tags[0]
-                    and article.tags[0].tag %}
-                    {{ article.tags[0].tag.name }}
+            <article class="most-read-item">
+
+
+                <!-- RANK -->
+
+                <span class="most-read-rank">
+                    {{ "%02d"|format(loop.index) }}
+                </span>
+
+
+                <!-- ARTICLE -->
+
+                <div class="most-read-content">
+
+                    <h3>
+
+                        <a href="{{ url_for('article_detail', slug=article.slug) }}">
+                            {{ article.title }}
+                        </a>
+
+                    </h3>
+
+
+                    {% if article.authors %}
+
+                    <p>
+                        By
+
+                        {% for author in article.authors %}
+
+                        <a href="{{ url_for('person_detail', slug=author.slug) }}" class="author-link">
+                            {{ author.name }}
+                        </a>{% if not loop.last %}, {% endif %}
+
+                        {% endfor %}
+
+                    </p>
+
                     {% endif %}
-                </p>
-
-                <h3>{{ article.title }}</h3>
-
-                <p>{{ article.excerpt }}</p>
-
-                <div class="article-card-footer">
-
-                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="author-link">
-                        Read Article
-                    </a>
-
-                    <span>{{ article.views or 0 }} views</span>
 
                 </div>
 
+
+                <!-- VIEWS -->
+
+                <span class="most-read-views">
+                    {{ article.views or 0 }} views
+                </span>
+
+
+                <!-- ARROW -->
+
+                <a href="{{ url_for('article_detail', slug=article.slug) }}" class="most-read-arrow"
+                    aria-label="Read {{ article.title }}">
+                    →
+                </a>
+
             </article>
+
             {% endfor %}
 
         </div>
 
     </div>
 </section>
+
 {% endif %}
+
 
 {% endblock %}

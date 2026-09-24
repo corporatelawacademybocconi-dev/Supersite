@@ -28,66 +28,60 @@
 </div>
 
 
-<section class="page-hero">
-    <div class="page-hero-inner">
+<article class="article-detail">
 
-        {% if article.category %}
-        <p class="page-hero-label">
-            {{ article.category }}
-        </p>
-        {% endif %}
-
-        <h1 class="page-hero-title">
-            {{ article.title }}
-        </h1>
-
-        {% if article.excerpt %}
-        <p class="page-hero-text">
-            {{ article.excerpt }}
-        </p>
-        {% endif %}
-
-
-        {% if article.cover_image_url %}
-        <section class="article-cover-wrap">
-            <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
-        </section>
-        {% endif %}
-
-
-        <div class="article-meta">
-
-            <span>
-                {{ article.content | reading_time }} min read
-            </span>
-
-
-            {% if article.author %}
-            <span>
-                By
-                <a href="{{ url_for('person_detail', slug=article.author.slug) }}" class="author-link">
-                    {{ article.author.name }}
-                </a>
-            </span>
-            {% endif %}
-
+    <header class="article-header">
+        <div class="article-header-inner">
 
             {% if article.category %}
-            <span>
+            <p class="article-kicker">
                 {{ article.category }}
-            </span>
+            </p>
+            {% endif %}
+
+            <h1 class="article-detail-title">
+                {{ article.title }}
+            </h1>
+
+            {% if article.excerpt %}
+            <p class="article-deck">
+                {{ article.excerpt }}
+            </p>
             {% endif %}
 
 
-            {% if article.published_at %}
-            <span>
-                {{ article.published_at[:10] }}
-            </span>
-            {% else %}
-            <span>
-                Date forthcoming
-            </span>
-            {% endif %}
+            <div class="article-detail-meta">
+
+                {% if article.author %}
+                <span>
+                    By
+                    <a href="{{ url_for('person_detail', slug=article.author.slug) }}">
+                        {{ article.author.name }}
+                    </a>
+                </span>
+                {% endif %}
+
+                {% if article.published_at %}
+                <span>
+                    {{ article.published_at[:10] }}
+                </span>
+                {% else %}
+                <span>
+                    Date forthcoming
+                </span>
+                {% endif %}
+
+                <span>
+                    {{ article.content | reading_time }} min read
+                </span>
+
+                {% if article.category %}
+                <span>
+                    {{ article.category }}
+                </span>
+                {% endif %}
+
+            </div>
 
 
             {% if article.pdf_url %}
@@ -100,19 +94,22 @@
             {% endif %}
 
         </div>
+    </header>
 
+
+    {% if article.cover_image_url %}
+    <div class="article-cover-wrap">
+        <img src="{{ article.cover_image_url }}" alt="{{ article.title }}" class="article-cover-image">
     </div>
-</section>
+    {% endif %}
 
 
-<section class="section">
-    <div class="container">
-
-        <article class="prose">
+    <section class="article-body">
+        <div class="rich-text">
             {{ article.content | safe }}
-        </article>
+        </div>
+    </section>
 
-    </div>
-</section>
+</article>
 
 {% endblock %}
