@@ -4,74 +4,162 @@
 
 {% block admin_content %}
 
-<section class="page-hero">
+<section class="page-hero page-hero--admin">
     <div class="page-hero-inner">
         <p class="page-hero-label">Reserved Area</p>
         <h1 class="page-hero-title">Create Journal Edition</h1>
+        <p class="page-hero-text">
+            Create an edition and connect it to existing published articles.
+        </p>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
 
-        <form method="POST" class="reserved-login-form">
+        <form method="POST" class="journal-admin-form">
 
-            <input type="text" name="title" placeholder="Edition Title" required>
+            <fieldset class="journal-form-section">
+                <div class="journal-form-section__heading">
+                    <div>
+                        <legend>Edition details</legend>
+                        <p>Enter the principal information for this edition.</p>
+                    </div>
+                </div>
 
-            <input type="text" name="slug" placeholder="volume-1-issue-1" required>
+                <div class="journal-form-grid">
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="title">Edition title</label>
+                        <input type="text" id="title" name="title" placeholder="The Future of Corporate Governance"
+                            required>
+                    </div>
 
-            <textarea name="description" rows="5" placeholder="Description"></textarea>
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="slug">URL slug</label>
+                        <input type="text" id="slug" name="slug" placeholder="volume-1-issue-1"
+                            pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required>
+                        <small>
+                            Use lowercase letters, numbers and hyphens only.
+                        </small>
+                    </div>
 
-            <input type="url" name="pdf_url" placeholder="PDF URL" required>
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="5"
+                            placeholder="Briefly introduce this Journal edition"></textarea>
+                    </div>
 
-            <input type="url" name="cover_image_url" placeholder="Cover Image URL">
+                    <div class="journal-form-field">
+                        <label for="volume">Volume</label>
+                        <input type="number" id="volume" name="volume" min="1" placeholder="1">
+                    </div>
 
-            <input type="number" name="volume" placeholder="Volume">
+                    <div class="journal-form-field">
+                        <label for="issue">Issue</label>
+                        <input type="number" id="issue" name="issue" min="1" placeholder="1">
+                    </div>
 
-            <input type="number" name="issue" placeholder="Issue">
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="publication_date">Publication date</label>
+                        <input type="date" id="publication_date" name="publication_date">
+                    </div>
+                </div>
+            </fieldset>
 
-            <input type="date" name="publication_date">
-            <fieldset class="admin-form-section">
-                <legend>Selected readings</legend>
+            <fieldset class="journal-form-section">
+                <div class="journal-form-section__heading">
+                    <div>
+                        <legend>Publication assets</legend>
+                        <p>Add the edition PDF and its cover image.</p>
+                    </div>
+                </div>
 
-                <p class="form-help">
-                    Select the published articles that belong to this edition.
-                </p>
+                <div class="journal-form-grid">
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="pdf_url">Journal PDF URL</label>
+                        <input type="url" id="pdf_url" name="pdf_url" placeholder="https://..." required>
+                    </div>
+
+                    <div class="journal-form-field journal-form-field--full">
+                        <label for="cover_image_url">Cover image URL</label>
+                        <input type="url" id="cover_image_url" name="cover_image_url" placeholder="https://...">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="journal-form-section">
+                <div class="journal-form-section__heading">
+                    <div>
+                        <legend>Selected readings</legend>
+                        <p>
+                            Select the published articles included in this
+                            edition.
+                        </p>
+                    </div>
+
+                    <span class="journal-article-count">
+                        {{ articles|length }} available
+                    </span>
+                </div>
 
                 {% if articles %}
-                <div class="article-selection-list">
+                <div class="journal-article-list">
                     {% for article in articles %}
-                    <label class="article-selection-item">
+                    <label class="journal-article-option">
                         <input type="checkbox" name="selected_article_ids" value="{{ article.id }}">
 
-                        <span class="article-selection-item__content">
+                        <span class="journal-article-option__body">
                             <strong>{{ article.title }}</strong>
 
                             {% if article.published_at %}
-                            <span>{{ article.published_at[:10] }}</span>
+                            <span class="journal-article-option__date">
+                                Published
+                                {{ article.published_at[:10] }}
+                            </span>
                             {% endif %}
                         </span>
                     </label>
                     {% endfor %}
                 </div>
                 {% else %}
-                <p>No published articles are currently available.</p>
+                <div class="journal-empty-state">
+                    No published articles are currently available.
+                </div>
                 {% endif %}
             </fieldset>
 
-            <select name="status">
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-            </select>
+            <fieldset class="journal-form-section">
+                <div class="journal-form-section__heading">
+                    <div>
+                        <legend>Publishing</legend>
+                        <p>Control the visibility and status of this edition.</p>
+                    </div>
+                </div>
 
-            <label>
-                <input type="checkbox" name="is_current">
-                Current Edition
-            </label>
+                <div class="journal-form-field">
+                    <label for="status">Status</label>
 
-            <button type="submit" class="btn btn-primary">
-                Create Edition
-            </button>
+                    <select id="status" name="status">
+                        <option value="draft">Draft</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+
+                <label class="checkbox-field">
+                    <input type="checkbox" name="is_current">
+                    <span>Set as the current edition</span>
+                </label>
+            </fieldset>
+
+            <div class="journal-form-actions">
+                <a href="{{ url_for('admin_journal') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    Create Edition
+                </button>
+            </div>
 
         </form>
 
