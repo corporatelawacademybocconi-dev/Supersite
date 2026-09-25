@@ -1332,6 +1332,12 @@ def our_work():
 @app.route("/our-work/articles")
 def articles():
     selected_tag = request.args.get("tag")
+    
+    page = request.args.get("page", 1, type=int)
+    per_page = 12
+
+    if page < 1:
+        page = 1
 
     tags_response = (
         supabase
@@ -1397,11 +1403,26 @@ def articles():
         None
     )
 
-    latest_articles = [
-        article
-        for article in articles
-        if not article.get("is_featured")
+    latest_articles_all = [
+    article
+    for article in articles
+    if not article.get("is_featured")
     ]
+
+    total_latest_articles = len(latest_articles_all)
+
+    total_pages = max(
+        1,
+        (total_latest_articles + per_page - 1) // per_page
+    )
+
+    if page > total_pages:
+        page = total_pages
+
+    start = (page - 1) * per_page
+    end = start + per_page
+
+    latest_articles = latest_articles_all[start:end]
 
     most_read = sorted(
         articles,
@@ -1417,6 +1438,9 @@ def articles():
         all_tags=all_tags,
         selected_tag=selected_tag,
         most_read=most_read,
+        page=page,
+        total_pages=total_pages,
+        total_latest_articles=total_latest_articles,
     )
 
 @app.route("/our-work/articles/<slug>")
