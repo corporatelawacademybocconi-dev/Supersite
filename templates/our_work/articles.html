@@ -385,6 +385,77 @@
 
         </div>
 
+
+        <!-- =====================================================
+             PAGINATION
+             ===================================================== -->
+
+        {% if total_pages > 1 %}
+
+        <nav class="article-pagination" aria-label="Article pagination">
+
+            <div class="article-pagination-side">
+
+                {% if page > 1 %}
+
+                <a href="{{ url_for(
+                        'articles',
+                        page=page - 1,
+                        tag=selected_tag if selected_tag and selected_tag != 'all' else None
+                    ) }}" class="pagination-direction" rel="prev">
+                    ← Previous
+                </a>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="article-pagination-pages">
+
+                {% for page_number in range(1, total_pages + 1) %}
+
+                {% if page_number == page %}
+
+                <span class="pagination-number active" aria-current="page">
+                    {{ "%02d"|format(page_number) }}
+                </span>
+
+                {% else %}
+
+                <a href="{{ url_for(
+                            'articles',
+                            page=page_number,
+                            tag=selected_tag if selected_tag and selected_tag != 'all' else None
+                        ) }}" class="pagination-number">
+                    {{ "%02d"|format(page_number) }}
+                </a>
+
+                {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="article-pagination-side article-pagination-side--right">
+
+                {% if page < total_pages %} <a href="{{ url_for(
+                        'articles',
+                        page=page + 1,
+                        tag=selected_tag if selected_tag and selected_tag != 'all' else None
+                    ) }}" class="pagination-direction" rel="next">
+                    Next →
+                    </a>
+
+                    {% endif %}
+
+            </div>
+
+        </nav>
+
+        {% endif %}
+
     </div>
 </section>
 
