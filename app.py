@@ -1333,6 +1333,8 @@ def our_work():
 def articles():
     selected_tag = request.args.get("tag")
     
+    search_query = request.args.get("q", "").strip()
+    
     page = request.args.get("page", 1, type=int)
     per_page = 12
 
@@ -1381,6 +1383,30 @@ def articles():
             for link in author_links
             if link.get("person")
         ]
+        # Search articles by title, excerpt, content, author or tag.
+        if search_query:
+            query_lower = search_query.lower()
+
+            articles = [
+                article
+                for article in articles
+                if (
+                    query_lower in (article.get("title") or "").lower()
+                    or query_lower in (article.get("excerpt") or "").lower()
+                    or query_lower in (article.get("content") or "").lower()
+
+                    or any(
+                        query_lower in (author.get("name") or "").lower()
+                        for author in (article.get("authors") or [])
+                    )
+
+                    or any(
+                        item.get("tag")
+                        and query_lower in (item["tag"].get("name") or "").lower()
+                        for item in (article.get("tags") or [])
+                    )
+                )
+            ]
 
     # Filter articles by their selected tag.
     if selected_tag and selected_tag != "all":
@@ -1441,6 +1467,7 @@ def articles():
         page=page,
         total_pages=total_pages,
         total_latest_articles=total_latest_articles,
+        search_query=search_query,
     )
 
 @app.route("/our-work/articles/<slug>")

@@ -173,6 +173,74 @@
         color: var(--charcoal);
     }
 
+    /* =========================================================
+   ARTICLE SEARCH
+   ========================================================= */
+
+    .articles-page .article-search-form {
+        width: 100%;
+    }
+
+    .articles-page .article-search-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+
+        align-items: stretch;
+
+        gap: 14px;
+    }
+
+    .articles-page .article-search-row .search-input {
+        min-width: 0;
+    }
+
+    .articles-page .article-search-button {
+        min-width: 118px;
+
+        padding: 0 22px;
+
+        border: 1px solid var(--stone);
+
+        background: var(--stone);
+
+        color: var(--charcoal);
+
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+
+        cursor: pointer;
+
+        transition:
+            background-color 180ms ease,
+            color 180ms ease,
+            border-color 180ms ease,
+            transform 180ms ease;
+    }
+
+    .articles-page .article-search-button:hover {
+        background: transparent;
+
+        color: var(--stone);
+
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 650px) {
+
+        .articles-page .article-search-row {
+            grid-template-columns: 1fr;
+        }
+
+        .articles-page .article-search-button {
+            min-height: 46px;
+        }
+
+    }
+
 
     /* =========================================================
    FEATURED ARTICLE
@@ -1057,8 +1125,25 @@
 
             <div class="articles-toolbar">
 
-                <input type="search" class="search-input" placeholder="Search articles, authors, tags..."
-                    aria-label="Search articles">
+                <form action="{{ url_for('articles') }}" method="GET" class="article-search-form">
+
+                    {% if selected_tag and selected_tag != 'all' %}
+                    <input type="hidden" name="tag" value="{{ selected_tag }}">
+                    {% endif %}
+
+                    <div class="article-search-row">
+
+                        <input type="search" name="q" class="search-input"
+                            placeholder="Search articles, authors, tags..." value="{{ search_query or '' }}"
+                            aria-label="Search articles">
+
+                        <button type="submit" class="article-search-button">
+                            Search
+                        </button>
+
+                    </div>
+
+                </form>
 
 
                 <div class="tag-filter-row">
