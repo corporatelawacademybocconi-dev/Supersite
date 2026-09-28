@@ -3287,3 +3287,24 @@ body {
     }
 
 }
+
+/* Wider article creation form */
+.reserved-login-form.article-editor-form {
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* Ensure TinyMCE occupies the full form width */
+.article-editor-form .tox-tinymce {
+    width: 100% !important;
+}
+
+/* Keep fields consistently full-width */
+.article-editor-form>input[type="text"],
+.article-editor-form>input[type="search"],
+.article-editor-form>input[type="url"],
+.article-editor-form>textarea,
+.article-editor-form>select {
+    width: 100%;
+    box-sizing: border-box;
+}
