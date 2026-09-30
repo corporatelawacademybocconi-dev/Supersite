@@ -6,7 +6,8 @@
 
 <section class="hero">
 
-    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" webkit-playsinline
+        disablepictureinpicture aria-hidden="true" onloadeddata="this.muted = true; this.play();">
         <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
     </video>
 
@@ -94,30 +95,28 @@
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    window.addEventListener("load", async function () {
         const video = document.getElementById("hero-video");
 
         if (!video) {
+            console.error("Hero video element was not found.");
             return;
         }
 
+        video.controls = false;
         video.muted = true;
         video.defaultMuted = true;
-        video.setAttribute("muted", "");
-        video.removeAttribute("controls");
+        video.volume = 0;
 
-        function startVideo() {
-            video.play().catch(function (error) {
-                console.warn("Safari blocked autoplay:", error);
-            });
-        }
-
-        if (video.readyState >= 2) {
-            startVideo();
-        } else {
-            video.addEventListener("canplay", startVideo, {
-                once: true
-            });
+        try {
+            await video.play();
+            console.log("Hero video is playing.");
+        } catch (error) {
+            console.error(
+                "Hero autoplay failed:",
+                error.name,
+                error.message
+            );
         }
     });
 </script>
