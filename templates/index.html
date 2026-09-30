@@ -95,11 +95,10 @@
 </section>
 
 <script>
-    window.addEventListener("load", async function () {
+    window.addEventListener("load", function () {
         const video = document.getElementById("hero-video");
 
         if (!video) {
-            console.error("Hero video element was not found.");
             return;
         }
 
@@ -108,16 +107,28 @@
         video.defaultMuted = true;
         video.volume = 0;
 
-        try {
-            await video.play();
-            console.log("Hero video is playing.");
-        } catch (error) {
-            console.error(
-                "Hero autoplay failed:",
-                error.name,
-                error.message
-            );
+        function playVideo() {
+            video.play().catch(function () {
+                // Safari is still blocking playback.
+            });
         }
+
+        /*
+        Attempt normal autoplay.
+        */
+        playVideo();
+
+        /*
+        If Safari blocks autoplay, the first user interaction
+        gives the page permission to start the video.
+        */
+        ["pointerdown", "touchstart", "keydown"].forEach(function (eventName) {
+            document.addEventListener(
+                eventName,
+                playVideo,
+                { once: true }
+            );
+        });
     });
 </script>
 {% endblock %}
