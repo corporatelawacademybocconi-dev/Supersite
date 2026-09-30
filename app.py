@@ -1701,7 +1701,6 @@ def journal_detail(slug):
             "title, "
             "slug, "
             "excerpt, "
-            "image_url, "
             "published_at, "
             "author_links:article_authors("
             "author_order, "
