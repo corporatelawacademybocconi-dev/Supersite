@@ -4006,3 +4006,40 @@ body {
         border-right: 0;
     }
 }
+
+/* Keep the title vertically stacked */
+
+.hero-title span {
+    display: block;
+}
+
+/* Hide Safari's native video play controls */
+
+.hero-video {
+    pointer-events: none;
+}
+
+.hero-video::-webkit-media-controls {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+.hero-video::-webkit-media-controls-panel {
+    display: none !important;
+}
+
+.hero-video::-webkit-media-controls-play-button {
+    display: none !important;
+}
+
+.hero-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.hero-video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    appearance: none;
+    -webkit-appearance: none;
+}

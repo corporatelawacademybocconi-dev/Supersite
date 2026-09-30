@@ -6,7 +6,8 @@
 
 <section class="hero">
 
-    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto"
+        controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture aria-hidden="true">
         <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
     </video>
 
@@ -19,8 +20,9 @@
         </p>
 
         <h1 class="hero-title">
-            Learn. Lead.<br>
-            Inspire.
+            <span>Learn</span>
+            <span>Lead</span>
+            <span>Inspire</span>
         </h1>
 
         <p class="hero-subtitle">
@@ -112,5 +114,46 @@
         }
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("hero-video");
 
+        if (!video) {
+            return;
+        }
+
+        function startHeroVideo() {
+            video.muted = true;
+            video.defaultMuted = true;
+            video.removeAttribute("controls");
+
+            const playback = video.play();
+
+            if (playback !== undefined) {
+                playback.catch(function (error) {
+                    console.warn("Hero video could not autoplay:", error);
+                });
+            }
+        }
+
+        if (video.readyState >= 2) {
+            startHeroVideo();
+        } else {
+            video.addEventListener(
+                "canplay",
+                startHeroVideo,
+                { once: true }
+            );
+        }
+
+        document.addEventListener(
+            "visibilitychange",
+            function () {
+                if (!document.hidden && video.paused) {
+                    startHeroVideo();
+                }
+            }
+        );
+    });
+</script>
 {% endblock %}
