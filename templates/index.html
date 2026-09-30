@@ -6,8 +6,7 @@
 
 <section class="hero">
 
-    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture
-        aria-hidden="true">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
         <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
     </video>
 
@@ -96,10 +95,9 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const hero = document.querySelector(".hero");
         const video = document.getElementById("hero-video");
 
-        if (!hero || !video) {
+        if (!video) {
             return;
         }
 
@@ -108,42 +106,19 @@
         video.setAttribute("muted", "");
         video.removeAttribute("controls");
 
-        function attemptPlayback() {
-            const playback = video.play();
-
-            if (playback !== undefined) {
-                playback
-                    .then(function () {
-                        hero.classList.add("hero--video-playing");
-                        hero.classList.remove("hero--video-blocked");
-                    })
-                    .catch(function () {
-                        /*
-                        Safari has blocked autoplay.
-                        Hide the inactive video and use its first frame
-                        or the hero background as the fallback.
-                        */
-                        hero.classList.add("hero--video-blocked");
-                        hero.classList.remove("hero--video-playing");
-                    });
-            }
+        function startVideo() {
+            video.play().catch(function (error) {
+                console.warn("Safari blocked autoplay:", error);
+            });
         }
 
         if (video.readyState >= 2) {
-            attemptPlayback();
+            startVideo();
         } else {
-            video.addEventListener(
-                "canplay",
-                attemptPlayback,
-                { once: true }
-            );
+            video.addEventListener("canplay", startVideo, {
+                once: true
+            });
         }
-
-        document.addEventListener("visibilitychange", function () {
-            if (!document.hidden && video.paused) {
-                attemptPlayback();
-            }
-        });
     });
 </script>
 {% endblock %}
