@@ -2,30 +2,117 @@
 
 {% block content %}
 
-<section class="page-header">
-    <div class="container">
-        <h1>{{ edition.title }}</h1>
+<main class="journal-edition">
 
-        {% if edition.description %}
-        <p>{{ edition.description }}</p>
-        {% endif %}
-    </div>
-</section>
+    <section class="journal-edition__hero">
+        <div class="container journal-edition__hero-grid">
 
-<section class="container">
+            <div class="journal-edition__cover" aria-hidden="true">
+                <div class="journal-edition__cover-inner">
+                    <span class="journal-edition__cover-label">
+                        Corporate Law Academy
+                    </span>
 
-    <p>
-        Volume {{ edition.volume }} · Issue {{ edition.issue }}
-    </p>
+                    <div class="journal-edition__cover-title">
+                        <span>The</span>
+                        <strong>Journal</strong>
+                    </div>
 
-    <p>
-        Published: {{ edition.publication_date }}
-    </p>
+                    <div class="journal-edition__cover-meta">
+                        Volume {{ edition.volume }}<br>
+                        Issue {{ edition.issue }}
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ edition.pdf_url }}" target="_blank">
-        View Journal PDF
-    </a>
+            <div class="journal-edition__introduction">
 
-</section>
+                <p class="journal-edition__eyebrow">
+                    The Corporate Law Academy Journal
+                </p>
+
+                <h1>{{ edition.title }}</h1>
+
+                {% if edition.description %}
+                <p class="journal-edition__description">
+                    {{ edition.description }}
+                </p>
+                {% endif %}
+
+                <dl class="journal-edition__metadata">
+                    <div>
+                        <dt>Volume</dt>
+                        <dd>{{ edition.volume }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Issue</dt>
+                        <dd>{{ edition.issue }}</dd>
+                    </div>
+
+                    <div>
+                        <dt>Published</dt>
+                        <dd>
+                            <time datetime="{{ edition.publication_date }}">
+                                {{ edition.publication_date }}
+                            </time>
+                        </dd>
+                    </div>
+                </dl>
+
+                {% if edition.pdf_url %}
+                <div class="journal-edition__actions">
+                    <a class="button button--journal" href="{{ edition.pdf_url }}" target="_blank"
+                        rel="noopener noreferrer">
+                        Read the full journal
+                        <span aria-hidden="true">↗</span>
+                    </a>
+
+                    <span class="journal-edition__format">
+                        PDF edition
+                    </span>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </section>
+
+    <section class="journal-edition__about">
+        <div class="container journal-edition__about-grid">
+
+            <div>
+                <p class="journal-edition__section-label">
+                    About this edition
+                </p>
+
+                <h2>Legal scholarship in context.</h2>
+            </div>
+
+            <div class="journal-edition__about-copy">
+                {% if edition.description %}
+                <p>{{ edition.description }}</p>
+                {% else %}
+                <p>
+                    This edition brings together legal analysis, academic
+                    commentary and commercially focused perspectives from the
+                    Corporate Law Academy community.
+                </p>
+                {% endif %}
+
+                {% if edition.pdf_url %}
+                <a class="journal-edition__text-link" href="{{ edition.pdf_url }}" target="_blank"
+                    rel="noopener noreferrer">
+                    Open the complete edition
+                    <span aria-hidden="true">→</span>
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </section>
+
+</main>
 
 {% endblock %}
