@@ -4,11 +4,19 @@
 
 <main class="journal-edition">
 
+    <!-- Journal hero -->
     <section class="journal-edition__hero">
         <div class="container journal-edition__hero-grid">
 
-            <div class="journal-edition__cover" aria-hidden="true">
+            <!-- Dynamic journal cover -->
+            <div class="journal-edition__cover">
+
+                {% if edition.cover_image_url %}
+                <img class="journal-edition__cover-image" src="{{ edition.cover_image_url }}"
+                    alt="Cover of {{ edition.title }}">
+                {% else %}
                 <div class="journal-edition__cover-inner">
+
                     <span class="journal-edition__cover-label">
                         Corporate Law Academy
                     </span>
@@ -19,12 +27,25 @@
                     </div>
 
                     <div class="journal-edition__cover-meta">
-                        Volume {{ edition.volume }}<br>
+                        {% if edition.volume %}
+                        Volume {{ edition.volume }}
+                        {% endif %}
+
+                        {% if edition.volume and edition.issue %}
+                        <br>
+                        {% endif %}
+
+                        {% if edition.issue %}
                         Issue {{ edition.issue }}
+                        {% endif %}
                     </div>
+
                 </div>
+                {% endif %}
+
             </div>
 
+            <!-- Edition information -->
             <div class="journal-edition__introduction">
 
                 <p class="journal-edition__eyebrow">
@@ -39,17 +60,27 @@
                 </p>
                 {% endif %}
 
+                {% if edition.volume
+                or edition.issue
+                or edition.publication_date
+                %}
                 <dl class="journal-edition__metadata">
+
+                    {% if edition.volume %}
                     <div>
                         <dt>Volume</dt>
                         <dd>{{ edition.volume }}</dd>
                     </div>
+                    {% endif %}
 
+                    {% if edition.issue %}
                     <div>
                         <dt>Issue</dt>
                         <dd>{{ edition.issue }}</dd>
                     </div>
+                    {% endif %}
 
+                    {% if edition.publication_date %}
                     <div>
                         <dt>Published</dt>
                         <dd>
@@ -58,10 +89,14 @@
                             </time>
                         </dd>
                     </div>
+                    {% endif %}
+
                 </dl>
+                {% endif %}
 
                 {% if edition.pdf_url %}
                 <div class="journal-edition__actions">
+
                     <a class="button button--journal" href="{{ edition.pdf_url }}" target="_blank"
                         rel="noopener noreferrer">
                         Read the full journal
@@ -71,6 +106,7 @@
                     <span class="journal-edition__format">
                         PDF edition
                     </span>
+
                 </div>
                 {% endif %}
 
@@ -79,27 +115,131 @@
         </div>
     </section>
 
+    <!-- Dynamic table of contents -->
+    {% if edition.articles %}
+    <section class="journal-contents">
+        <div class="container">
+
+            <header class="journal-contents__header">
+
+                <div>
+                    <p class="journal-edition__section-label">
+                        In this edition
+                    </p>
+
+                    <h2>Contents</h2>
+                </div>
+
+                <p class="journal-contents__count">
+                    {{ edition.articles | length }}
+                    contribution{% if edition.articles | length != 1 %}s{% endif %}
+                </p>
+
+            </header>
+
+            <ol class="journal-contents__list">
+
+                {% for article in edition.articles %}
+                <li class="journal-contents__item">
+
+                    <span class="journal-contents__number">
+                        {{ "%02d" | format(loop.index) }}
+                    </span>
+
+                    <div class="journal-contents__article">
+
+                        <h3>
+                            <a href="{{ url_for(
+                                            'article_detail',
+                                            slug=article.slug
+                                        ) }}">
+                                {{ article.title }}
+                            </a>
+                        </h3>
+
+                        {% if article.authors %}
+                        <p class="journal-contents__author">
+                            By
+
+                            {% for author in article.authors %}
+                            {% if author.slug %}
+                            <a href="{{ url_for(
+                                                        'person_detail',
+                                                        slug=author.slug
+                                                    ) }}">
+                                {{ author.name }}
+                            </a>
+                            {% else %}
+                            {{ author.name }}
+                            {% endif %}
+
+                            {% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+
+                        {% if article.excerpt %}
+                        <p class="journal-contents__excerpt">
+                            {{ article.excerpt }}
+                        </p>
+                        {% endif %}
+
+                    </div>
+
+                    <a class="journal-contents__read" href="{{ url_for(
+                                    'article_detail',
+                                    slug=article.slug
+                                ) }}" aria-label="Read {{ article.title }}">
+                        Read
+                        <span aria-hidden="true">→</span>
+                    </a>
+
+                </li>
+                {% endfor %}
+
+            </ol>
+
+        </div>
+    </section>
+
+    {% else %}
+    <section class="journal-contents journal-contents--empty">
+        <div class="container">
+
+            <p class="journal-edition__section-label">
+                In this edition
+            </p>
+
+            <h2>Contents</h2>
+
+            <p class="journal-contents__empty-message">
+                No individual contributions have been added to this
+                edition yet.
+            </p>
+
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Closing journal information -->
     <section class="journal-edition__about">
         <div class="container journal-edition__about-grid">
 
             <div>
                 <p class="journal-edition__section-label">
-                    About this edition
+                    The Journal
                 </p>
 
                 <h2>Legal scholarship in context.</h2>
             </div>
 
             <div class="journal-edition__about-copy">
-                {% if edition.description %}
-                <p>{{ edition.description }}</p>
-                {% else %}
+
                 <p>
-                    This edition brings together legal analysis, academic
-                    commentary and commercially focused perspectives from the
-                    Corporate Law Academy community.
+                    The Corporate Law Academy Journal brings together legal
+                    analysis, academic commentary and commercially focused
+                    perspectives from our community.
                 </p>
-                {% endif %}
 
                 {% if edition.pdf_url %}
                 <a class="journal-edition__text-link" href="{{ edition.pdf_url }}" target="_blank"
@@ -108,6 +248,7 @@
                     <span aria-hidden="true">→</span>
                 </a>
                 {% endif %}
+
             </div>
 
         </div>

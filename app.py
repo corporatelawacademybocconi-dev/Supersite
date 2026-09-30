@@ -1670,23 +1670,86 @@ def journal():
         editions=editions
 
     )
+
 @app.route("/journal/<slug>")
 def journal_detail(slug):
-    response = (
+    # Load the requested published journal edition.
+    edition_response = (
         supabase
         .table("journal_editions")
         .select("*")
         .eq("slug", slug)
         .eq("status", "published")
-        .single()
+        .limit(1)
         .execute()
     )
 
-    edition = response.data
+    if not edition_response.data:
+        abort(404)
+
+    edition = edition_response.data[0]
+
+    # Load the articles linked to this edition.
+    articles_response = (
+        supabase
+        .table("journal_articles")
+        .select(
+            "display_order, "
+            "is_featured, "
+            "article:articles("
+            "id, "
+            "title, "
+            "slug, "
+            "excerpt, "
+            "image_url, "
+            "published_at, "
+            "author_links:article_authors("
+            "author_order, "
+            "person:people("
+            "id, "
+            "name, "
+            "slug"
+            ")"
+            ")"
+            ")"
+        )
+        .eq("journal_edition_id", edition["id"])
+        .order("display_order")
+        .execute()
+    )
+
+    journal_articles = []
+
+    for relationship in articles_response.data or []:
+        article = relationship.get("article")
+
+        if not article:
+            continue
+
+        # Convert the article-author relationships into a simple authors list.
+        author_links = article.pop("author_links", []) or []
+
+        author_links.sort(
+            key=lambda link: link.get("author_order") or 0
+        )
+
+        article["authors"] = [
+            link["person"]
+            for link in author_links
+            if link.get("person")
+        ]
+
+        article["display_order"] = relationship.get("display_order")
+        article["is_featured"] = relationship.get("is_featured", False)
+
+        journal_articles.append(article)
+
+    # Make the articles available as edition.articles in Jinja.
+    edition["articles"] = journal_articles
 
     return render_template(
         "our_work/journal_detail.html",
-        edition=edition
+        edition=edition,
     )
 
 @app.route("/networking")
