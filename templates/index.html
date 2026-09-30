@@ -6,8 +6,8 @@
 
 <section class="hero">
 
-    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto"
-        controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture aria-hidden="true">
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" disablepictureinpicture
+        aria-hidden="true">
         <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
     </video>
 
@@ -96,64 +96,54 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const heroVideo = document.getElementById("hero-video");
-
-        if (!heroVideo) {
-            return;
-        }
-
-        heroVideo.muted = true;
-        heroVideo.defaultMuted = true;
-
-        const playAttempt = heroVideo.play();
-
-        if (playAttempt !== undefined) {
-            playAttempt.catch(function (error) {
-                console.warn("Hero video autoplay was blocked:", error);
-            });
-        }
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+        const hero = document.querySelector(".hero");
         const video = document.getElementById("hero-video");
 
-        if (!video) {
+        if (!hero || !video) {
             return;
         }
 
-        function startHeroVideo() {
-            video.muted = true;
-            video.defaultMuted = true;
-            video.removeAttribute("controls");
+        video.muted = true;
+        video.defaultMuted = true;
+        video.setAttribute("muted", "");
+        video.removeAttribute("controls");
 
+        function attemptPlayback() {
             const playback = video.play();
 
             if (playback !== undefined) {
-                playback.catch(function (error) {
-                    console.warn("Hero video could not autoplay:", error);
-                });
+                playback
+                    .then(function () {
+                        hero.classList.add("hero--video-playing");
+                        hero.classList.remove("hero--video-blocked");
+                    })
+                    .catch(function () {
+                        /*
+                        Safari has blocked autoplay.
+                        Hide the inactive video and use its first frame
+                        or the hero background as the fallback.
+                        */
+                        hero.classList.add("hero--video-blocked");
+                        hero.classList.remove("hero--video-playing");
+                    });
             }
         }
 
         if (video.readyState >= 2) {
-            startHeroVideo();
+            attemptPlayback();
         } else {
             video.addEventListener(
                 "canplay",
-                startHeroVideo,
+                attemptPlayback,
                 { once: true }
             );
         }
 
-        document.addEventListener(
-            "visibilitychange",
-            function () {
-                if (!document.hidden && video.paused) {
-                    startHeroVideo();
-                }
+        document.addEventListener("visibilitychange", function () {
+            if (!document.hidden && video.paused) {
+                attemptPlayback();
             }
-        );
+        });
     });
 </script>
 {% endblock %}

@@ -4043,3 +4043,60 @@ body {
     appearance: none;
     -webkit-appearance: none;
 }
+
+/* Reposition the desktop hero */
+
+@media (min-width: 769px) {
+    .hero-content {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding-right: clamp(2rem, 5vw, 6rem);
+        padding-left: clamp(2.5rem, 5vw, 6rem);
+    }
+
+    /*
+    Center the video horizontally and anchor it to the bottom.
+    This reveals more of the lower part of the footage.
+    */
+    .hero-video {
+        object-position: 50% 100%;
+    }
+}
+
+/* Remove Safari's native video UI */
+
+.hero-video {
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-enclosure,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-play-button,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    -webkit-appearance: none !important;
+}
+
+/*
+If desktop Safari refuses autoplay, remove the video element
+visually so its native play overlay cannot appear.
+*/
+.hero--video-blocked .hero-video {
+    visibility: hidden;
+}
+
+/*
+Use the video's representative image as the fallback.
+Replace this URL with a screenshot from the video.
+*/
+.hero--video-blocked {
+    background:
+        url("/static/images/milan-poster.jpg") center bottom / cover no-repeat;
+}
