@@ -3825,7 +3825,11 @@ body {
     }
 }
 
-.home-hero {
+/* =========================================================
+   CORRECTED VIDEO HERO
+   ========================================================= */
+
+.hero {
     position: relative;
     min-height: calc(100svh - 110px);
     display: flex;
@@ -3835,50 +3839,54 @@ body {
     color: #e8e0d5;
 }
 
-.home-hero__video {
+.hero-video {
     position: absolute;
     inset: 0;
     z-index: 0;
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 52%;
+    object-position: center;
+    pointer-events: none;
 }
 
-/*
-The stronger shade is only behind the text.
-The right side remains clearer so that Milan is visible.
-*/
-.home-hero__overlay {
+.hero-video::-webkit-media-controls {
+    display: none !important;
+}
+
+.hero-video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    appearance: none;
+}
+
+.hero-overlay {
     position: absolute;
     inset: 0;
     z-index: 1;
+    pointer-events: none;
     background:
         linear-gradient(90deg,
-            rgba(19, 19, 20, 0.9) 0%,
-            rgba(19, 19, 20, 0.7) 37%,
-            rgba(19, 19, 20, 0.25) 70%,
-            rgba(19, 19, 20, 0.12) 100%),
-        linear-gradient(0deg,
-            rgba(19, 19, 20, 0.48) 0%,
-            transparent 45%);
+            rgba(20, 20, 21, 0.88) 0%,
+            rgba(20, 20, 21, 0.64) 40%,
+            rgba(20, 20, 21, 0.2) 75%,
+            rgba(20, 20, 21, 0.08) 100%),
+        linear-gradient(to top,
+            rgba(20, 20, 21, 0.65) 0%,
+            transparent 48%);
 }
 
-.home-hero__container {
+.hero-content {
     position: relative;
     z-index: 2;
-    width: 100%;
-    padding-top: clamp(5rem, 10vh, 8rem);
-    padding-bottom: clamp(5rem, 10vh, 8rem);
+    width: min(100% - 3rem, 1200px);
+    margin-inline: auto;
+    padding: clamp(5rem, 9vh, 7rem) 0 2.5rem;
 }
 
-.home-hero__content {
-    max-width: 760px;
-}
-
-.home-hero__eyebrow {
-    max-width: 600px;
-    margin: 0 0 1.75rem;
+.hero-eyebrow {
+    max-width: 650px;
+    margin: 0 0 1.5rem;
     color: #c8b9a6;
     font-size: 0.75rem;
     font-weight: 600;
@@ -3887,120 +3895,114 @@ The right side remains clearer so that Milan is visible.
     text-transform: uppercase;
 }
 
-.home-hero h1 {
+.hero-title {
+    max-width: 820px;
     margin: 0;
     font-family: Georgia, "Times New Roman", serif;
-    font-size: clamp(3.5rem, 6.5vw, 6.5rem);
+    font-size: clamp(4rem, 7vw, 7rem);
     font-weight: 400;
-    letter-spacing: -0.055em;
-    line-height: 0.94;
-    text-wrap: balance;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
 }
 
-.home-hero__description {
-    max-width: 610px;
+.hero-subtitle {
+    max-width: 620px;
     margin: 2rem 0 0;
     color: rgba(232, 224, 213, 0.84);
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
     line-height: 1.7;
 }
 
-.home-hero__actions {
+.hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-top: 2.5rem;
+    margin-top: 2.25rem;
 }
 
-.home-hero__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 54px;
-    padding: 0.9rem 1.5rem;
-    border: 1px solid #e8e0d5;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition:
-        background-color 180ms ease,
-        border-color 180ms ease,
-        color 180ms ease;
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(110px, 1fr));
+    max-width: 780px;
+    margin-top: clamp(4rem, 9vh, 7rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(232, 224, 213, 0.25);
 }
 
-.home-hero__button--primary {
-    background: #e8e0d5;
-    color: #1c1c1e;
+.stat-item {
+    padding: 0 1.5rem;
+    border-right: 1px solid rgba(232, 224, 213, 0.22);
 }
 
-.home-hero__button--primary:hover {
-    background: #b5a99a;
-    border-color: #b5a99a;
+.stat-item:first-child {
+    padding-left: 0;
 }
 
-.home-hero__button--secondary {
-    background: transparent;
+.stat-item:last-child {
+    border-right: 0;
+}
+
+.stat-number,
+.stat-label {
+    display: block;
+}
+
+.stat-number {
     color: #e8e0d5;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.8rem, 3vw, 2.75rem);
+    line-height: 1;
 }
 
-.home-hero__button--secondary:hover {
-    background: rgba(232, 224, 213, 0.12);
+.stat-label {
+    margin-top: 0.5rem;
+    color: #b5a99a;
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
 }
 
-/* Tablet and mobile */
-
-@media (max-width: 768px) {
-    .home-hero {
-        min-height: calc(100svh - 80px);
-        align-items: flex-end;
+@media (max-width: 700px) {
+    .hero {
+        min-height: 850px;
+        align-items: flex-start;
     }
 
-    .home-hero__video {
+    .hero-video {
         object-position: 60% center;
     }
 
-    .home-hero__overlay {
-        background:
-            linear-gradient(0deg,
-                rgba(19, 19, 20, 0.95) 0%,
-                rgba(19, 19, 20, 0.66) 58%,
-                rgba(19, 19, 20, 0.25) 100%);
+    .hero-overlay {
+        background: linear-gradient(to top,
+                rgba(20, 20, 21, 0.96) 0%,
+                rgba(20, 20, 21, 0.68) 63%,
+                rgba(20, 20, 21, 0.25) 100%);
     }
 
-    .home-hero h1 {
-        font-size: clamp(3.25rem, 14vw, 5rem);
+    .hero-content {
+        padding-top: 6rem;
     }
 
-    .home-hero__description {
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .home-hero__actions {
-        align-items: stretch;
-        flex-direction: column;
+    .hero-title {
+        font-size: clamp(3.5rem, 16vw, 5.25rem);
     }
 
-    .home-hero__button {
-        width: 100%;
-    }
-}
-
-/* Do not animate for visitors who disable motion */
-
-@media (prefers-reduced-motion: reduce) {
-    .home-hero__video {
-        display: none;
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 100%;
     }
 
-    .home-hero {
-        background:
-            linear-gradient(90deg,
-                rgba(19, 19, 20, 0.9),
-                rgba(19, 19, 20, 0.35)),
-            url("/static/images/milan-poster.jpg") center / cover;
+    .stat-item {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(232, 224, 213, 0.2);
+    }
+
+    .stat-item:first-child {
+        padding-left: 1rem;
+    }
+
+    .stat-item:nth-child(2) {
+        border-right: 0;
     }
 }

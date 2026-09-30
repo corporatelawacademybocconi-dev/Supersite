@@ -6,14 +6,13 @@
 
 <section class="hero">
 
-    <!-- Use one video only -->
-    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-        <source src="YOUR_SUPABASE_PUBLIC_VIDEO_URL" type="video/mp4">
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+        <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
     </video>
 
     <div class="hero-overlay"></div>
 
-    <div class="container hero-content">
+    <div class="hero-content">
 
         <p class="hero-eyebrow">
             Corporate Law Academy · Bocconi University
@@ -39,10 +38,7 @@
             </a>
         </div>
 
-    </div>
-
-    <div class="hero-stats">
-        <div class="container hero-stats__inner">
+        <div class="hero-stats">
 
             <div class="stat-item">
                 <span class="stat-number">80+</span>
@@ -65,6 +61,7 @@
             </div>
 
         </div>
+
     </div>
 
 </section>
