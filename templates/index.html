@@ -6,61 +6,77 @@
 
 <section class="hero">
 
-    <video autoplay muted loop playsinline class="hero-video">
-        <source src="{{ url_for('static', filename='videos/home1.mp4') }}" type="video/mp4">
-    </video>
-    <video autoplay muted loop playsinline preload="auto" class="hero-video">
-        <source src="{{ url_for('static', filename='videos/index.mp4') }}" type="video/mp4">
+    <!-- Use one video only -->
+    <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+        <source src="YOUR_SUPABASE_PUBLIC_VIDEO_URL" type="video/mp4">
     </video>
 
     <div class="hero-overlay"></div>
 
-    <div class="hero-content">
-        <p class="hero-eyebrow"> Corporate Law Academy — Bocconi University</p>
+    <div class="container hero-content">
 
-        <h1 class="hero-title">Learn <br> Lead <br>Inspire </h1>
+        <p class="hero-eyebrow">
+            Corporate Law Academy · Bocconi University
+        </p>
+
+        <h1 class="hero-title">
+            Learn. Lead.<br>
+            Inspire.
+        </h1>
 
         <p class="hero-subtitle">
             A student association advancing legal education through research,
-            debate, and international networking.
+            debate and international networking.
         </p>
 
         <div class="hero-actions">
-            <a href="{{ url_for('our_work') }}" class="btn btn-primary">Explore our work</a>
-            <a href="{{ url_for('contact') }}" class="btn btn-secondary">Get in touch</a>
+            <a href="{{ url_for('our_work') }}" class="btn btn-primary">
+                Explore our work
+            </a>
 
-
+            <a href="{{ url_for('contact') }}" class="btn btn-secondary">
+                Get in touch
+            </a>
         </div>
 
-        <div class="hero-stats">
+    </div>
+
+    <div class="hero-stats">
+        <div class="container hero-stats__inner">
+
             <div class="stat-item">
-                <span class="stat-number">+80</span>
+                <span class="stat-number">80+</span>
                 <span class="stat-label">Members</span>
             </div>
+
             <div class="stat-item">
-                <span class="stat-number">+40</span>
+                <span class="stat-number">40+</span>
                 <span class="stat-label">Events</span>
             </div>
+
             <div class="stat-item">
-                <span class="stat-number">+10</span>
+                <span class="stat-number">10+</span>
                 <span class="stat-label">Years active</span>
             </div>
+
             <div class="stat-item">
                 <span class="stat-number">5</span>
                 <span class="stat-label">Focus areas</span>
             </div>
+
         </div>
     </div>
-
-    <div class="scroll-hint" aria-hidden="true"></div>
 
 </section>
 
 <section class="marquee-band marquee-band--topics" aria-label="Areas of focus">
-    <p class="marquee-band__label">Areas of focus</p>
+    <p class="marquee-band__label">
+        Areas of focus
+    </p>
 
     <div class="cla-marquee">
         <div class="cla-marquee__track">
+
             <span>Corporate Governance</span>
             <span>M&amp;A</span>
             <span>Capital Markets</span>
@@ -74,8 +90,30 @@
             <span aria-hidden="true">Competition Law</span>
             <span aria-hidden="true">Private Equity</span>
             <span aria-hidden="true">Restructuring</span>
+
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const heroVideo = document.getElementById("hero-video");
+
+        if (!heroVideo) {
+            return;
+        }
+
+        heroVideo.muted = true;
+        heroVideo.defaultMuted = true;
+
+        const playAttempt = heroVideo.play();
+
+        if (playAttempt !== undefined) {
+            playAttempt.catch(function (error) {
+                console.warn("Hero video autoplay was blocked:", error);
+            });
+        }
+    });
+</script>
 
 {% endblock %}

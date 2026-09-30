@@ -162,5 +162,25 @@
             })();
     </script>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("home-hero-video");
+
+        if (!video) {
+            return;
+        }
+
+        video.muted = true;
+        video.defaultMuted = true;
+
+        const playAttempt = video.play();
+
+        if (playAttempt !== undefined) {
+            playAttempt.catch(function () {
+                document.body.classList.add("hero-video-paused");
+            });
+        }
+    });
+</script>
 
 </html>
