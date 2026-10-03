@@ -1068,8 +1068,10 @@
 
                 <div>
 
+                    {% set historical_views = 10000 %}
+
                     <span class="stat-number">
-                        {{ articles | sum(attribute='views') }}
+                        {{ "{:,}".format(historical_views + (articles | sum(attribute='views'))) }}
                     </span>
 
                     <span class="stat-label">
