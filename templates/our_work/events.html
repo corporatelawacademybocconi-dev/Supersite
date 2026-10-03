@@ -74,7 +74,7 @@
 
             <article class="card">
                 {% if event.flyer_image_url %}
-                <img src="{{ event.flyer_image_url }}" alt="{{ event.title }}"
+                <img src="{{ event.flyer_image_url }}" alt="{{ event.title }}" loading="lazy"
                     style="width: 100%; border-radius: 8px; margin-bottom: 16px;">
                 {% endif %}
 
@@ -94,6 +94,37 @@
 
         </div>
     </div>
+
+    {% if total_pages > 1 %}
+
+    <nav class="event-pagination" aria-label="Event archive pagination">
+
+        <div>
+            {% if page > 1 %}
+            <a href="{{ url_for('events', page=page - 1) }}" class="btn btn-secondary">
+                ← Previous
+            </a>
+            {% endif %}
+        </div>
+
+        <span class="event-pagination-status">
+            Page {{ page }} of {{ total_pages }}
+        </span>
+
+        <div>
+            {% if page < total_pages %} <a href="{{ url_for('events', page=page + 1) }}" class="btn btn-secondary">
+                Next →
+                </a>
+                {% endif %}
+        </div>
+
+    </nav>
+
+    {% endif %}
+
+    </div>
+</section>
+</div>
 </section>
 
 {% endblock %}

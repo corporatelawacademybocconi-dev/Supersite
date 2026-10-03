@@ -1505,10 +1505,31 @@ def article_detail(slug):
 def events():
     now = datetime.now(timezone.utc).isoformat()
 
+    # ---------------------------------------------------------
+    # PAGINATION
+    # ---------------------------------------------------------
+
+    page = request.args.get("page", 1, type=int)
+    per_page = 9
+
+    if page < 1:
+        page = 1
+
+    start = (page - 1) * per_page
+    end = start + per_page - 1
+
+
+    # ---------------------------------------------------------
+    # FEATURED EVENT
+    # ---------------------------------------------------------
+
     featured_response = (
         supabase
         .table("events")
-        .select("*")
+        .select(
+            "title,slug,description,flyer_image_url,"
+            "location,start_datetime,registration_url"
+        )
         .eq("is_featured", True)
         .eq("status", "published")
         .gte("start_datetime", now)
@@ -1517,40 +1538,61 @@ def events():
         .execute()
     )
 
-    featured_event = featured_response.data[0] if featured_response.data else None
-
-    upcoming_response = (
-        supabase
-        .table("events")
-        .select("*")
-        .eq("status", "published")
-        .gte("start_datetime", now)
-        .order("start_datetime")
-        .execute()
+    featured_event = (
+        featured_response.data[0]
+        if featured_response.data
+        else None
     )
+
+
+    # ---------------------------------------------------------
+    # PAST EVENTS
+    # ---------------------------------------------------------
 
     past_response = (
         supabase
         .table("events")
-        .select("*")
+        .select(
+            "title,slug,description,flyer_image_url,start_datetime",
+            count="exact"
+        )
         .eq("status", "published")
         .lt("start_datetime", now)
         .order("start_datetime", desc=True)
+        .range(start, end)
         .execute()
     )
+
+    past_events = past_response.data or []
+    total_past_events = past_response.count or 0
+
+    total_pages = max(
+        1,
+        (total_past_events + per_page - 1) // per_page
+    )
+
+
+    # ---------------------------------------------------------
+    # TEMPLATE
+    # ---------------------------------------------------------
 
     return render_template(
         "our_work/events.html",
         featured_event=featured_event,
-        upcoming_events=upcoming_response.data or [],
-        past_events=past_response.data or []
+        past_events=past_events,
+        page=page,
+        total_pages=total_pages,
+        total_past_events=total_past_events
     )
 @app.route("/events/<slug>")
 def event_detail(slug):
     response = (
         supabase
         .table("events")
-        .select("*")
+        .select(
+            "title,slug,description,flyer_image_url,"
+            "start_datetime,location,registration_url,event_report"
+        )
         .eq("slug", slug)
         .eq("status", "published")
         .single()
