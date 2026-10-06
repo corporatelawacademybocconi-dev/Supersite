@@ -124,8 +124,7 @@ def translate_chunk(
         generated = model.generate(
             **encoded,
             max_length=512,
-            num_beams=4,
-            early_stopping=True
+            num_beams=1,
         )
 
     translated = tokenizer.decode(
