@@ -4123,3 +4123,32 @@ body {
         text-align: center;
     }
 }
+
+.article-language-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 24px 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+}
+
+.article-language-option {
+    color: #B5A99A;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.article-language-option:hover {
+    opacity: 0.65;
+}
+
+.article-language-option.is-active {
+    color: #1C1C1E;
+    font-weight: 600;
+}
+
+.article-language-divider {
+    color: #B5A99A;
+}

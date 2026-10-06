@@ -49,6 +49,24 @@
             </p>
             {% endif %}
 
+            <div class="article-language-switcher" aria-label="Article language">
+
+                <a href="{{ url_for('article_detail', slug=article.slug, lang='it') }}"
+                    class="article-language-option {% if current_language == 'it' %}is-active{% endif %}" {% if
+                    current_language=='it' %}aria-current="page" {% endif %}>
+                    IT
+                </a>
+
+                <span class="article-language-divider" aria-hidden="true">|</span>
+
+                <a href="{{ url_for('article_detail', slug=article.slug, lang='en') }}"
+                    class="article-language-option {% if current_language == 'en' %}is-active{% endif %}" {% if
+                    current_language=='en' %}aria-current="page" {% endif %}>
+                    EN
+                </a>
+
+            </div>
+
 
             <div class="article-detail-meta">
 

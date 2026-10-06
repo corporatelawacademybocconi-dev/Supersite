@@ -20,6 +20,17 @@
             <input type="text" name="title" value="{{ article.title or '' }}" required>
 
             <label for="author-search">Authors</label>
+            <label for="source_language">Original language</label>
+
+            <select name="source_language" id="source_language" required>
+                <option value="en" {% if article.source_language=="en" %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="it" {% if article.source_language=="it" %}selected{% endif %}>
+                    Italiano
+                </option>
+            </select>
 
             <input type="search" id="author-search" placeholder="Search authors..." autocomplete="off">
 

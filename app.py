@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import hmac
 import re
 import uuid
+import hashlib
 
 # pyrefly: ignore [missing-import]
 from flask import (
@@ -15,6 +16,7 @@ from supabase import create_client, ClientOptions
 from config import Config
 # pyrefly: ignore [missing-import]
 from werkzeug.utils import secure_filename
+from translator import translate_article
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -105,6 +107,23 @@ def calculate_reading_time(html_content):
 
 app.jinja_env.filters["reading_time"] = calculate_reading_time
 
+def get_article_translation(article_id, language):
+    response = (
+        supabase
+        .table("article_translations")
+        .select("*")
+        .eq("article_id", article_id)
+        .eq("language", language)
+        .limit(1)
+        .execute()
+    )
+
+    rows = response.data or []
+
+    if not rows:
+        return None
+
+    return rows[0]
 
 def slugify(value):
     value = (value or "").strip().lower()
@@ -551,6 +570,7 @@ def admin_create_article():
             "slug": slug,
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
+            "source_language": request.form.get("source_language", "en"),
             "author_id": author_ids[0],
             "status": request.form.get("status"),
             "published_at": (
@@ -651,7 +671,7 @@ def admin_edit_article(article_id):
             "title": request.form.get("title"),
             "excerpt": request.form.get("excerpt"),
             "content": request.form.get("content"),
-
+            "source_language": request.form.get("source_language", "en"),
             # Temporary compatibility value until all queries use
             # the article_authors junction table.
             "author_id": author_ids[0],
@@ -1470,8 +1490,97 @@ def articles():
         search_query=search_query,
     )
 
+def get_article_translation(article_id, language):
+    response = (
+        supabase
+        .table("article_translations")
+        .select("*")
+        .eq("article_id", article_id)
+        .eq("language", language)
+        .limit(1)
+        .execute()
+    )
+
+    rows = response.data or []
+
+    if not rows:
+        return None
+
+    return rows[0]
+
+def get_article_source_hash(article):
+    source_text = "|".join([
+        article.get("title") or "",
+        article.get("excerpt") or "",
+        article.get("content") or "",
+    ])
+
+    return hashlib.sha256(
+        source_text.encode("utf-8")
+    ).hexdigest()
+
+def get_or_create_article_translation(article, target_language):
+    source_language = article.get("source_language") or "en"
+
+    if target_language == source_language:
+        return None
+
+    source_hash = get_article_source_hash(article)
+
+    existing_translation = get_article_translation(
+        article["id"],
+        target_language
+    )
+
+    if (
+        existing_translation
+        and existing_translation.get("source_hash") == source_hash
+    ):
+        return existing_translation
+
+    translated = translate_article(
+        title=article.get("title") or "",
+        excerpt=article.get("excerpt") or "",
+        content=article.get("content") or "",
+        source_language=source_language,
+        target_language=target_language
+    )
+
+    translation_data = {
+        "article_id": article["id"],
+        "language": target_language,
+        "title": translated["title"],
+        "excerpt": translated["excerpt"],
+        "content": translated["content"],
+        "source_hash": source_hash,
+    }
+
+    if existing_translation:
+        response = (
+            supabase
+            .table("article_translations")
+            .update(translation_data)
+            .eq("id", existing_translation["id"])
+            .execute()
+        )
+    else:
+        response = (
+            supabase
+            .table("article_translations")
+            .insert(translation_data)
+            .execute()
+        )
+
+    rows = response.data or []
+
+    if rows:
+        return rows[0]
+
+    return translation_data
+
 @app.route("/our-work/articles/<slug>")
 def article_detail(slug):
+    requested_language = request.args.get("lang")
     response = (
         supabase
         .table("articles")
@@ -1488,6 +1597,36 @@ def article_detail(slug):
 
     article = rows[0]
 
+    source_language = article.get("source_language") or "en"
+
+    if requested_language not in ("it", "en"):
+        requested_language = source_language
+
+    displayed_article = article.copy()
+    is_translation = False
+
+    if requested_language != source_language:
+        try:
+            translation = get_or_create_article_translation(
+                article,
+                requested_language
+            )
+
+            if translation:
+                displayed_article["title"] = translation.get("title")
+                displayed_article["excerpt"] = translation.get("excerpt")
+                displayed_article["content"] = translation.get("content")
+                is_translation = True
+
+        except Exception:
+            app.logger.exception(
+                "Failed to translate article %s to %s",
+                article.get("id"),
+                requested_language
+            )
+
+            requested_language = source_language
+
     # View counting should never make the article itself unavailable.
     try:
         supabase.table("articles").update({
@@ -1498,7 +1637,10 @@ def article_detail(slug):
 
     return render_template(
         "our_work/article_detail.html",
-        article=article
+        article=displayed_article,
+        source_language=source_language,
+        current_language=requested_language,
+        is_translation=is_translation
     )
 
 @app.route("/our-work/events")
