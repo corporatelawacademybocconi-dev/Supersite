@@ -158,6 +158,16 @@
             </button>
 
         </form>
+        {% if article.source_language == "it" %}
+
+        <form method="POST" action="{{ url_for('admin_translate_article_en', article_id=article.id) }}"
+            style="margin-top: 16px;">
+            <button type="submit" class="btn btn-primary">
+                Generate English Translation
+            </button>
+        </form>
+
+        {% endif %}
 
 
         <!-- Delete form must remain separate from the edit form. -->

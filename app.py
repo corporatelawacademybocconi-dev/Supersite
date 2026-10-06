@@ -16,7 +16,6 @@ from supabase import create_client, ClientOptions
 from config import Config
 # pyrefly: ignore [missing-import]
 from werkzeug.utils import secure_filename
-from translator import translate_article
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -107,23 +106,6 @@ def calculate_reading_time(html_content):
 
 app.jinja_env.filters["reading_time"] = calculate_reading_time
 
-def get_article_translation(article_id, language):
-    response = (
-        supabase
-        .table("article_translations")
-        .select("*")
-        .eq("article_id", article_id)
-        .eq("language", language)
-        .limit(1)
-        .execute()
-    )
-
-    rows = response.data or []
-
-    if not rows:
-        return None
-
-    return rows[0]
 
 def slugify(value):
     value = (value or "").strip().lower()
@@ -771,7 +753,83 @@ def admin_edit_article(article_id):
         selected_author_ids=selected_author_ids,
         selected_tag_ids=selected_tag_ids
     )
-    
+
+@app.route(
+    "/reserved-area/articles/<article_id>/translate-en",
+    methods=["POST"]
+)
+def admin_translate_article_en(article_id):
+    if not session.get("reserved_access"):
+        return redirect(url_for("reserved_area_login"))
+
+    article_response = (
+        supabase
+        .table("articles")
+        .select("id, source_language")
+        .eq("id", article_id)
+        .single()
+        .execute()
+    )
+
+    article = article_response.data
+
+    if not article:
+        flash("Article not found.", "error")
+        return redirect(url_for("admin_articles"))
+
+    if article.get("source_language") != "it":
+        flash(
+            "English translation is only generated for Italian articles.",
+            "error"
+        )
+        return redirect(
+            url_for(
+                "admin_edit_article",
+                article_id=article_id
+            )
+        )
+
+    existing_job_response = (
+        supabase
+        .table("translation_jobs")
+        .select("id,status")
+        .eq("article_id", article_id)
+        .eq("target_language", "en")
+        .in_("status", ["pending", "processing"])
+        .limit(1)
+        .execute()
+    )
+
+    if existing_job_response.data:
+        flash(
+            "Translation is already queued.",
+            "info"
+        )
+        return redirect(
+            url_for(
+                "admin_edit_article",
+                article_id=article_id
+            )
+        )
+
+    supabase.table("translation_jobs").insert({
+        "article_id": int(article_id),
+        "target_language": "en",
+        "status": "pending"
+    }).execute()
+
+    flash(
+        "English translation queued.",
+        "success"
+    )
+
+    return redirect(
+        url_for(
+            "admin_edit_article",
+            article_id=article_id
+        )
+    )
+
 @app.route("/reserved-area/events/<event_id>/edit", methods=["GET", "POST"])
 def admin_edit_event(event_id):
 
@@ -1508,76 +1566,6 @@ def get_article_translation(article_id, language):
 
     return rows[0]
 
-def get_article_source_hash(article):
-    source_text = "|".join([
-        article.get("title") or "",
-        article.get("excerpt") or "",
-        article.get("content") or "",
-    ])
-
-    return hashlib.sha256(
-        source_text.encode("utf-8")
-    ).hexdigest()
-
-def get_or_create_article_translation(article, target_language):
-    source_language = article.get("source_language") or "en"
-
-    if target_language == source_language:
-        return None
-
-    source_hash = get_article_source_hash(article)
-
-    existing_translation = get_article_translation(
-        article["id"],
-        target_language
-    )
-
-    if (
-        existing_translation
-        and existing_translation.get("source_hash") == source_hash
-    ):
-        return existing_translation
-
-    translated = translate_article(
-        title=article.get("title") or "",
-        excerpt=article.get("excerpt") or "",
-        content=article.get("content") or "",
-        source_language=source_language,
-        target_language=target_language
-    )
-
-    translation_data = {
-        "article_id": article["id"],
-        "language": target_language,
-        "title": translated["title"],
-        "excerpt": translated["excerpt"],
-        "content": translated["content"],
-        "source_hash": source_hash,
-    }
-
-    if existing_translation:
-        response = (
-            supabase
-            .table("article_translations")
-            .update(translation_data)
-            .eq("id", existing_translation["id"])
-            .execute()
-        )
-    else:
-        response = (
-            supabase
-            .table("article_translations")
-            .insert(translation_data)
-            .execute()
-        )
-
-    rows = response.data or []
-
-    if rows:
-        return rows[0]
-
-    return translation_data
-
 @app.route("/our-work/articles/<slug>")
 def article_detail(slug):
     requested_language = request.args.get("lang")
@@ -1606,25 +1594,17 @@ def article_detail(slug):
     is_translation = False
 
     if requested_language != source_language:
-        try:
-            translation = get_or_create_article_translation(
-                article,
-                requested_language
-            )
+        translation = get_article_translation(
+            article["id"],
+            requested_language
+        )
 
-            if translation:
-                displayed_article["title"] = translation.get("title")
-                displayed_article["excerpt"] = translation.get("excerpt")
-                displayed_article["content"] = translation.get("content")
-                is_translation = True
-
-        except Exception:
-            app.logger.exception(
-                "Failed to translate article %s to %s",
-                article.get("id"),
-                requested_language
-            )
-
+        if translation:
+            displayed_article["title"] = translation.get("title")
+            displayed_article["excerpt"] = translation.get("excerpt")
+            displayed_article["content"] = translation.get("content")
+            is_translation = True
+        else:
             requested_language = source_language
 
     # View counting should never make the article itself unavailable.

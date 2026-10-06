@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from functools import lru_cache
 import re
 
@@ -14,7 +15,7 @@ MODEL_NAMES = {
 }
 
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=1)
 def get_translation_model(source_language, target_language):
     model_name = MODEL_NAMES.get(
         (source_language, target_language)
@@ -35,10 +36,6 @@ def get_translation_model(source_language, target_language):
 
 
 def split_text(text, max_chars=900):
-    """
-    Split long text into manageable chunks without cutting
-    ordinary sentences unnecessarily.
-    """
     text = (text or "").strip()
 
     if not text:
@@ -53,35 +50,6 @@ def split_text(text, max_chars=900):
     current = ""
 
     for sentence in sentences:
-        # Handle unusually long single sentences.
-        if len(sentence) > max_chars:
-            words = sentence.split()
-            partial = ""
-
-            for word in words:
-                candidate = (
-                    f"{partial} {word}".strip()
-                    if partial
-                    else word
-                )
-
-                if len(candidate) <= max_chars:
-                    partial = candidate
-                else:
-                    if partial:
-                        chunks.append(partial)
-
-                    partial = word
-
-            if partial:
-                if current:
-                    chunks.append(current)
-                    current = ""
-
-                chunks.append(partial)
-
-            continue
-
         candidate = (
             f"{current} {sentence}".strip()
             if current
@@ -124,7 +92,7 @@ def translate_chunk(
         generated = model.generate(
             **encoded,
             max_length=512,
-            num_beams=1,
+            num_beams=1
         )
 
     translated = tokenizer.decode(
@@ -140,9 +108,6 @@ def translate_text(
     source_language,
     target_language
 ):
-    """
-    Translate ordinary text while handling longer passages safely.
-    """
     if not text:
         return text
 
@@ -164,9 +129,6 @@ def translate_text(
 
 
 def should_translate_node(node):
-    """
-    Decide whether a BeautifulSoup text node should be translated.
-    """
     if not isinstance(node, NavigableString):
         return False
 
@@ -180,7 +142,6 @@ def should_translate_node(node):
     if not parent:
         return False
 
-    # Content inside these elements should never be translated.
     if parent.name in {
         "script",
         "style",
@@ -198,10 +159,6 @@ def translate_html(
     source_language,
     target_language
 ):
-    """
-    Translate visible text inside HTML while preserving the HTML
-    structure, links and formatting.
-    """
     if not html_content:
         return html_content
 
@@ -221,15 +178,6 @@ def translate_html(
 
     for node in text_nodes:
         original_text = str(node)
-
-        leading_space = (
-            original_text[:len(original_text) - len(original_text.lstrip())]
-        )
-
-        trailing_space = (
-            original_text[len(original_text.rstrip()):]
-        )
-
         clean_text = original_text.strip()
 
         if not clean_text:
@@ -241,9 +189,7 @@ def translate_html(
             target_language
         )
 
-        node.replace_with(
-            f"{leading_space}{translated_text}{trailing_space}"
-        )
+        node.replace_with(translated_text)
 
     return str(soup)
 
@@ -255,10 +201,6 @@ def translate_article(
     source_language,
     target_language
 ):
-    """
-    Translate the translatable fields of an article.
-    """
-
     translated_title = translate_text(
         title,
         source_language,
