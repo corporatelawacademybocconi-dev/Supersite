@@ -17,9 +17,14 @@
 
 <section class="section">
     <div class="container">
+        {% if total %}
+        <p class="people-count">
+            Showing {{ first_item }}–{{ last_item }} of {{ total }} people
+        </p>
+        {% endif %}
+
         <div class="grid grid-3 people-grid">
             {% for person in people %}
-            {% if person.division not in ['leadership', 'heads', 'past_president', 'alumni'] %}
             <article class="team-card">
                 <h3>{{ person.name }}</h3>
                 <p class="team-role">{{ person.role }}</p>
@@ -32,9 +37,37 @@
                     View Profile →
                 </a>
             </article>
-            {% endif %}
+            {% else %}
+            <p>No people to display yet.</p>
             {% endfor %}
         </div>
+
+        {% if total_pages > 1 %}
+        <nav class="people-pagination" aria-label="People pages">
+            {% if page > 1 %}
+            <a href="{{ url_for('people', page=page - 1) }}" rel="prev">
+                ← Previous
+            </a>
+            {% endif %}
+
+            {% for number in range(1, total_pages + 1) %}
+            {% if number == page %}
+            <span class="is-current" aria-current="page">
+                <span class="sr-only">Page </span>{{ number }}
+            </span>
+            {% else %}
+            <a href="{{ url_for('people', page=number) }}" aria-label="Page {{ number }}">
+                {{ number }}
+            </a>
+            {% endif %}
+            {% endfor %}
+
+            {% if page < total_pages %} <a href="{{ url_for('people', page=page + 1) }}" rel="next">
+                Next →
+                </a>
+                {% endif %}
+        </nav>
+        {% endif %}
     </div>
 </section>
 

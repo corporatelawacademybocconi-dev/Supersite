@@ -1943,19 +1943,48 @@ def test_db():
 
 @app.route("/people")
 def people():
-    response = (
+    per_page = 20
+    page = max(1, request.args.get("page", default=1, type=int))
+
+    # Preserve people without a division while excluding these groups.
+    division_filter = (
+        "division.is.null,"
+        "division.not.in.(leadership,heads,past_president,alumni)"
+    )
+
+    count_response = (
         supabase
         .table("people")
-        .select("*")
-        .order("name")
+        .select("slug", count="exact")
+        .or_(division_filter)
+        .range(0, 0)
         .execute()
     )
 
-    people = response.data
+    total = count_response.count or 0
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = min(page, total_pages)
+    start = (page - 1) * per_page
+
+    response = (
+        supabase
+        .table("people")
+        .select("name,role,bio,slug")
+        .or_(division_filter)
+        .order("name")
+        .order("slug")
+        .range(start, start + per_page - 1)
+        .execute()
+    )
 
     return render_template(
         "people/index.html",
-        people=people
+        people=response.data or [],
+        page=page,
+        total_pages=total_pages,
+        total=total,
+        first_item=start + 1 if total else 0,
+        last_item=min(start + per_page, total),
     )
 
 @app.route("/alumni")
