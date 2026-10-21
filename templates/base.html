@@ -31,6 +31,8 @@
             opt_out_capturing_by_default: true,
         })
     </script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 
 <body>
@@ -61,7 +63,6 @@
                 </div>
 
                 <a href="{{ url_for('journal') }}">Journal</a>
-                <a href="{{ url_for('networking') }}">Networking</a>
                 <a href="{{ url_for('contact') }}">Contact</a>
                 <a href="{{ url_for('reserved_area') }}" class="nav-reserved">
                     Reserved Area

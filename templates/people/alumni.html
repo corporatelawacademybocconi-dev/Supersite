@@ -25,6 +25,140 @@ Meet the Corporate Law Academy alumni community.
 
 <section class="section">
     <div class="container">
+        <div class="section-header">
+            <p class="section-label">CLA Global Network</p>
+
+            <h2 class="section-title">
+                A community across borders.
+            </h2>
+
+            <p class="section-text">
+                Explore the locations connecting our community.
+                Select a marker or zoom in to discover each city.
+            </p>
+        </div>
+
+        <div id="cla-network-map" role="region" aria-label="Map of CLA network locations"></div>
+
+        <p id="cla-map-status" class="section-text" role="status">
+            Loading network locations…
+        </p>
+
+        <details class="network-locations">
+            <summary>View all locations</summary>
+            <ul id="cla-location-list"></ul>
+        </details>
+    </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    (async function () {
+        const container = document.getElementById("cla-network-map");
+        const status = document.getElementById("cla-map-status");
+        const list = document.getElementById("cla-location-list");
+
+        try {
+            const response = await fetch(
+                {{ url_for('static', filename = 'data/network-map.json') | tojson }}
+    );
+
+    if (!response.ok) {
+        throw new Error("Unable to load locations");
+    }
+
+    const locations = await response.json();
+
+    locations.sort((a, b) => a.city.localeCompare(b.city));
+
+    for (const location of locations) {
+        const item = document.createElement("li");
+        item.textContent = `${location.city}, ${location.country}`;
+        list.appendChild(item);
+    }
+
+    if (!window.L) {
+        throw new Error("Map library unavailable");
+    }
+
+    const map = L.map(container, {
+        scrollWheelZoom: false,
+        worldCopyJump: true
+    });
+
+    L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 18,
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">' +
+                'OpenStreetMap</a> contributors'
+        }
+    ).addTo(map);
+
+    const markers = L.featureGroup().addTo(map);
+
+    for (const location of locations) {
+        const popup = document.createElement("div");
+        const title = document.createElement("strong");
+        const country = document.createElement("p");
+
+        title.textContent = location.city;
+        country.textContent = location.country;
+        popup.append(title, country);
+
+        L.circleMarker([location.lat, location.lng], {
+            radius: 6,
+            color: "#1C1C1E",
+            weight: 2,
+            fillColor: "#B5A99A",
+            fillOpacity: 1
+        })
+            .bindPopup(popup)
+            .addTo(markers);
+    }
+
+    if (locations.length) {
+        map.fitBounds(markers.getBounds(), {
+            padding: [30, 30],
+            maxZoom: 5
+        });
+    } else {
+        map.setView([20, 15], 2);
+    }
+
+    status.textContent = `${locations.length} cities in our global network.`;
+    } catch (error) {
+        container.hidden = true;
+        status.textContent = list.children.length
+            ? "The map is unavailable. View the locations below."
+            : "Network locations are temporarily unavailable.";
+        console.error("CLA network map:", error);
+    }
+}) ();
+</script>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <p class="section-label">Academic Partnerships</p>
+            <h2 class="section-title">Partner universities.</h2>
+        </div>
+
+        <ul class="partner-universities">
+            <li>Queen Mary University of London</li>
+            <li>Esade</li>
+            <li>National University of Singapore (NUS)</li>
+            <li>London School of Economics and Political Science (LSE)</li>
+            <li>Maastricht University</li>
+        </ul>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
 
         {% if alumni %}
         <div class="grid grid-3 people-grid">
