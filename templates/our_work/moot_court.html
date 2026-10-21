@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Moot Court{% endblock %}
+{% block title %}Moot Court | Corporate Law Academy{% endblock %}
 
 {% block content %}
 
-<section class="page-hero">
+<section class="page-hero" style="background-image: url('/static/images/moot-court-hero.webp');">
     <div class="page-hero-inner">
         <p class="page-hero-label">Moot Court</p>
 
@@ -13,8 +13,8 @@
         </h1>
 
         <p class="page-hero-text">
-            Our Moot Court programme develops oral advocacy, legal writing,
-            teamwork and strategic thinking through simulated proceedings.
+            Bringing legal reasoning into practice through research,
+            written submissions and oral advocacy.
         </p>
     </div>
 </section>
@@ -22,23 +22,25 @@
 <section class="section">
     <div class="container split-layout">
         <div>
-            <p class="section-label">Programme</p>
+            <p class="section-label">The Programme</p>
 
             <h2 class="section-title">
-                Training students to argue with precision.
+                From legal analysis to persuasive argument.
             </h2>
         </div>
 
         <div>
             <p class="section-text">
-                The programme gives students practical exposure to written
-                submissions, oral pleadings, case theory and courtroom strategy.
+                Corporate Law Academy’s Moot Court programme gives
+                students practical exposure to advocacy through
+                simulated legal proceedings.
             </p>
 
             <p class="section-text">
-                Participants learn how to structure arguments, respond to judges,
-                work under pressure and communicate complex legal positions with
-                discipline. A useful skill, since “vibes” remain inadmissible.
+                Participants examine a dispute, develop a legal
+                position and present arguments in writing and orally.
+                The process connects academic knowledge with the
+                demands of representing a party and defending its case.
             </p>
         </div>
     </div>
@@ -47,10 +49,10 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <p class="section-label">Structure</p>
+            <p class="section-label">Core Activities</p>
 
             <h2 class="section-title">
-                How the programme works.
+                Research. Write. Advocate.
             </h2>
         </div>
 
@@ -58,79 +60,87 @@
             <article class="card">
                 <h3>Legal Research</h3>
                 <p>
-                    Participants analyse facts, identify issues and prepare
-                    legal arguments based on authorities and procedure.
+                    Analyse the facts, identify the legal issues and
+                    assess the relevant authorities. Develop a case
+                    theory that accounts for both the strengths and
+                    weaknesses of your position.
                 </p>
             </article>
 
             <article class="card">
                 <h3>Written Submissions</h3>
                 <p>
-                    Teams draft memorials and written pleadings with a focus
-                    on clarity, structure and persuasive legal reasoning.
+                    Translate research into clear, structured pleadings.
+                    Build a persuasive line of reasoning, support it
+                    with precise references and address the opposing
+                    party’s arguments.
                 </p>
             </article>
 
             <article class="card">
                 <h3>Oral Advocacy</h3>
                 <p>
-                    Students practise oral argument, judicial questioning and
-                    strategic presentation before panels.
+                    Present your case, respond to questions from the
+                    bench and adapt your submissions under time
+                    pressure. Communicate complex legal arguments
+                    with clarity and discipline.
                 </p>
             </article>
         </div>
     </div>
 </section>
 
-{% if competitions %}
-<section class="section">
-    <div class="container">
-
-        <div class="section-header">
-            <p class="section-label">Competitions</p>
-            <h2 class="section-title">Preparing for national and international moots.</h2>
-        </div>
-
-        <div class="grid grid-3">
-            {% for competition in competitions %}
-            <article class="card">
-                {% if competition.cover_image_url %}
-                <img src="{{ competition.cover_image_url }}" alt="{{ competition.title }}"
-                    style="width: 100%; border-radius: 8px; margin-bottom: 16px;">
-                {% endif %}
-
-                <h3>{{ competition.title }}</h3>
-
-                {% if competition.date %}
-                <p style="color: var(--taupe); font-size: 14px; margin-bottom: 12px;">{{ competition.date }}</p>
-                {% endif %}
-
-                <p>{{ competition.description }}</p>
-                <a href="{{ url_for('competition_detail', slug=competition.slug) }}" class="card-link">View →</a>
-            </article>
-            {% endfor %}
-        </div>
-
-    </div>
-</section>
-{% else %}
 <section class="section">
     <div class="container split-layout">
         <div>
-            <p class="section-label">Competitions</p>
-            <h2 class="section-title">Preparing for national and international moots.</h2>
+            <p class="section-label">Skills & Development</p>
+
+            <h2 class="section-title">
+                Judgment beyond the classroom.
+            </h2>
         </div>
+
         <div>
             <p class="section-text">
-                The Moot Court initiative may support teams preparing for
-                external competitions, internal rounds, workshops and advocacy
-                training sessions.
+                Mooting requires more than identifying the applicable
+                law. It involves deciding which arguments to advance,
+                which points to concede and how to respond when a
+                position is challenged.
             </p>
-            <a href="{{ url_for('contact') }}" class="btn btn-primary">Get Involved</a>
+
+            <p class="section-text">
+                Preparing a case also develops teamwork: coordinating
+                research, reviewing submissions and building a
+                consistent position together. These skills extend
+                beyond advocacy to legal writing, negotiation and
+                professional communication.
+            </p>
         </div>
     </div>
 </section>
-{% endif %}
+
+<section class="section">
+    <div class="container split-layout">
+        <div>
+            <p class="section-label">Participation</p>
+
+            <h2 class="section-title">
+                Get involved in Moot Court.
+            </h2>
+        </div>
+
+        <div>
+            <p class="section-text">
+                Interested in taking part? Contact the Corporate Law
+                Academy team to learn about available opportunities,
+                participation requirements and preparation.
+            </p>
+
+            <a href="{{ url_for('contact') }}" class="btn btn-primary">
+                Contact the Team
+            </a>
+        </div>
+    </div>
 </section>
 
 {% endblock %}
