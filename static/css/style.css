@@ -4280,3 +4280,62 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+#cla-network-map {
+    height: 560px;
+    background: #1C1C1E;
+    border: 1px solid rgba(181, 169, 154, 0.3);
+    isolation: isolate;
+}
+
+/* Restyle only the map imagery, preserving marker colours. */
+#cla-network-map .leaflet-tile-pane {
+    filter: grayscale(1) invert(1) brightness(0.85);
+}
+
+#cla-network-map .leaflet-bar {
+    border: 1px solid #B5A99A;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#cla-network-map .leaflet-bar a {
+    background: #1C1C1E;
+    color: #E8E0D5;
+    border-bottom-color: rgba(181, 169, 154, 0.3);
+    border-radius: 0;
+}
+
+#cla-network-map .leaflet-bar a:hover,
+#cla-network-map .leaflet-bar a:focus {
+    background: #353332;
+}
+
+#cla-network-map .leaflet-popup-content-wrapper,
+#cla-network-map .leaflet-popup-tip {
+    background: #E8E0D5;
+    color: #1C1C1E;
+    border-radius: 0;
+}
+
+#cla-network-map .leaflet-popup-content {
+    margin: 18px 24px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+#cla-network-map .leaflet-control-attribution {
+    background: rgba(28, 28, 30, 0.9);
+    color: #E8E0D5;
+}
+
+#cla-network-map .leaflet-control-attribution a {
+    color: #E8E0D5;
+}
+
+@media (max-width: 700px) {
+    #cla-network-map {
+        height: 400px;
+    }
+}
